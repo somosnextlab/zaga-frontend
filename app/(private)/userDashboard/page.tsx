@@ -1,6 +1,9 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import { getUserRole } from '@/lib/utils/auth';
 
+// Forzar renderizado dinámico
+export const dynamic = 'force-dynamic';
+
 export default async function ClientDashboard() {
   const supabase = await supabaseServer();
   const { data: { user } } = await supabase.auth.getUser();

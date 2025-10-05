@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { ROUTES } from '@/lib/constants/routes';
 
+// Forzar renderizado dinámico para evitar problemas de build
+export const dynamic = 'force-dynamic';
+
 export default function LandingPage() {
   return (
     <section className="grid gap-6">
