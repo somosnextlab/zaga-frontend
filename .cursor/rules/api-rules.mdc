@@ -1,0 +1,271 @@
+---
+alwaysApply: true
+---
+
+## Estructura de API Routes
+
+### Organización de Archivos
+- Crear carpeta `api/[nombreEndpoint]/` para cada endpoint
+- Estructura estándar:
+  ```
+  api/
+  ├── [nombreEndpoint]/
+  │   ├── route.ts
+  │   ├── [subEndpoint]/
+  │   │   └── route.ts
+  │   └── __test__/
+  │       └── route.test.ts
+  ```
+
+### Nomenclatura
+- Usar camelCase para nombres de endpoints: `clienteComprador`, `allocationReport`
+- Archivos: `route.ts` (convención Next.js 13+)
+- Tests: `route.test.ts` o `[nombreEndpoint].test.ts`
+
+## Implementación de API Routes
+
+### Estructura Básica
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    // Lógica del endpoint GET
+    return NextResponse.json({ data: 'response' }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    // Lógica del endpoint POST
+    return NextResponse.json({ success: true }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Bad Request' },
+      { status: 400 }
+    );
+  }
+}
+```
+
+### Métodos HTTP
+- Implementar solo los métodos necesarios: GET, POST, PUT, DELETE
+- Usar `NextRequest` para obtener parámetros y body
+- Retornar `NextResponse` con status codes apropiados
+
+## Manejo de Errores
+
+### Error Handling
+```typescript
+export async function GET(request: NextRequest) {
+  try {
+    // Lógica principal
+  } catch (error) {
+    console.error('API Error:', error);
+    
+    if (error instanceof ValidationError) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: error.message },
+        { status: 400 }
+      );
+    }
+    
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+### Status Codes
+- 200: OK - Respuesta exitosa
+- 201: Created - Recurso creado exitosamente
+- 400: Bad Request - Error en datos de entrada
+- 401: Unauthorized - No autenticado
+- 403: Forbidden - No autorizado
+- 404: Not Found - Recurso no encontrado
+- 500: Internal Server Error - Error del servidor
+
+## Validación de Datos
+
+### Input Validation
+```typescript
+import { z } from 'zod';
+
+const requestSchema = z.object({
+  field1: z.string().min(1),
+  field2: z.number().positive(),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validatedData = requestSchema.parse(body);
+    
+    // Usar validatedData
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: error.errors },
+        { status: 400 }
+      );
+    }
+    throw error;
+  }
+}
+```
+
+### Query Parameters
+```typescript
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const page = searchParams.get('page');
+  const limit = searchParams.get('limit');
+  
+  // Validar y usar parámetros
+}
+```
+
+## Integración con Backend
+
+### Fetch Calls
+```typescript
+export async function GET(request: NextRequest) {
+  try {
+    const response = await fetch(`${process.env.API_BASE_URL}/endpoint`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    // Manejo de errores
+  }
+}
+```
+
+### Environment Variables
+- Usar `process.env` para configuraciones
+- Validar variables de entorno al inicio
+- Usar tipos para variables de entorno
+
+## Testing de API Routes
+
+### Configuración de Tests
+```typescript
+/**
+ * @jest-environment node
+ */
+import { NextRequest } from 'next/server';
+import { GET, POST } from '../route';
+
+describe('API - [NombreEndpoint]', () => {
+  beforeEach(() => {
+    global.fetch = mockFetch as any;
+  });
+
+  afterEach(() => {
+    mockFetch.mockClear();
+  });
+
+  test('01 - should return correct status code', async () => {
+    const request = new NextRequest('http://localhost:3000/api/endpoint');
+    const response = await GET(request);
+    
+    expect(response.status).toBe(200);
+  });
+});
+```
+
+### Mock Fetch
+```typescript
+const mockFetch = jest.fn();
+
+beforeEach(() => {
+  global.fetch = mockFetch as any;
+});
+
+afterEach(() => {
+  mockFetch.mockClear();
+});
+```
+
+## Seguridad
+
+### Autenticación
+- Validar tokens JWT en endpoints protegidos
+- Implementar middleware de autenticación
+- Verificar permisos de usuario
+
+### CORS
+- Configurar CORS apropiadamente
+- Validar origins permitidos
+- Manejar preflight requests
+
+### Rate Limiting
+- Implementar rate limiting para endpoints críticos
+- Usar headers para información de límites
+- Manejar respuestas de rate limit
+
+## Performance
+
+### Caching
+- Implementar cache para respuestas estáticas
+- Usar headers de cache apropiados
+- Considerar cache en memoria para datos frecuentes
+
+### Pagination
+- Implementar paginación para listas grandes
+- Usar query parameters para page y limit
+- Retornar metadata de paginación
+
+## Endpoints Específicos del Proyecto
+
+### Dashboard
+- `GET /api/dashboard` - Datos del dashboard
+- `GET /api/dashboard/prestamos` - Visualizador de datos de prestamos
+
+
+## Convenciones Específicas
+
+### Response Format
+```typescript
+// Respuesta exitosa
+{
+  success: true,
+  data: any,
+  message?: string
+}
+
+// Respuesta de error
+{
+  success: false,
+  error: string,
+  details?: any
+}
+```
+
+### Logging
+- Usar console.error para errores
+- Loggear información relevante para debugging
+- No loggear información sensible
+
+### Documentation
+- Documentar endpoints con comentarios
+- Incluir ejemplos de request/response
+- Especificar tipos de datos esperados

@@ -1,0 +1,137 @@
+---
+alwaysApply: true
+---
+
+## Estructura de Componentes
+
+### Organización de Archivos
+- Crear carpeta `components/[nombreComponente]/` para cada componente
+- Estructura estándar:
+  ```
+  components/
+  ├── [nombreComponente]/
+  │   ├── [NombreComponente].tsx
+  │   ├── [NombreComponente].scss
+  │   ├── [NombreComponente].types.ts
+  │   └── __test__/
+  │       └── [NombreComponente].test.tsx
+  ```
+
+### Nomenclatura
+- Usar PascalCase para nombres de componentes: `CoverCard`, `DataGridTable`
+- Archivos: `[Nombre].tsx`, `[Nombre].scss`, `[Nombre].types.ts`
+- Tipos: `[Nombre]Props`, `[Nombre]State`
+
+## Implementación de Componentes
+
+### Estructura Básica
+```typescript
+import React from 'react';
+import './[Nombre].scss';
+
+interface [Nombre]Props {
+  // Props del componente
+}
+
+export const [Nombre]: React.FC<[Nombre]Props> = ({ 
+  // Props desestructuradas
+}) => {
+  // Lógica del componente
+  
+  return (
+    <div className="[nombre-componente]">
+      {/* JSX del componente */}
+    </div>
+  );
+};
+```
+
+### Props y Tipos
+- Definir interfaces para props con TypeScript
+- Usar tipos específicos en lugar de `any`
+- Incluir props opcionales con `?`
+- Proporcionar valores por defecto cuando sea apropiado
+
+### Estados y Hooks
+- Usar `useState` para estado local simple
+- Usar `useEffect` para efectos secundarios
+- Usar `useCallback` y `useMemo` para optimización
+- Implementar `useRef` cuando sea necesario
+
+
+## Testing de Componentes
+
+### Estructura de Tests
+```typescript
+import { render, screen } from '@testing-library/react';
+import { [Nombre] } from '../[Nombre]';
+
+describe('[Nombre]', () => {
+  test('01 - should render without crashing', () => {
+    render(<[Nombre] />);
+    expect(screen.getByTestId('[nombre-componente]')).toBeInTheDocument();
+  });
+  
+  test('02 - should handle props correctly', () => {
+    // Test de props
+  });
+  
+  test('03 - should handle user interactions', () => {
+    // Test de interacciones
+  });
+});
+```
+
+### Test IDs
+- Usar `data-testid` para elementos de test
+- Nomenclatura: `[nombre-componente]`, `[nombre-componente]-elemento`
+- Incluir test IDs en elementos clave
+
+## Performance y Optimización
+
+### React.memo
+- Usar `React.memo` para componentes que reciben las mismas props frecuentemente
+- Implementar comparación personalizada cuando sea necesario
+
+### Lazy Loading
+- Usar `React.lazy` para componentes grandes
+- Implementar Suspense para loading states
+
+### Bundle Splitting
+- Separar componentes pesados en chunks independientes
+- Usar dynamic imports para componentes condicionales
+
+## Accesibilidad
+
+### ARIA Labels
+- Incluir `aria-label` en elementos interactivos
+- Usar `aria-describedby` para descripciones
+- Implementar `aria-expanded` para elementos colapsables
+
+### Keyboard Navigation
+- Asegurar navegación por teclado
+- Implementar `onKeyDown` handlers
+- Usar `tabIndex` apropiadamente
+
+
+### Error Handling
+- Implementar error boundaries cuando sea necesario
+- Manejar estados de error en componentes
+- Proporcionar fallbacks para datos faltantes
+
+## Convenciones Específicas
+
+### Imports
+- Usar imports absolutos con `@/` para rutas del proyecto
+- Agrupar imports: React, librerías externas, componentes internos, tipos
+- Usar imports nombrados para componentes
+
+### Exports
+- Exportar componentes como named exports
+- Incluir tipos en el mismo archivo o en archivo separado
+- Exportar constantes y utilidades relacionadas
+
+### Documentación
+- Incluir JSDoc para componentes complejos
+- Documentar props con comentarios
+- Proporcionar ejemplos de uso 

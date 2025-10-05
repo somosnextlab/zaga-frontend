@@ -1,0 +1,116 @@
+---
+alwaysApply: true
+---
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Reglas de Testing para One-Clearing Frontend
+
+## Configuración General de Tests
+
+### Framework y Configuración
+- Usar **Jest** como framework de testing principal
+- Usar **@testing-library/react** para tests de componentes React
+- Usar **@testing-library/jest-dom** para matchers adicionales
+- Configurar el entorno con `jest-environment-jsdom` para tests de componentes
+- Usar `@jest-environment node` para tests de API routes
+
+### Estructura de Archivos de Test
+- Colocar archivos de test en carpetas `__test__` junto al código fuente
+- Nomenclatura: `[nombreComponente].test.tsx` o `[nombreFuncion].test.ts`
+- Para tests de API routes: `route.test.ts` o `[nombreEndpoint].test.ts`
+
+## Convenciones de Nomenclatura
+
+### Describe Blocks
+- Usar `describe()` para agrupar tests relacionados
+- Nombres descriptivos que indiquen qué se está probando
+- Ejemplo: `describe('ComponentName', () => {})` o `describe('API - EndpointName', () => {})`
+
+### Test Cases
+- **Usar `test()` en lugar de `it()`** (convención específica del proyecto)
+- Nomenclatura con números secuenciales: `test('01 - should...', () => {})`
+- Nombres descriptivos que expliquen el comportamiento esperado
+- Ejemplos:
+  - `test('01 - should render without crashing', () => {})`
+  - `test('02 - should handle click events', () => {})`
+  - `test('03 - should return correct status code', () => {})`
+
+## Setup y Teardown
+
+### beforeEach/afterEach
+- Usar `beforeEach()` para configurar mocks y estado inicial
+- Usar `afterEach()` para limpiar mocks y estado
+- Patrón común:
+```typescript
+beforeEach(() => {
+  global.fetch = mockFetch as any;
+});
+
+afterEach(() => {
+  mockFetch.mockClear();
+});
+```
+
+### Mocks
+- Mockear `global.fetch` para tests de API
+- Usar `jest.fn()` para funciones mock
+- Limpiar mocks después de cada test
+
+## Tests de API Routes
+
+### Configuración
+- Usar `@jest-environment node` al inicio del archivo
+- Mockear `global.fetch` para simular llamadas HTTP
+- Usar `NextRequest` para crear requests de prueba
+
+## Tests de Context y Hooks
+
+### Context Testing
+- Usar helpers de mock context cuando estén disponibles
+- Ejemplo: `renderWithCoversContext`, `renderWithDashboardContext`
+- Mockear acciones del context cuando sea necesario
+
+### Hook Testing
+- Usar `@testing-library/react-hooks` si es necesario
+- O renderizar componentes que usen el hook
+- Testear cambios de estado y efectos
+
+## Manejo de Errores
+
+### Tests de Error
+- Testear casos de error con códigos de estado apropiados
+- Verificar mensajes de error cuando sea relevante
+- Usar `mockRejectedValue()` para simular errores de fetch
+
+## Coverage y Reportes
+
+### Configuración de Coverage
+- Usar `jest --coverage` para generar reportes
+- Configurar exclusiones en `jest.config.js`
+- Excluir archivos de mock y tipos de coverage
+
+### Scripts de Testing
+- `npm test` - Ejecutar tests en modo watch
+- `npm run test:single` - Ejecutar tests una vez
+- `npm run test:coverage` - Ejecutar tests con coverage
+
+## Buenas Prácticas
+
+### Organización
+- Un test por comportamiento específico
+- Tests independientes entre sí
+- Limpiar estado después de cada test
+- Usar nombres descriptivos para tests
+
+### Performance
+- Mockear operaciones costosas (fetch, timers)
+- Usar `jest.useFakeTimers()` cuando sea necesario
+- Evitar tests que dependan de estado externo
+
+### Mantenibilidad
+- Extraer lógica común a helpers cuando sea posible
+- Usar constantes para valores repetidos
+- Documentar tests complejos con comentarios 
