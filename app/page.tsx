@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { ROUTES } from '@/lib/constants/routes';
+import { ROUTES } from './lib/constants/routes';
+import { Button } from './components/Button';
 
 // Forzar renderizado dinámico para evitar bug de prerenderizado en Next.js 15.5.4
 export const dynamic = 'force-dynamic';
@@ -8,7 +8,9 @@ export const dynamic = 'force-dynamic';
 export default function LandingPage() {
   return (
     <section className="grid gap-6">
-      <h1 className="text-3xl font-bold">Préstamos online rápidos y simples — Zaga</h1>
+      <h1 className="text-3xl font-bold">
+        Préstamos online rápidos y simples — Zaga
+      </h1>
       <p className="max-w-prose text-muted-foreground">
         Financiación ágil, 100% digital. Con tu DNI y CBU en minutos.
       </p>

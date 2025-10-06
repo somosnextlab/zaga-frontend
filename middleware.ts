@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { getUserRole, getDashboardRoute, isProtectedRoute, isAdminRoute } from '@/lib/utils/auth';
-import { ROUTES } from '@/lib/constants/routes';
+import { getUserRole, getDashboardRoute, isProtectedRoute, isAdminRoute } from './app/lib/utils/auth';
+import { ROUTES } from './app/lib/constants/routes';
+
 
 /**
  * Middleware de autenticación y autorización
