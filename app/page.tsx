@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { ROUTES } from '@/lib/constants/routes';
 
-// Permitir que Next.js decida automáticamente el tipo de renderizado
-export const dynamic = 'auto';
+// Forzar renderizado dinámico para evitar bug de prerenderizado en Next.js 15.5.4
+export const dynamic = 'force-dynamic';
 
 export default function LandingPage() {
   return (
