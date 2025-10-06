@@ -1,8 +1,8 @@
 import { supabaseServer } from '@/lib/supabase/server';
 import { getUserRole } from '@/lib/utils/auth';
 
-// Forzar renderizado dinámico
-export const dynamic = 'force-dynamic';
+// Permitir que Next.js decida automáticamente el tipo de renderizado
+export const dynamic = 'auto';
 
 export default async function AdminDashboard() {
   const supabase = await supabaseServer();
