@@ -20,11 +20,7 @@ export const metadata: Metadata = {
   title: "Zaga - Préstamos online rápidos y simples",
   description: "Financiación ágil, 100% digital. Con tu DNI y CBU en minutos.",
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-    ],
+    icon: "/favicon.ico",
   },
 };
 

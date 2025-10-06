@@ -1,5 +1,5 @@
-import { supabaseServer } from '@/lib/supabase/server';
-import { getUserRole } from '@/lib/utils/auth';
+  import { supabaseServer } from '@/app/lib/supabase/server';
+  import { getUserRole } from '@/app/lib/utils/auth';
 
 // Permitir que Next.js decida automáticamente el tipo de renderizado
 export const dynamic = 'auto';
