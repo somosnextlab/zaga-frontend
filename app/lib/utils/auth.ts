@@ -1,5 +1,7 @@
-import { UserRole, User } from '@/lib/types/auth';
-import { ROUTES } from '@/lib/constants/routes';
+import { User } from "@supabase/supabase-js";
+import { ROUTES } from "../constants/routes";
+import { UserRole } from "../types/auth";
+
 
 /**
  * Obtiene el rol del usuario desde user_metadata

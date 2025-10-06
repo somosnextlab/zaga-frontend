@@ -1,13 +1,14 @@
 'use client';
 
+import { Button } from '@/app/components/Button';
+import { Input } from '@/app/components/Input';
+import { supabaseClient } from '@/app/lib/supabase/client';
+import { getUserRole, getDashboardRoute } from '@/app/lib/utils/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { supabaseClient } from '@/lib/supabase/client';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { getUserRole, getDashboardRoute } from '@/lib/utils/auth';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),

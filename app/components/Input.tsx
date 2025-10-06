@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, forwardRef } from 'react';
-import { cn } from '@/lib/utils/cn';
+import { cn } from '../lib/utils/cn';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string | undefined;
@@ -15,7 +15,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-1">
         {label && (
-          <label 
+          <label
             htmlFor={inputId}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
@@ -36,7 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p 
+          <p
             id={errorId}
             className="text-sm text-red-600"
             role="alert"
