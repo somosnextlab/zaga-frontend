@@ -4,22 +4,38 @@
 /* Plugins CSS-based (v4) */
 @plugin "tailwindcss-animate";
 
-/* Theme tokens (opcional, editable a tu marca Zaga) */
+/* Theme tokens - Paleta Zaga */
 @theme {
-  --color-background: 255 255 255;
-  --color-foreground: 17 24 39;
+  /* Colores base */
+  --color-background: 255 255 255;        /* Clean White */
+  --color-foreground: 15 23 42;           /* Texto primario (slate-900) */
 
-  --color-primary: 10 115 255;           /* azul tech */
+  /* Zaga Blue - Color primario */
+  --color-primary: 37 99 235;             /* #2563EB */
   --color-primary-foreground: 255 255 255;
+  
+  /* Zaga Green - Color de acento */
+  --color-accent: 34 197 94;              /* #22C55E */
+  --color-accent-foreground: 255 255 255;
 
-  /* opcionales para estados */
-  --color-muted: 241 245 249;
-  --color-border: 226 232 240;
+  /* Estados y variantes */
+  --color-muted: 224 234 255;             /* Azul 100 (fondos suaves) */
+  --color-border: 229 231 235;            /* Bordes/superficie (slate-200) */
+  
+  /* Estados hover/active */
+  --color-primary-hover: 29 78 216;       /* Azul 700 */
+  --color-accent-hover: 22 163 74;        /* Verde 600 */
+  
+  /* Fondos suaves para acentos */
+  --color-accent-muted: 220 252 231;      /* Verde 100 */
 }
 
-/* Dark mode opcional: togglear con la clase .dark en <html> */
+/* Dark mode - Zaga */
 :root.dark {
-  --color-background: 17 24 39;
-  --color-foreground: 241 245 249;
-  --color-primary: 56 189 248;
+  --color-background: 11 18 32;           /* Fondo oscuro */
+  --color-foreground: 241 245 249;        /* Texto claro */
+  --color-primary: 37 99 235;             /* Zaga Blue */
+  --color-accent: 34 197 94;              /* Zaga Green */
+  --color-border: 51 65 85;               /* Bordes oscuros */
+  --color-muted: 30 41 59;                /* Fondos suaves oscuros */
 }
