@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ROUTES } from './lib/constants/routes';
-import { Button } from './components/Button';
+import { Button } from '@/components/ui/button';
 
 // Forzar renderizado dinámico para evitar bug de prerenderizado en Next.js 15.5.4
 export const dynamic = 'force-dynamic';

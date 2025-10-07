@@ -1,59 +1,25 @@
+/* Tailwind v4 */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #2563eb;
+/* Plugins CSS-based (v4) */
+@plugin "tailwindcss-animate";
+
+/* Theme tokens (opcional, editable a tu marca Zaga) */
+@theme {
+  --color-background: 255 255 255;
+  --color-foreground: 17 24 39;
+
+  --color-primary: 10 115 255;           /* azul tech */
+  --color-primary-foreground: 255 255 255;
+
+  /* opcionales para estados */
+  --color-muted: 241 245 249;
+  --color-border: 226 232 240;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f8fafc;
-    --border: #334155;
-    --input: #334155;
-    --ring: #3b82f6;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+/* Dark mode opcional: togglear con la clase .dark en <html> */
+:root.dark {
+  --color-background: 17 24 39;
+  --color-foreground: 241 245 249;
+  --color-primary: 56 189 248;
 }
