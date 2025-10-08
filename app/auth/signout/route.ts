@@ -3,34 +3,46 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 export async function POST() {
-  const cookieStore = await cookies();
+  try {
+    const cookieStore = await cookies();
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, options)
+              );
+            } catch {
+              // The `setAll` method was called from a Server Component.
+              // This can be ignored if you have middleware refreshing
+              // user sessions.
+            }
+          },
         },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
-      },
-    }
-  );
+      }
+    );
 
-  await supabase.auth.signOut();
+    await supabase.auth.signOut();
 
-  return NextResponse.redirect(
-    new URL('/', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
-  );
+    // Obtener la URL base del request para redireccionar correctamente
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || 
+      (process.env.NODE_ENV === 'production' ? 'https://zaga.com.ar' : 'http://localhost:3000');
+    
+    return NextResponse.redirect(new URL('/', origin));
+  } catch (error) {
+    console.error('Error during logout:', error);
+    
+    // En caso de error, redirigir a la página de login
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || 
+      (process.env.NODE_ENV === 'production' ? 'https://zaga.com.ar' : 'http://localhost:3000');
+    
+    return NextResponse.redirect(new URL('/auth/login', origin));
+  }
 }

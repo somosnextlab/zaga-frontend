@@ -39,9 +39,10 @@ export const apiFetch = async (
 
     // Si la respuesta es 401, redirigir al login
     if (response.status === 401) {
-      // Redirigir al login
+      // Redirigir al login usando la URL absoluta
       if (typeof window !== 'undefined') {
-        window.location.href = '/auth/login';
+        const baseUrl = window.location.origin;
+        window.location.href = `${baseUrl}/auth/login`;
       }
       throw new Error('Unauthorized - redirecting to login');
     }
