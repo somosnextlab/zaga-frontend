@@ -16,7 +16,6 @@ export function MobileMenu({ user }: MobileMenuProps) {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  // Cerrar menú al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -35,7 +34,6 @@ export function MobileMenu({ user }: MobileMenuProps) {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Botón hamburguesa */}
       <button
         onClick={toggleMenu}
         className="md:hidden p-2 rounded-lg hover:bg-[rgb(var(--color-muted))] transition-colors"
@@ -48,7 +46,6 @@ export function MobileMenu({ user }: MobileMenuProps) {
         )}
       </button>
 
-      {/* Menú dropdown */}
       {isOpen && (
         <div className="absolute top-full right-0 mt-2 w-64 bg-[rgb(var(--color-background))] border border-[rgb(var(--color-border))] rounded-lg shadow-lg z-50 md:hidden">
           <nav className="py-2">
@@ -73,11 +70,9 @@ export function MobileMenu({ user }: MobileMenuProps) {
             >
               Preguntas
             </a>
-            
-            {/* Separador */}
+
             <div className="border-t border-[rgb(var(--color-border))] my-2"></div>
-            
-            {/* Botones de autenticación */}
+
             {!user && (
               <>
                 <Link
