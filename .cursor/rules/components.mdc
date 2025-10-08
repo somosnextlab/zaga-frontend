@@ -4,6 +4,8 @@ alwaysApply: true
 
 ## Estructura de Componentes
 
+Trabajaremos bajo el principio SOLID.
+
 ### Organización de Archivos
 - Crear carpeta `components/[nombreComponente]/` para cada componente
 - Estructura estándar:

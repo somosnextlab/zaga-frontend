@@ -33,12 +33,14 @@ export function LoanSimulator() {
 
   const handleContinuar = async () => {
     setIsLoading(true);
-    
+
     try {
       // Verificar si hay sesión activa
       const supabase = supabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (user) {
         // Usuario logueado - redirigir al dashboard correspondiente
         const role = getUserRole(user);
@@ -127,7 +129,7 @@ export function LoanSimulator() {
         </div>
 
         {/* Botón CTA */}
-        <button 
+        <button
           onClick={handleContinuar}
           disabled={isLoading}
           className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"

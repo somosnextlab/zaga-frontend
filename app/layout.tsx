@@ -59,26 +59,28 @@ export default async function RootLayout({
                 </span>
               </Link>
 
-              <div className="hidden md:flex items-center gap-8 text-sm">
-                <a
-                  href="#beneficios"
-                  className="text-[rgb(var(--color-foreground))] opacity-80 hover:opacity-100 hover:text-[rgb(var(--color-primary))] transition-colors"
-                >
-                  ¿Por qué elegir Zaga?
-                </a>
-                <a
-                  href="#como-funciona"
-                  className="text-[rgb(var(--color-foreground))] opacity-80 hover:opacity-100 hover:text-[rgb(var(--color-primary))] transition-colors"
-                >
-                  Cómo funciona
-                </a>
-                <a
-                  href="#faq"
-                  className="text-[rgb(var(--color-foreground))] opacity-80 hover:opacity-100 hover:text-[rgb(var(--color-primary))] transition-colors"
-                >
-                  Preguntas
-                </a>
-              </div>
+              {!user && (
+                <div className="hidden md:flex items-center gap-8 text-sm">
+                  <a
+                    href="#beneficios"
+                    className="text-[rgb(var(--color-foreground))] opacity-80 hover:opacity-100 hover:text-[rgb(var(--color-primary))] transition-colors"
+                  >
+                    ¿Por qué elegir Zaga?
+                  </a>
+                  <a
+                    href="#como-funciona"
+                    className="text-[rgb(var(--color-foreground))] opacity-80 hover:opacity-100 hover:text-[rgb(var(--color-primary))] transition-colors"
+                  >
+                    Cómo funciona
+                  </a>
+                  <a
+                    href="#faq"
+                    className="text-[rgb(var(--color-foreground))] opacity-80 hover:opacity-100 hover:text-[rgb(var(--color-primary))] transition-colors"
+                  >
+                    Preguntas
+                  </a>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-3">
@@ -120,8 +122,7 @@ export default async function RootLayout({
                   </form>
                 </>
               )}
-              
-              {/* Menú móvil */}
+
               <MobileMenu user={user} />
             </div>
           </nav>

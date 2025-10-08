@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { getUserRole, getDashboardRoute, isProtectedRoute, isAdminRoute } from './app/lib/utils/auth';
+import {
+  getUserRole,
+  getDashboardRoute,
+  isProtectedRoute,
+  isAdminRoute,
+} from './app/lib/utils/auth';
 import { ROUTES } from './app/lib/constants/routes';
-
 
 /**
  * Middleware de autenticación y autorización
@@ -25,7 +29,9 @@ export async function middleware(req: NextRequest) {
           return req.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value }) =>
+            req.cookies.set(name, value)
+          );
           response = NextResponse.next({
             request: {
               headers: req.headers,
@@ -39,7 +45,9 @@ export async function middleware(req: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { pathname } = req.nextUrl;
 
   // Redirigir usuarios no autenticados que intentan acceder a rutas protegidas
@@ -68,16 +76,20 @@ export async function middleware(req: NextRequest) {
 /**
  * Crea una respuesta de redirección con parámetros opcionales
  */
-function createRedirectResponse(req: NextRequest, pathname: string, searchParams?: Record<string, string>) {
+function createRedirectResponse(
+  req: NextRequest,
+  pathname: string,
+  searchParams?: Record<string, string>
+) {
   const url = req.nextUrl.clone();
   url.pathname = pathname;
-  
+
   if (searchParams) {
     Object.entries(searchParams).forEach(([key, value]) => {
       url.searchParams.set(key, value);
     });
   }
-  
+
   return NextResponse.redirect(url);
 }
 
