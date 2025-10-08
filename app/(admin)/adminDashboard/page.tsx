@@ -1,23 +1,49 @@
-  import { supabaseServer } from '@/app/lib/supabase/server';
-  import { getUserRole } from '@/app/lib/utils/auth';
+import { supabaseServer } from '@/app/lib/supabase/server';
+import { DashboardLayout } from '@/components/core/DashboardLayout';
+import { StatCard } from '@/components/core/StatCard';
+import { QuickActions } from '@/components/core/QuickActions';
 
-// Permitir que Next.js decida automáticamente el tipo de renderizado
 export const dynamic = 'auto';
 
 export default async function AdminDashboard() {
   const supabase = await supabaseServer();
-  const { data: { user } } = await supabase.auth.getUser();
-  const role = getUserRole(user);
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const stats = [
+    { title: 'Usuarios', value: '-', icon: 'U', iconBg: 'bg-blue-500' },
+    { title: 'Préstamos', value: '-', icon: 'P', iconBg: 'bg-green-500' },
+    { title: 'Activos', value: '-', icon: 'A', iconBg: 'bg-yellow-500' },
+    { title: 'Rechazados', value: '-', icon: 'R', iconBg: 'bg-red-500' },
+  ];
+
+  const actions = [
+    { title: 'Gestionar Usuarios', icon: '👥', iconBg: 'bg-blue-100' },
+    { title: 'Revisar Préstamos', icon: '💰', iconBg: 'bg-green-100' },
+    { title: 'Ver Reportes', icon: '📊', iconBg: 'bg-purple-100' },
+  ];
+
   return (
-    <section className="grid gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Panel Administrativo</h1>
-        <span className="text-sm text-muted-foreground">Rol: {role}</span>
+    <DashboardLayout
+      title="Panel Administrativo"
+      subtitle="Gestión completa del sistema Zaga"
+      userEmail={user?.email}
+      role="admin"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <StatCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            icon={stat.icon}
+            iconBg={stat.iconBg}
+          />
+        ))}
       </div>
-      <p className="text-muted-foreground">
-        Hola {user?.email}. Aquí verás métricas, solicitudes y gestión.
-      </p>
-    </section>
+
+      <QuickActions title="Acciones Rápidas" actions={actions} columns={3} />
+    </DashboardLayout>
   );
 }
