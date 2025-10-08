@@ -1,7 +1,6 @@
-import { User } from "@supabase/supabase-js";
-import { ROUTES } from "../constants/routes";
-import { UserRole } from "../types/auth";
-
+import { User } from '@supabase/supabase-js';
+import { ROUTES } from '../constants/routes';
+import { UserRole } from '../types/auth';
 
 /**
  * Obtiene el rol del usuario desde user_metadata
@@ -28,7 +27,11 @@ export const getDashboardRoute = (role: UserRole): string => {
  * @returns true si la ruta es protegida
  */
 export const isProtectedRoute = (pathname: string): boolean => {
-  return pathname.startsWith('/(private)') || pathname.startsWith('/(admin)');
+  return (
+    pathname === ROUTES.USER_DASHBOARD ||
+    pathname === ROUTES.ADMIN_DASHBOARD ||
+    pathname.startsWith('/prestamos')
+  );
 };
 
 /**
@@ -37,7 +40,7 @@ export const isProtectedRoute = (pathname: string): boolean => {
  * @returns true si la ruta es de admin
  */
 export const isAdminRoute = (pathname: string): boolean => {
-  return pathname.startsWith('/(admin)');
+  return pathname === ROUTES.ADMIN_DASHBOARD;
 };
 
 /**
@@ -46,5 +49,5 @@ export const isAdminRoute = (pathname: string): boolean => {
  * @returns true si la ruta es privada
  */
 export const isPrivateRoute = (pathname: string): boolean => {
-  return pathname.startsWith('/(private)');
+  return pathname === ROUTES.USER_DASHBOARD;
 };
