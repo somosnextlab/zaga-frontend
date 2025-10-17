@@ -25,7 +25,61 @@ function VerifyEmailContent() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        // Primero verificar si el usuario ya está autenticado
+        // Obtener parámetros de la URL
+        const verified = searchParams.get('verified');
+        const error = searchParams.get('error');
+        const token = searchParams.get('token');
+        const type = searchParams.get('type');
+        const token_hash = searchParams.get('token_hash');
+        const access_token = searchParams.get('access_token');
+        const refresh_token = searchParams.get('refresh_token');
+
+        console.log('URL params:', {
+          verified,
+          error,
+          token,
+          type,
+          token_hash,
+          access_token,
+          refresh_token,
+        });
+
+        // Si hay un error en la URL, mostrar error
+        if (error) {
+          setVerificationStatus('error');
+          setErrorMessage('Error en la verificación del email');
+          setIsVerifying(false);
+          return;
+        }
+
+        // Si viene del callback exitoso, verificar el estado del usuario
+        if (verified === 'true') {
+          const { supabaseClient } = await import('@/app/lib/supabase/client');
+          const supabase = supabaseClient();
+
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (user && user.email_confirmed_at) {
+            console.log('User verified successfully:', user);
+            setVerificationStatus('success');
+            setIsVerifying(false);
+
+            // Redirigir automáticamente al dashboard después de un breve delay
+            setTimeout(() => {
+              router.push('/userDashboard');
+            }, 2000);
+            return;
+          } else {
+            setVerificationStatus('error');
+            setErrorMessage('No se pudo verificar el email');
+            setIsVerifying(false);
+            return;
+          }
+        }
+
+        // Verificar si el usuario ya está autenticado
         const { supabaseClient } = await import('@/app/lib/supabase/client');
         const supabase = supabaseClient();
 
@@ -45,21 +99,6 @@ function VerifyEmailContent() {
           }, 2000);
           return;
         }
-
-        // Obtener parámetros de la URL
-        const token = searchParams.get('token');
-        const type = searchParams.get('type');
-        const token_hash = searchParams.get('token_hash');
-        const access_token = searchParams.get('access_token');
-        const refresh_token = searchParams.get('refresh_token');
-
-        console.log('URL params:', {
-          token,
-          type,
-          token_hash,
-          access_token,
-          refresh_token,
-        });
 
         // Si hay access_token y refresh_token, es una verificación exitosa
         if (access_token && refresh_token) {
