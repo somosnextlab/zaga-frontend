@@ -34,19 +34,6 @@ function VerifyEmailContent() {
         const access_token = searchParams.get('access_token');
         const refresh_token = searchParams.get('refresh_token');
 
-        // Debug: URL params (solo en desarrollo)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('URL params:', {
-            verified,
-            error,
-            token,
-            type,
-            token_hash,
-            access_token,
-            refresh_token,
-          });
-        }
-
         // Si hay un error en la URL, mostrar error
         if (error) {
           setVerificationStatus('error');
@@ -65,17 +52,13 @@ function VerifyEmailContent() {
           } = await supabase.auth.getUser();
 
           if (user && user.email_confirmed_at) {
-            // Debug: User verified (solo en desarrollo)
-            if (process.env.NODE_ENV === 'development') {
-              console.log('User verified successfully:', user);
-            }
             setVerificationStatus('success');
             setIsVerifying(false);
 
             // Redirigir automáticamente al dashboard después de un breve delay
             setTimeout(() => {
               router.push('/userDashboard');
-            }, 2000);
+            }, 1500);
             return;
           } else {
             setVerificationStatus('error');
@@ -95,17 +78,13 @@ function VerifyEmailContent() {
 
         // Si el usuario ya está autenticado y su email está verificado, mostrar éxito
         if (user && user.email_confirmed_at) {
-          // Debug: User already authenticated (solo en desarrollo)
-          if (process.env.NODE_ENV === 'development') {
-            console.log('User already authenticated and email verified:', user);
-          }
           setVerificationStatus('success');
           setIsVerifying(false);
 
           // Redirigir automáticamente al dashboard después de un breve delay
           setTimeout(() => {
             router.push('/userDashboard');
-          }, 2000);
+          }, 1500);
           return;
         }
 
