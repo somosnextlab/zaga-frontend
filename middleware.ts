@@ -55,8 +55,8 @@ export async function middleware(req: NextRequest) {
     return createRedirectResponse(req, ROUTES.LOGIN, { redirectTo: pathname });
   }
 
-  // Redirigir usuarios autenticados que intentan acceder al login
-  if (user && pathname === ROUTES.LOGIN) {
+  // Redirigir usuarios autenticados que intentan acceder al login o registro
+  if (user && (pathname === ROUTES.LOGIN || pathname === ROUTES.REGISTER)) {
     const role = getUserRole(user);
     const dashboardRoute = getDashboardRoute(role);
     return createRedirectResponse(req, dashboardRoute);

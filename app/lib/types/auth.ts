@@ -1,20 +1,152 @@
-export type UserRole = 'admin' | 'cliente';
+// ==================== TIPOS BASE ====================
 
+/**
+ * Roles válidos en el sistema
+ */
+export type UserRole = 'admin' | 'cliente' | 'usuario';
+
+/**
+ * Tipos de documento válidos
+ */
+export type DocumentType = 'DNI' | 'PASAPORTE' | 'CEDULA';
+
+/**
+ * Estados de autenticación
+ */
+export type AuthStatus =
+  | 'authenticated'
+  | 'unauthenticated'
+  | 'loading'
+  | 'initializing';
+
+// ==================== INTERFACES DE USUARIO ====================
+
+/**
+ * Metadatos del usuario almacenados en Supabase
+ */
+export interface UserMetadata {
+  role?: UserRole;
+  email_verified?: boolean;
+  backend_registered?: boolean;
+  profile_completed?: boolean;
+}
+
+/**
+ * Usuario de Supabase con metadatos extendidos
+ */
 export interface User {
   id: string;
   email?: string;
-  user_metadata?: {
-    role?: UserRole;
-    email_verified?: boolean;
-  };
+  email_confirmed_at?: string | null;
+  user_metadata?: UserMetadata;
 }
 
+/**
+ * Usuario autenticado con información de rol
+ */
 export interface AuthUser {
   user: User | null;
   role: UserRole | null;
 }
 
+// ==================== INTERFACES DE FORMULARIOS ====================
+
+/**
+ * Datos del formulario de login
+ */
 export interface LoginFormData {
   email: string;
   password: string;
 }
+
+/**
+ * Datos del formulario de registro
+ */
+export interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+/**
+ * Datos del formulario de perfil
+ */
+export interface ProfileFormData {
+  tipo_doc: DocumentType;
+  numero_doc: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+  fecha_nac: string;
+}
+
+// ==================== INTERFACES DE ESTADO ====================
+
+/**
+ * Estado completo de autenticación
+ */
+export interface AuthState {
+  user: User | null;
+  role: UserRole | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  isInitializing: boolean;
+  needsBackendRegistration: boolean;
+  needsProfileCompletion: boolean;
+}
+
+// ==================== INTERFACES DE RESPUESTAS ====================
+
+/**
+ * Respuesta base para operaciones de autenticación
+ */
+export interface AuthOperationResult {
+  success: boolean;
+  error?: string;
+  data?: unknown;
+}
+
+/**
+ * Respuesta del registro inicial en el backend
+ */
+export interface BackendRegistrationResponse {
+  success: boolean;
+  message: string;
+}
+
+/**
+ * Respuesta de la creación de perfil
+ */
+export interface ProfileCreationResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    persona_id: string;
+    cliente_id: string;
+  };
+}
+
+// ==================== TIPOS DE UTILIDAD ====================
+
+/**
+ * Configuración de roles para componentes
+ */
+export interface RoleConfig {
+  badgeClass: string;
+  badgeText: string;
+  welcomeMessage: string;
+}
+
+/**
+ * Props comunes para componentes de autenticación
+ */
+export interface AuthComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * Callback para operaciones de autenticación
+ */
+export type AuthCallback = (result: AuthOperationResult) => void;

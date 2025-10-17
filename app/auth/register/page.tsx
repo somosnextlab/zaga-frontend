@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/lib/hooks/useAuth';
-import { LoginFormData } from '@/app/lib/types/auth';
+import { RegisterFormData } from '@/app/lib/types/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,20 +14,22 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-interface LoginFormErrors {
+interface RegisterFormErrors {
   email?: string;
   password?: string;
+  confirmPassword?: string;
   general?: string;
 }
 
-export default function LoginPage() {
-  // const router = useRouter();
-  const { login, isLoading } = useAuth();
-  const [formData, setFormData] = useState<LoginFormData>({
+export default function RegisterPage() {
+  const router = useRouter();
+  const { register, isLoading } = useAuth();
+  const [formData, setFormData] = useState<RegisterFormData>({
     email: '',
     password: '',
+    confirmPassword: '',
   });
-  const [errors, setErrors] = useState<LoginFormErrors>({});
+  const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +39,7 @@ export default function LoginPage() {
       [name]: value,
     }));
 
-    if (errors[name as keyof LoginFormErrors]) {
+    if (errors[name as keyof RegisterFormErrors]) {
       setErrors(prev => ({
         ...prev,
         [name]: undefined,
@@ -46,7 +48,7 @@ export default function LoginPage() {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: LoginFormErrors = {};
+    const newErrors: RegisterFormErrors = {};
 
     if (!formData.email) {
       newErrors.email = 'El email es requerido';
@@ -56,8 +58,14 @@ export default function LoginPage() {
 
     if (!formData.password) {
       newErrors.password = 'La contraseña es requerida';
-    } else if (formData.password.length < 5) {
+    } else if (formData.password.length < 6) {
       newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Confirma tu contraseña';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
     }
 
     setErrors(newErrors);
@@ -75,15 +83,25 @@ export default function LoginPage() {
     setErrors({});
 
     try {
-      const result = await login(formData);
+      const result = await register(formData);
 
-      if (!result.success) {
+      if (result.success) {
+        if (result.error) {
+          // Mostrar mensaje de verificación de email
+          setErrors({
+            general: result.error,
+          });
+        } else {
+          // Redirigir al login
+          router.push('/auth/login');
+        }
+      } else {
         setErrors({
-          general: result.error || 'Error durante el inicio de sesión',
+          general: result.error || 'Error durante el registro',
         });
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Registration error:', error);
       setErrors({
         general: 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
       });
@@ -97,24 +115,30 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Iniciar Sesión
+            Crear Cuenta
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Accede a tu cuenta de Zaga
+            Regístrate en Zaga para comenzar
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Credenciales</CardTitle>
+            <CardTitle>Información de Registro</CardTitle>
             <CardDescription>
-              Ingresa tu email y contraseña para acceder
+              Completa los datos para crear tu cuenta
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {errors.general && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                <div
+                  className={`px-4 py-3 rounded-md ${
+                    errors.general.includes('verifica tu email')
+                      ? 'bg-blue-50 border border-blue-200 text-blue-700'
+                      : 'bg-red-50 border border-red-200 text-red-700'
+                  }`}
+                >
                   {errors.general}
                 </div>
               )}
@@ -153,7 +177,7 @@ export default function LoginPage() {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   value={formData.password}
                   onChange={handleInputChange}
@@ -165,16 +189,37 @@ export default function LoginPage() {
                 )}
               </div>
 
+              <div>
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Confirmar Contraseña
+                </label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={errors.confirmPassword ? 'border-red-500' : ''}
+                  placeholder="••••••••"
+                />
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+
               <Button
                 type="submit"
                 className="w-full"
                 disabled={isSubmitting || isLoading}
               >
-                {isSubmitting
-                  ? 'Iniciando sesión...'
-                  : isLoading
-                    ? 'Cargando...'
-                    : 'Iniciar Sesión'}
+                {isSubmitting ? 'Creando cuenta...' : 'Crear Cuenta'}
               </Button>
             </form>
           </CardContent>
@@ -182,12 +227,12 @@ export default function LoginPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            ¿No tienes una cuenta?{' '}
+            ¿Ya tienes una cuenta?{' '}
             <a
-              href="/auth/register"
+              href="/auth/login"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              Regístrate aquí
+              Inicia sesión
             </a>
           </p>
         </div>
