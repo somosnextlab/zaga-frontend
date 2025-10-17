@@ -25,7 +25,8 @@ export function MobileMenu({ user, role }: MobileMenuProps) {
 
   // Determinar si estamos en la landing page o en un dashboard
   const isLandingPage = pathname === '/';
-  const isDashboardPage = pathname === ROUTES.ADMIN_DASHBOARD || pathname === ROUTES.USER_DASHBOARD;
+  const isDashboardPage =
+    pathname === ROUTES.ADMIN_DASHBOARD || pathname === ROUTES.USER_DASHBOARD;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -97,14 +98,13 @@ export function MobileMenu({ user, role }: MobileMenuProps) {
                 >
                   Iniciar sesión
                 </Link>
-                <button
-                  className="w-full text-left px-4 py-3 text-[rgb(var(--color-foreground))] hover:bg-[rgb(var(--color-muted))] hover:text-[rgb(var(--color-primary))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled
-                  title="Próximamente"
+                <Link
+                  href={ROUTES.REGISTER || '/auth/register'}
+                  className="block px-4 py-3 text-[rgb(var(--color-foreground))] hover:bg-[rgb(var(--color-muted))] hover:text-[rgb(var(--color-primary))] transition-colors"
                   onClick={toggleMenu}
                 >
                   Crear cuenta
-                </button>
+                </Link>
               </>
             )}
             {user && (
