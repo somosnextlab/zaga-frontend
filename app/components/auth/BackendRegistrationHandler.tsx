@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../../lib/hooks/useAuth';
 import {
   Card,
@@ -22,9 +22,15 @@ export const BackendRegistrationHandler: React.FC<
   const { needsBackendRegistration, registerInBackend, isLoading } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState<string>('');
+  const hasAttemptedRegistration = useRef(false);
 
   const handleBackendRegistration = useCallback(async () => {
+    if (hasAttemptedRegistration.current) {
+      return; // Evitar múltiples intentos
+    }
+
     try {
+      hasAttemptedRegistration.current = true;
       setIsRegistering(true);
       setError('');
 
@@ -47,12 +53,17 @@ export const BackendRegistrationHandler: React.FC<
   }, [registerInBackend, onSuccess, onError]);
 
   useEffect(() => {
-    if (needsBackendRegistration && !isRegistering) {
+    if (
+      needsBackendRegistration &&
+      !isRegistering &&
+      !hasAttemptedRegistration.current
+    ) {
       handleBackendRegistration();
     }
   }, [needsBackendRegistration, isRegistering, handleBackendRegistration]);
 
   const handleRetry = () => {
+    hasAttemptedRegistration.current = false;
     handleBackendRegistration();
   };
 

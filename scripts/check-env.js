@@ -9,12 +9,10 @@ const requiredEnvVars = [
   'NEXT_PUBLIC_SUPABASE_URL',
   'NEXT_PUBLIC_SUPABASE_ANON_KEY',
   'NEXT_PUBLIC_SITE_URL',
-  'NEXT_PUBLIC_BACKEND_URL'
+  'NEXT_PUBLIC_BACKEND_URL',
 ];
 
-const optionalEnvVars = [
-  'NODE_ENV'
-];
+const optionalEnvVars = ['NODE_ENV'];
 
 console.log('🔍 Verificando configuración de variables de entorno...\n');
 
@@ -51,40 +49,59 @@ if (siteUrl) {
   if (siteUrl.startsWith('https://')) {
     console.log('✅ NEXT_PUBLIC_SITE_URL usa HTTPS (correcto para producción)');
   } else if (siteUrl.startsWith('http://localhost')) {
-    console.log('✅ NEXT_PUBLIC_SITE_URL usa localhost (correcto para desarrollo)');
+    console.log(
+      '✅ NEXT_PUBLIC_SITE_URL usa localhost (correcto para desarrollo)'
+    );
   } else {
     console.log('⚠️  NEXT_PUBLIC_SITE_URL no usa HTTPS ni localhost');
   }
 } else {
-  console.log('❌ NEXT_PUBLIC_SITE_URL no configurada - esto causará problemas de redirección');
+  console.log(
+    '❌ NEXT_PUBLIC_SITE_URL no configurada - esto causará problemas de redirección'
+  );
 }
 
 // Verificar URL del backend
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 if (backendUrl) {
   if (backendUrl.startsWith('https://')) {
-    console.log('✅ NEXT_PUBLIC_BACKEND_URL usa HTTPS (correcto para producción)');
+    console.log(
+      '✅ NEXT_PUBLIC_BACKEND_URL usa HTTPS (correcto para producción)'
+    );
   } else if (backendUrl.startsWith('http://localhost')) {
-    console.log('✅ NEXT_PUBLIC_BACKEND_URL usa localhost (correcto para desarrollo)');
+    console.log(
+      '✅ NEXT_PUBLIC_BACKEND_URL usa localhost (correcto para desarrollo)'
+    );
   } else {
     console.log('⚠️  NEXT_PUBLIC_BACKEND_URL no usa HTTPS ni localhost');
   }
-  
+
   // Verificar que no esté mezclando dominios
-  if (backendUrl.includes('zaga.com.ar') && !backendUrl.startsWith('https://zaga-backend')) {
-    console.log('❌ NEXT_PUBLIC_BACKEND_URL parece estar mezclando dominios incorrectamente');
+  if (
+    backendUrl.includes('zaga.com.ar') &&
+    !backendUrl.startsWith('https://zaga-backend')
+  ) {
+    console.log(
+      '❌ NEXT_PUBLIC_BACKEND_URL parece estar mezclando dominios incorrectamente'
+    );
   }
 } else {
-  console.log('❌ NEXT_PUBLIC_BACKEND_URL no configurada - esto causará errores 405 en el backend');
+  console.log(
+    '❌ NEXT_PUBLIC_BACKEND_URL no configurada - esto causará errores 405 en el backend'
+  );
 }
 
 // Verificar configuración de Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 if (supabaseUrl) {
   if (supabaseUrl.includes('supabase.co')) {
-    console.log('✅ NEXT_PUBLIC_SUPABASE_URL parece ser una URL válida de Supabase');
+    console.log(
+      '✅ NEXT_PUBLIC_SUPABASE_URL parece ser una URL válida de Supabase'
+    );
   } else {
-    console.log('⚠️  NEXT_PUBLIC_SUPABASE_URL no parece ser una URL de Supabase');
+    console.log(
+      '⚠️  NEXT_PUBLIC_SUPABASE_URL no parece ser una URL de Supabase'
+    );
   }
 }
 
@@ -94,12 +111,18 @@ if (hasErrors) {
   console.log('❌ Se encontraron errores en la configuración');
   console.log('\n💡 Solución:');
   console.log('1. Crear archivo .env.local con las variables requeridas');
-  console.log('2. Para producción, configurar NEXT_PUBLIC_SITE_URL=https://zaga.com.ar');
-  console.log('3. Verificar configuración en Supabase Dashboard > Authentication > URL Configuration');
+  console.log(
+    '2. Para producción, configurar NEXT_PUBLIC_SITE_URL=https://zaga.com.ar'
+  );
+  console.log(
+    '3. Verificar configuración en Supabase Dashboard > Authentication > URL Configuration'
+  );
   process.exit(1);
 } else {
   console.log('✅ Configuración correcta');
   console.log('\n💡 Para producción, asegúrate de que:');
   console.log('- NEXT_PUBLIC_SITE_URL=https://zaga.com.ar');
-  console.log('- Las URLs de redirección en Supabase estén configuradas correctamente');
+  console.log(
+    '- Las URLs de redirección en Supabase estén configuradas correctamente'
+  );
 }

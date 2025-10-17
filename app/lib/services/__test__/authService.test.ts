@@ -40,10 +40,12 @@ describe('AuthService - URL Configuration', () => {
 
     // Crear una nueva instancia para que tome la variable de entorno
     const newAuthService = new AuthService();
-    
+
     // Acceder al método privado usando reflection
-    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
-    
+    const getBaseUrl = (
+      newAuthService as unknown as { getBaseUrl: () => string }
+    ).getBaseUrl.bind(newAuthService);
+
     expect(getBaseUrl()).toBe('https://zaga.com.ar');
   });
 
@@ -56,8 +58,10 @@ describe('AuthService - URL Configuration', () => {
     delete (global as unknown as { window: unknown }).window;
 
     const newAuthService = new AuthService();
-    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
-    
+    const getBaseUrl = (
+      newAuthService as unknown as { getBaseUrl: () => string }
+    ).getBaseUrl.bind(newAuthService);
+
     expect(getBaseUrl()).toBe('http://localhost:3000');
 
     // Restaurar window
@@ -68,17 +72,19 @@ describe('AuthService - URL Configuration', () => {
     // Mock window para simular entorno de navegador
     const mockWindow = {
       location: {
-        origin: 'https://test.example.com'
-      }
+        origin: 'https://test.example.com',
+      },
     };
-    
+
     // Guardar window original
     const originalWindow = global.window;
     (global as unknown as { window: unknown }).window = mockWindow;
 
     const newAuthService = new AuthService();
-    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
-    
+    const getBaseUrl = (
+      newAuthService as unknown as { getBaseUrl: () => string }
+    ).getBaseUrl.bind(newAuthService);
+
     expect(getBaseUrl()).toBe('https://test.example.com');
 
     // Restaurar window original
@@ -92,17 +98,19 @@ describe('AuthService - URL Configuration', () => {
     // Mock window para simular entorno de navegador
     const mockWindow = {
       location: {
-        origin: 'https://test.example.com'
-      }
+        origin: 'https://test.example.com',
+      },
     };
-    
+
     // Guardar window original
     const originalWindow = global.window;
     (global as unknown as { window: unknown }).window = mockWindow;
 
     const newAuthService = new AuthService();
-    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
-    
+    const getBaseUrl = (
+      newAuthService as unknown as { getBaseUrl: () => string }
+    ).getBaseUrl.bind(newAuthService);
+
     // Debe priorizar la variable de entorno
     expect(getBaseUrl()).toBe('https://production.example.com');
 

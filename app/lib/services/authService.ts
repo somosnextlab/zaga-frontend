@@ -199,9 +199,8 @@ export class AuthService {
       }
 
       // Procesar respuesta exitosa
-      const result = await parseApiResponse<BackendRegistrationResponse>(
-        response
-      );
+      const result =
+        await parseApiResponse<BackendRegistrationResponse>(response);
 
       if (result.success) {
         console.log('Backend registration successful');
