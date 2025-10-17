@@ -42,7 +42,7 @@ describe('AuthService - URL Configuration', () => {
     const newAuthService = new AuthService();
     
     // Acceder al método privado usando reflection
-    const getBaseUrl = (newAuthService as any).getBaseUrl.bind(newAuthService);
+    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
     
     expect(getBaseUrl()).toBe('https://zaga.com.ar');
   });
@@ -53,10 +53,10 @@ describe('AuthService - URL Configuration', () => {
 
     // Mock window para simular entorno de servidor
     const originalWindow = global.window;
-    delete (global as any).window;
+    delete (global as unknown as { window: unknown }).window;
 
     const newAuthService = new AuthService();
-    const getBaseUrl = (newAuthService as any).getBaseUrl.bind(newAuthService);
+    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
     
     expect(getBaseUrl()).toBe('http://localhost:3000');
 
@@ -74,10 +74,10 @@ describe('AuthService - URL Configuration', () => {
     
     // Guardar window original
     const originalWindow = global.window;
-    (global as any).window = mockWindow;
+    (global as unknown as { window: unknown }).window = mockWindow;
 
     const newAuthService = new AuthService();
-    const getBaseUrl = (newAuthService as any).getBaseUrl.bind(newAuthService);
+    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
     
     expect(getBaseUrl()).toBe('https://test.example.com');
 
@@ -98,10 +98,10 @@ describe('AuthService - URL Configuration', () => {
     
     // Guardar window original
     const originalWindow = global.window;
-    (global as any).window = mockWindow;
+    (global as unknown as { window: unknown }).window = mockWindow;
 
     const newAuthService = new AuthService();
-    const getBaseUrl = (newAuthService as any).getBaseUrl.bind(newAuthService);
+    const getBaseUrl = (newAuthService as unknown as { getBaseUrl: () => string }).getBaseUrl.bind(newAuthService);
     
     // Debe priorizar la variable de entorno
     expect(getBaseUrl()).toBe('https://production.example.com');
