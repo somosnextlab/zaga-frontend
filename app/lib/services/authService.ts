@@ -266,8 +266,9 @@ export class AuthService {
       }
 
       // Procesar respuesta exitosa
-      const result =
-        await parseApiResponse<BackendRegistrationResponse>(response);
+      const result = await parseApiResponse<BackendRegistrationResponse>(
+        response
+      );
 
       if (result.success) {
         return { success: true };
@@ -280,16 +281,29 @@ export class AuthService {
         return { success: false, error: result.message };
       }
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      // Determinar si es un error que debe generar reintentos automáticos
+      const isRetryableError =
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('network') ||
+        errorMessage.includes('timeout') ||
+        errorMessage.includes('ECONNREFUSED') ||
+        errorMessage.includes('ENOTFOUND');
+
       const backendError = createAuthError('Error al registrar en el sistema', {
         userId: user.id,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
+        isRetryable: isRetryableError,
       });
       errorHandler.logError(backendError, 'AuthService.registerInBackend');
+
       return {
         success: false,
-        error: `Error al registrar en el sistema: ${
-          error instanceof Error ? error.message : 'Error desconocido'
-        }`,
+        error: isRetryableError
+          ? 'Error de conexión. Reintentando automáticamente...'
+          : `Error al registrar en el sistema: ${errorMessage}`,
       };
     }
   }
@@ -558,6 +572,9 @@ export class AuthService {
     const errorMessages: Record<number, string> = {
       401: 'Token de autorización inválido. Por favor, inicia sesión nuevamente.',
       500: 'Error del servidor. Por favor, inténtalo más tarde.',
+      502: 'Error del servidor. Por favor, inténtalo más tarde.',
+      503: 'Servicio temporalmente no disponible. Por favor, inténtalo más tarde.',
+      504: 'Timeout del servidor. Por favor, inténtalo más tarde.',
     };
 
     const errorMessage =
