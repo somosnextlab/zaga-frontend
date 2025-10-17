@@ -143,6 +143,7 @@ export const ConditionalAuthProvider: React.FC<
 
   // Memoizar el valor del contexto
   const contextValue = useMemo(() => {
+
     // Si necesitamos autenticación completa, usar el hook completo
     if (needsFullAuth) {
       return auth;
@@ -153,9 +154,15 @@ export const ConditionalAuthProvider: React.FC<
       return MINIMAL_AUTH_STATE;
     }
 
+    // Para la landing page, usar el estado de autenticación real si hay sesión activa
+    // Esto permite mostrar el botón "Ir a dashboard" cuando el usuario está autenticado
+    if (pathname === '/') {
+      return auth;
+    }
+
     // Para otras páginas públicas, usar estado básico
     return MINIMAL_AUTH_STATE;
-  }, [needsFullAuth, auth, isAuthPageRoute]);
+  }, [needsFullAuth, auth, isAuthPageRoute, pathname]);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
