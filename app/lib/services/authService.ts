@@ -393,7 +393,7 @@ export class AuthService {
         return this.createEmptyAuthState();
       }
 
-      const role = this.getUserRole(user);
+      const role = await this.getUserRole(user);
       const needsBackendRegistration = this.shouldRegisterInBackend(user, role);
       const needsProfileCompletion = !user.user_metadata?.profile_completed;
 
@@ -446,10 +446,43 @@ export class AuthService {
    * @param user - Usuario del cual obtener el rol
    * @returns Rol del usuario o null si no es válido
    */
-  private getUserRole(user: User): UserRole | null {
-    const role = user.app_metadata?.role;
+  private async getUserRole(user: User): Promise<UserRole | null> {
+    const supabaseRole = user.app_metadata?.role;
     const validRoles: UserRole[] = ['admin', 'cliente', 'usuario'];
-    return validRoles.includes(role as UserRole) ? (role as UserRole) : null;
+    
+    // Si es admin (asignado en Supabase), usar ese rol
+    if (supabaseRole === 'admin') {
+      console.log('getUserRole: Usuario admin detectado desde Supabase');
+      return 'admin';
+    }
+
+    // Para otros usuarios, consultar la base de datos
+    try {
+      const response = await fetch('/api/auth/user-role', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.error('Error obteniendo rol desde BD:', response.status);
+        return null;
+      }
+
+      const data = await response.json();
+      
+      if (data.success && validRoles.includes(data.role)) {
+        console.log('getUserRole: Rol obtenido desde BD:', data.role);
+        return data.role as UserRole;
+      }
+
+      console.warn('getUserRole: Rol no válido desde BD:', data.role);
+      return null;
+    } catch (error) {
+      console.error('Error consultando rol desde BD:', error);
+      return null;
+    }
   }
 
   /**
