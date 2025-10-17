@@ -15,12 +15,12 @@ const getSupabaseConfig = () => {
     if (typeof window === 'undefined') {
       // En el servidor durante build, retornamos valores dummy
       console.warn('Supabase environment variables not available during build');
-      return { 
-        url: 'https://dummy.supabase.co', 
-        anonKey: 'dummy-key' 
+      return {
+        url: 'https://dummy.supabase.co',
+        anonKey: 'dummy-key',
       };
     }
-    
+
     // En el cliente, lanzamos error si no están disponibles
     console.error('Missing Supabase environment variables:', {
       url: !!url,
