@@ -1,9 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/lib/hooks/useAuth';
+import { useAuthActions } from '@/app/lib/hooks/useAuthActions';
 import { LoginFormData } from '@/app/lib/types/auth';
+import {
+  validateEmail,
+  validatePassword,
+  sanitizeInput,
+} from '@/app/lib/utils/validation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,11 +22,11 @@ interface LoginFormErrors {
   email?: string;
   password?: string;
   general?: string;
+  rateLimit?: string;
 }
 
 export default function LoginPage() {
-  // const router = useRouter();
-  const { login, isLoading } = useAuth();
+  const { login } = useAuthActions();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -32,9 +36,11 @@ export default function LoginPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const sanitizedValue = sanitizeInput(value);
+
     setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: sanitizedValue,
     }));
 
     if (errors[name as keyof LoginFormErrors]) {
@@ -48,16 +54,16 @@ export default function LoginPage() {
   const validateForm = (): boolean => {
     const newErrors: LoginFormErrors = {};
 
-    if (!formData.email) {
-      newErrors.email = 'El email es requerido';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'El email no es válido';
+    // Validar email con validación robusta
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error;
     }
 
-    if (!formData.password) {
-      newErrors.password = 'La contraseña es requerida';
-    } else if (formData.password.length < 5) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    // Validar contraseña con validación robusta
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = passwordValidation.error;
     }
 
     setErrors(newErrors);
@@ -82,8 +88,7 @@ export default function LoginPage() {
           general: result.error || 'Error durante el inicio de sesión',
         });
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
       setErrors({
         general: 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
       });
@@ -116,6 +121,29 @@ export default function LoginPage() {
               {errors.general && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
                   {errors.general}
+                </div>
+              )}
+
+              {errors.rateLimit && (
+                <div className="bg-orange-50 border border-orange-200 text-orange-700 px-4 py-3 rounded-md">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="h-5 w-5 text-orange-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">{errors.rateLimit}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -165,16 +193,8 @@ export default function LoginPage() {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || isLoading}
-              >
-                {isSubmitting
-                  ? 'Iniciando sesión...'
-                  : isLoading
-                    ? 'Cargando...'
-                    : 'Iniciar Sesión'}
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Iniciando sesión...' : 'Iniciar Sesión'}
               </Button>
             </form>
           </CardContent>

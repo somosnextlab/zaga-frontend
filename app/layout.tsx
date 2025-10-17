@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from './components/auth/AuthProvider';
+import { ConditionalAuthProvider } from './components/auth/ConditionalAuthProvider';
 import { Header } from './components/auth/Header';
 
 const geistSans = Geist({
@@ -32,10 +32,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <AuthProvider>
+        <ConditionalAuthProvider>
           <Header />
           <main className="px-4">{children}</main>
-        </AuthProvider>
+        </ConditionalAuthProvider>
       </body>
     </html>
   );

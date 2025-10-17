@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/lib/hooks/useAuth';
+import { useAuthActions } from '@/app/lib/hooks/useAuthActions';
 import { RegisterFormData } from '@/app/lib/types/auth';
+import {
+  validateEmail,
+  validatePassword,
+  validatePasswordMatch,
+  sanitizeInput,
+} from '@/app/lib/utils/validation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -23,7 +29,7 @@ interface RegisterFormErrors {
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register, isLoading } = useAuth();
+  const { register } = useAuthActions();
   const [formData, setFormData] = useState<RegisterFormData>({
     email: '',
     password: '',
@@ -34,9 +40,11 @@ export default function RegisterPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const sanitizedValue = sanitizeInput(value);
+
     setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: sanitizedValue,
     }));
 
     if (errors[name as keyof RegisterFormErrors]) {
@@ -50,22 +58,25 @@ export default function RegisterPage() {
   const validateForm = (): boolean => {
     const newErrors: RegisterFormErrors = {};
 
-    if (!formData.email) {
-      newErrors.email = 'El email es requerido';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'El email no es válido';
+    // Validar email con validación robusta
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error;
     }
 
-    if (!formData.password) {
-      newErrors.password = 'La contraseña es requerida';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    // Validar contraseña con validación robusta
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = passwordValidation.error;
     }
 
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Confirma tu contraseña';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    // Validar coincidencia de contraseñas
+    const passwordMatchValidation = validatePasswordMatch(
+      formData.password,
+      formData.confirmPassword
+    );
+    if (!passwordMatchValidation.isValid) {
+      newErrors.confirmPassword = passwordMatchValidation.error;
     }
 
     setErrors(newErrors);
@@ -100,8 +111,7 @@ export default function RegisterPage() {
           general: result.error || 'Error durante el registro',
         });
       }
-    } catch (error) {
-      console.error('Registration error:', error);
+    } catch {
       setErrors({
         general: 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
       });
@@ -214,11 +224,7 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? 'Creando cuenta...' : 'Crear Cuenta'}
               </Button>
             </form>

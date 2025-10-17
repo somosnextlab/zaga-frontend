@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuthContext } from './AuthProvider';
+import { useAuthContext } from './ConditionalAuthProvider';
 import { ROUTES } from '../../lib/constants/routes';
 import { MobileMenu } from '../MobileMenu';
 

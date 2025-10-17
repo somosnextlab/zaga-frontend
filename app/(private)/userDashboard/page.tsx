@@ -4,7 +4,7 @@ import { DashboardLayout } from '@/components/core/DashboardLayout';
 import { StatCard } from '@/components/core/StatCard';
 import { QuickActions } from '@/components/core/QuickActions';
 import { AuthGuard } from '@/app/components/auth/AuthGuard';
-import { useAuthContext } from '@/app/components/auth/AuthProvider';
+import { useAuthContext } from '@/app/components/auth/ConditionalAuthProvider';
 
 export default function UserDashboard() {
   const { user, role } = useAuthContext();
