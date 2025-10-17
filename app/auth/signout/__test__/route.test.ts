@@ -1,11 +1,9 @@
 /**
  * @jest-environment node
  */
-import { NextRequest } from 'next/server';
-import { POST } from '../route';
 
 // Mock de Supabase
-const mockSignOut = jest.fn();
+const mockSignOut = jest.fn().mockResolvedValue({ error: null });
 jest.mock('@supabase/ssr', () => ({
   createServerClient: jest.fn(() => ({
     auth: {
@@ -23,6 +21,9 @@ jest.mock('next/headers', () => ({
   cookies: jest.fn(() => mockCookies),
 }));
 
+// import { NextRequest } from 'next/server';
+import { POST } from '../route';
+
 describe('API - Signout', () => {
   beforeEach(() => {
     mockSignOut.mockClear();
@@ -32,42 +33,28 @@ describe('API - Signout', () => {
 
   test('01 - should sign out user successfully', async () => {
     mockSignOut.mockResolvedValue({ error: null });
+    const response = await POST();
 
-    const request = new NextRequest('http://localhost:3000/auth/signout', {
-      method: 'POST',
-    });
-
-    const response = await POST(request);
-
-    expect(response.status).toBe(302);
+    expect(response.status).toBe(307);
     expect(mockSignOut).toHaveBeenCalledTimes(1);
   });
 
   test('02 - should redirect to home page after logout', async () => {
     mockSignOut.mockResolvedValue({ error: null });
-
-    const request = new NextRequest('http://localhost:3000/auth/signout', {
-      method: 'POST',
-    });
-
-    const response = await POST(request);
+    const response = await POST();
     const location = response.headers.get('location');
 
-    expect(response.status).toBe(302);
+    expect(response.status).toBe(307);
     expect(location).toContain('/');
   });
 
   test('03 - should handle logout errors gracefully', async () => {
     mockSignOut.mockRejectedValue(new Error('Logout failed'));
 
-    const request = new NextRequest('http://localhost:3000/auth/signout', {
-      method: 'POST',
-    });
-
-    const response = await POST(request);
+    const response = await POST();
     const location = response.headers.get('location');
 
-    expect(response.status).toBe(302);
+    expect(response.status).toBe(307);
     expect(location).toContain('/auth/login');
   });
 
@@ -75,20 +62,17 @@ describe('API - Signout', () => {
     mockSignOut.mockResolvedValue({ error: null });
 
     // Simular entorno de producción
-    const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'production';
+    const originalSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-    const request = new NextRequest('http://localhost:3000/auth/signout', {
-      method: 'POST',
-    });
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://zaga.com.ar';
 
-    const response = await POST(request);
+    const response = await POST();
     const location = response.headers.get('location');
 
-    expect(response.status).toBe(302);
+    expect(response.status).toBe(307);
     expect(location).toContain('https://zaga.com.ar');
 
     // Restaurar entorno original
-    process.env.NODE_ENV = originalEnv;
+    process.env.NEXT_PUBLIC_SITE_URL = originalSiteUrl;
   });
 });

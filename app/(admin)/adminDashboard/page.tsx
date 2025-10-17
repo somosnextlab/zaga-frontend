@@ -1,15 +1,13 @@
-import { supabaseServer } from '@/app/lib/supabase/server';
+'use client';
+
 import { DashboardLayout } from '@/components/core/DashboardLayout';
 import { StatCard } from '@/components/core/StatCard';
 import { QuickActions } from '@/components/core/QuickActions';
+import { AuthGuard } from '@/app/components/auth/AuthGuard';
+import { useAuthContext } from '@/app/components/auth/AuthProvider';
 
-export const dynamic = 'auto';
-
-export default async function AdminDashboard() {
-  const supabase = await supabaseServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default function AdminDashboard() {
+  const { user } = useAuthContext();
 
   const stats = [
     { title: 'Usuarios', value: '-', icon: 'U', iconBg: 'bg-blue-500' },
@@ -25,25 +23,27 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <DashboardLayout
-      title="Panel Administrativo"
-      subtitle="Gestión completa del sistema Zaga"
-      userEmail={user?.email}
-      role="admin"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <StatCard
-            key={index}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-            iconBg={stat.iconBg}
-          />
-        ))}
-      </div>
+    <AuthGuard requireAuth={true} requireRole="admin">
+      <DashboardLayout
+        title="Panel Administrativo"
+        subtitle="Gestión completa del sistema Zaga"
+        userEmail={user?.email}
+        role="admin"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((stat, index) => (
+            <StatCard
+              key={index}
+              title={stat.title}
+              value={stat.value}
+              icon={stat.icon}
+              iconBg={stat.iconBg}
+            />
+          ))}
+        </div>
 
-      <QuickActions title="Acciones Rápidas" actions={actions} columns={3} />
-    </DashboardLayout>
+        <QuickActions title="Acciones Rápidas" actions={actions} columns={3} />
+      </DashboardLayout>
+    </AuthGuard>
   );
 }

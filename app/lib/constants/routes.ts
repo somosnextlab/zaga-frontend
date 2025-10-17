@@ -2,6 +2,8 @@ export const ROUTES = {
   // Públicas
   HOME: '/',
   LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
+  VERIFY_EMAIL: '/auth/verify-email',
 
   // Dashboards
   USER_DASHBOARD: '/userDashboard',
