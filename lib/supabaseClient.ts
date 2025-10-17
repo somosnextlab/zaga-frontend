@@ -44,9 +44,9 @@ export const getCurrentUser = async () => {
 };
 
 /**
- * Obtiene el rol del usuario desde user_metadata
+ * Obtiene el rol del usuario desde app_metadata
  */
 export const getUserRole = async (): Promise<string | null> => {
   const user = await getCurrentUser();
-  return user?.user_metadata?.role || null;
+  return user?.app_metadata?.role || null;
 };

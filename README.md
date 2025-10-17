@@ -94,7 +94,7 @@ npm start
 
 1. **Login:** Usuario ingresa credenciales en `/auth/login`
 2. **Verificación:** Supabase valida las credenciales
-3. **Redirección:** Según el rol (`user_metadata.role`):
+3. **Redirección:** Según el rol (`app_metadata.role`):
    - Admin → `/adminDashboard`
    - Cliente → `/userDashboard`
 4. **JWT:** Token incluido automáticamente en todas las requests al backend

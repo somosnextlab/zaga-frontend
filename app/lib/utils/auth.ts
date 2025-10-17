@@ -3,12 +3,12 @@ import { ROUTES } from '../constants/routes';
 import { UserRole } from '../types/auth';
 
 /**
- * Obtiene el rol del usuario desde user_metadata
+ * Obtiene el rol del usuario desde app_metadata
  * @param user - Usuario de Supabase o null
  * @returns Rol del usuario ('admin' o 'cliente')
  */
 export const getUserRole = (user: User | null): UserRole => {
-  const role = user?.user_metadata?.role;
+  const role = user?.app_metadata?.role;
   return role === 'admin' ? 'admin' : 'cliente';
 };
 

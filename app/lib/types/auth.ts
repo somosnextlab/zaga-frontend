@@ -32,20 +32,10 @@ export interface UserMetadata {
 }
 
 /**
- * Usuario de Supabase con metadatos extendidos
- */
-export interface User {
-  id: string;
-  email?: string;
-  email_confirmed_at?: string | null;
-  user_metadata?: UserMetadata;
-}
-
-/**
  * Usuario autenticado con información de rol
  */
 export interface AuthUser {
-  user: User | null;
+  user: import('@supabase/supabase-js').User | null;
   role: UserRole | null;
 }
 
@@ -87,7 +77,7 @@ export interface ProfileFormData {
  * Estado completo de autenticación
  */
 export interface AuthState {
-  user: User | null;
+  user: import('@supabase/supabase-js').User | null;
   role: UserRole | null;
   isAuthenticated: boolean;
   isLoading: boolean;

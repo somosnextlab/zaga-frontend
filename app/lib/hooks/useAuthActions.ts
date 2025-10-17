@@ -3,11 +3,11 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '../services/authService';
+import { User } from '@supabase/supabase-js';
 import {
   LoginFormData,
   RegisterFormData,
   ProfileFormData,
-  User,
 } from '../types/auth';
 import { ROUTES } from '../constants/routes';
 import { errorHandler, createAuthError } from '../utils/errorHandler';
@@ -65,7 +65,7 @@ export const useAuthActions = () => {
 
         if (result.success && result.user) {
           // Obtener el rol del usuario para redirección
-          const role = result.user.user_metadata?.role;
+          const role = result.user.app_metadata?.role;
           const redirectRoute =
             role === 'admin' ? ROUTES.ADMIN_DASHBOARD : ROUTES.USER_DASHBOARD;
           router.push(redirectRoute);

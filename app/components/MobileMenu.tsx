@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { ROUTES } from '../lib/constants/routes';
-import { User } from '../lib/types/auth';
+import { User } from '@supabase/supabase-js';
 
 interface MobileMenuProps {
   user?: User | null;
