@@ -22,6 +22,7 @@ import {
   validatePassword,
   sanitizeInput,
 } from '../utils/validation';
+import { sessionService } from './sessionService';
 
 /**
  * Interfaz para respuestas de autenticación
@@ -48,6 +49,11 @@ interface BackendResult {
  */
 export class AuthService {
   private readonly supabase = supabaseClient();
+
+  constructor() {
+    // Configurar limpieza automática de sesión
+    sessionService.setupSessionCleanup();
+  }
 
   /**
    * Obtiene la URL base para redirecciones
@@ -207,6 +213,9 @@ export class AuthService {
         return this.createErrorResult(emailValidation.error!);
       }
 
+      // Persistir tokens de sesión
+      this.persistSessionTokens(data.session);
+
       // Manejar registro en backend si es necesario
       const backendResult = await this.handleBackendRegistration(data.user);
       if (!backendResult.success) {
@@ -344,9 +353,22 @@ export class AuthService {
         return null;
       }
 
+      // Primero intentar recuperar de la sesión persistente
+      const persistedUser = this.getPersistedUser();
+      if (persistedUser && sessionService.isSessionValid()) {
+        return persistedUser;
+      }
+
+      // Si no hay sesión persistente válida, obtener de Supabase
       const {
         data: { user },
       } = await this.supabase.auth.getUser();
+      
+      // Si hay usuario, persistir la sesión
+      if (user) {
+        this.persistUserData(user);
+      }
+      
       return user;
     } catch (error) {
       console.error('Get current user error:', error);
@@ -408,6 +430,9 @@ export class AuthService {
       if (error) {
         return this.createErrorResult(error.message);
       }
+
+      // Limpiar datos de sesión persistente
+      sessionService.clearSession();
 
       return { success: true };
     } catch (error) {
@@ -582,6 +607,156 @@ export class AuthService {
       `Error del servidor (${response.status}): ${errorText}`;
 
     return { success: false, error: errorMessage };
+  }
+
+  // ==================== MÉTODOS DE PERSISTENCIA DE SESIÓN ====================
+
+  /**
+   * Persiste los tokens de sesión en el almacenamiento local
+   * @param session - Sesión de Supabase con tokens
+   */
+  private persistSessionTokens(session: { access_token: string; refresh_token: string; expires_in?: number }): void {
+    if (!session?.access_token || !session?.refresh_token) {
+      console.warn('No se pueden persistir tokens: sesión inválida');
+      return;
+    }
+
+    try {
+      // Calcular tiempo de expiración (Supabase usa 3600 segundos por defecto)
+      const expiresIn = session.expires_in || 3600;
+      
+      // Persistir access token en localStorage
+      sessionService.setAccessToken(session.access_token, expiresIn);
+      
+      // Persistir refresh token en httpOnly cookie
+      sessionService.setRefreshToken(session.refresh_token, 2592000); // 30 días
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Tokens de sesión persistidos correctamente');
+      }
+    } catch (error) {
+      console.error('Error al persistir tokens de sesión:', error);
+    }
+  }
+
+  /**
+   * Persiste los datos del usuario en el almacenamiento local
+   * @param user - Usuario a persistir
+   */
+  private persistUserData(user: User): void {
+    try {
+      const userData = {
+        id: user.id,
+        email: user.email,
+        role: user.app_metadata?.role,
+        email_verified: user.email_confirmed_at ? true : false,
+        backend_registered: user.user_metadata?.backend_registered || false,
+        profile_completed: user.user_metadata?.profile_completed || false,
+        last_sign_in: user.last_sign_in_at,
+        created_at: user.created_at,
+      };
+
+      sessionService.setUserData(userData);
+    } catch (error) {
+      console.error('Error al persistir datos del usuario:', error);
+    }
+  }
+
+  /**
+   * Obtiene el usuario persistido del almacenamiento local
+   * @returns Usuario persistido o null si no existe
+   */
+  private getPersistedUser(): User | null {
+    try {
+      const userData = sessionService.getUserData();
+      if (!userData) return null;
+
+      // Reconstruir objeto User básico para compatibilidad
+      const user: Partial<User> = {
+        id: userData.id as string,
+        email: userData.email as string,
+        app_metadata: {
+          role: userData.role as string,
+        },
+        user_metadata: {
+          backend_registered: userData.backend_registered as boolean,
+          profile_completed: userData.profile_completed as boolean,
+        },
+        email_confirmed_at: userData.email_verified ? new Date().toISOString() : undefined,
+        last_sign_in_at: userData.last_sign_in as string,
+        created_at: userData.created_at as string,
+      };
+
+      return user as User;
+    } catch (error) {
+      console.error('Error al obtener usuario persistido:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Intenta renovar la sesión usando el refresh token
+   * @returns Promise con el resultado de la renovación
+   */
+  async refreshSession(): Promise<{ success: boolean; error?: string }> {
+    try {
+      const refreshToken = sessionService.getRefreshToken();
+      if (!refreshToken) {
+        return this.createErrorResult('No hay refresh token disponible');
+      }
+
+      const { data, error } = await this.supabase.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+
+      if (error) {
+        // Si el refresh token es inválido, limpiar la sesión
+        sessionService.clearSession();
+        return this.createErrorResult('Sesión expirada. Por favor, inicia sesión nuevamente');
+      }
+
+      if (data.session) {
+        // Persistir nuevos tokens
+        this.persistSessionTokens(data.session);
+        
+        // Actualizar datos del usuario si hay cambios
+        if (data.user) {
+          this.persistUserData(data.user);
+        }
+
+        return { success: true };
+      }
+
+      return this.createErrorResult('No se pudo renovar la sesión');
+    } catch (error) {
+      console.error('Error al renovar sesión:', error);
+      sessionService.clearSession();
+      return this.createErrorResult('Error al renovar la sesión');
+    }
+  }
+
+  /**
+   * Verifica si la sesión actual es válida y la renueva si es necesario
+   * @returns Promise con el estado de la sesión
+   */
+  async validateAndRefreshSession(): Promise<{ isValid: boolean; needsRefresh: boolean }> {
+    try {
+      // Verificar si la sesión actual es válida
+      if (sessionService.isSessionValid()) {
+        return { isValid: true, needsRefresh: false };
+      }
+
+      // Intentar renovar la sesión
+      const refreshResult = await this.refreshSession();
+      if (refreshResult.success) {
+        return { isValid: true, needsRefresh: true };
+      }
+
+      return { isValid: false, needsRefresh: false };
+    } catch (error) {
+      console.error('Error al validar sesión:', error);
+      return { isValid: false, needsRefresh: false };
+    }
   }
 }
 

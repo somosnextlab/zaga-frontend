@@ -106,14 +106,24 @@ export const useAuth = () => {
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
           () => reject(new Error('Auth initialization timeout')),
-          3000
+          5000 // Aumentar timeout para permitir renovación de sesión
         );
       });
 
-      const statePromise = authService.getAuthState();
-      const state = await Promise.race([statePromise, timeoutPromise]);
-
-      updateAuthState({ ...state, isInitializing: false, isLoading: false });
+      // Primero intentar validar y renovar la sesión persistente
+      const sessionValidation = await authService.validateAndRefreshSession();
+      
+      if (sessionValidation.isValid) {
+        // Si la sesión es válida, obtener el estado actualizado
+        const statePromise = authService.getAuthState();
+        const state = await Promise.race([statePromise, timeoutPromise]);
+        updateAuthState({ ...state, isInitializing: false, isLoading: false });
+      } else {
+        // Si no hay sesión válida, obtener estado vacío
+        const statePromise = authService.getAuthState();
+        const state = await Promise.race([statePromise, timeoutPromise]);
+        updateAuthState({ ...state, isInitializing: false, isLoading: false });
+      }
     } catch (error) {
       const authError = createAuthError(
         'Error durante la inicialización de autenticación',
@@ -287,6 +297,30 @@ export const useAuth = () => {
     [updateAuthState]
   );
 
+  /**
+   * Renueva la sesión del usuario
+   * @returns Promise con el resultado de la renovación
+   */
+  const refreshSession = useCallback(async (): Promise<AuthOperationResult> => {
+    try {
+      updateAuthState({ isLoading: true });
+
+      const result = await authService.refreshSession();
+
+      if (result.success) {
+        const newState = await authService.getAuthState();
+        updateAuthState({ ...newState, isLoading: false });
+        return { success: true };
+      } else {
+        updateAuthState({ isLoading: false });
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      updateAuthState({ isLoading: false });
+      return handleAuthError(error, 'la renovación de sesión');
+    }
+  }, [updateAuthState, handleAuthError]);
+
   // ==================== EFECTOS ====================
 
   // Inicializar autenticación al montar el componente
@@ -309,6 +343,30 @@ export const useAuth = () => {
 
     return () => subscription.unsubscribe();
   }, [updateAuthState, resetAuthState]);
+
+  // Renovar sesión automáticamente antes de que expire
+  useEffect(() => {
+    const setupSessionRefresh = () => {
+      const checkAndRefreshSession = async () => {
+        try {
+          const sessionValidation = await authService.validateAndRefreshSession();
+          if (sessionValidation.needsRefresh) {
+            console.log('Sesión renovada automáticamente');
+          }
+        } catch (error) {
+          console.error('Error en renovación automática de sesión:', error);
+        }
+      };
+
+      // Verificar cada 5 minutos
+      const interval = setInterval(checkAndRefreshSession, 5 * 60 * 1000);
+      
+      return () => clearInterval(interval);
+    };
+
+    const cleanup = setupSessionRefresh();
+    return cleanup;
+  }, []);
 
   // ==================== VALORES MEMOIZADOS ====================
 
@@ -343,6 +401,7 @@ export const useAuth = () => {
       createProfile,
       signOut,
       updateUserMetadata,
+      refreshSession,
     }),
     [
       authState,
@@ -353,6 +412,7 @@ export const useAuth = () => {
       createProfile,
       signOut,
       updateUserMetadata,
+      refreshSession,
     ]
   );
 
