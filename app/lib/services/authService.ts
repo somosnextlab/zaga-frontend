@@ -44,11 +44,18 @@ export class AuthService {
    * @returns URL base del sitio
    */
   private getBaseUrl(): string {
+    // Priorizar la variable de entorno para producción
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+      return process.env.NEXT_PUBLIC_SITE_URL;
+    }
+    
+    // En el cliente, usar la URL actual
     if (typeof window !== 'undefined') {
       return window.location.origin;
     }
-    // Fallback para testing o SSR
-    return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    
+    // Fallback para desarrollo local
+    return 'http://localhost:3000';
   }
 
   /**

@@ -32,22 +32,14 @@ export async function POST() {
     await supabase.auth.signOut();
 
     // Obtener la URL base del request para redireccionar correctamente
-    const origin =
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.NODE_ENV === 'production'
-        ? 'https://zaga.com.ar'
-        : 'http://localhost:3000');
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://zaga.com.ar';
 
     return NextResponse.redirect(new URL('/', origin));
   } catch (error) {
     console.error('Error during logout:', error);
 
     // En caso de error, redirigir a la página de login
-    const origin =
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.NODE_ENV === 'production'
-        ? 'https://zaga.com.ar'
-        : 'http://localhost:3000');
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://zaga.com.ar';
 
     return NextResponse.redirect(new URL('/auth/login', origin));
   }
