@@ -77,8 +77,8 @@ const AUTH_PAGES = [
  * Determina si la ruta actual requiere autenticación completa
  */
 const requiresFullAuth = (pathname: string): boolean => {
-  return AUTH_REQUIRED_ROUTES.some(route => 
-    pathname === route || pathname.startsWith(route)
+  return AUTH_REQUIRED_ROUTES.some(
+    route => pathname === route || pathname.startsWith(route)
   );
 };
 
@@ -86,8 +86,8 @@ const requiresFullAuth = (pathname: string): boolean => {
  * Determina si la ruta actual es una página de autenticación
  */
 const isAuthPage = (pathname: string): boolean => {
-  return AUTH_PAGES.some(route => 
-    pathname === route || pathname.startsWith(route)
+  return AUTH_PAGES.some(
+    route => pathname === route || pathname.startsWith(route)
   );
 };
 
@@ -107,8 +107,14 @@ const MINIMAL_AUTH_STATE: AuthContextType = {
   // Operaciones básicas (solo las necesarias para login/register)
   login: async () => ({ success: false, error: 'Auth not initialized' }),
   register: async () => ({ success: false, error: 'Auth not initialized' }),
-  registerInBackend: async () => ({ success: false, error: 'Auth not initialized' }),
-  createProfile: async () => ({ success: false, error: 'Auth not initialized' }),
+  registerInBackend: async () => ({
+    success: false,
+    error: 'Auth not initialized',
+  }),
+  createProfile: async () => ({
+    success: false,
+    error: 'Auth not initialized',
+  }),
   signOut: async () => ({ success: false, error: 'Auth not initialized' }),
   updateUserMetadata: async () => {},
 
@@ -123,38 +129,36 @@ const MINIMAL_AUTH_STATE: AuthContextType = {
  * Proveedor de contexto de autenticación condicional
  * Solo inicializa la autenticación completa cuando es necesario
  */
-export const ConditionalAuthProvider: React.FC<ConditionalAuthProviderProps> = ({ 
-  children 
-}) => {
+export const ConditionalAuthProvider: React.FC<
+  ConditionalAuthProviderProps
+> = ({ children }) => {
   const pathname = usePathname();
-  
+
   // Determinar si necesitamos autenticación completa
   const needsFullAuth = requiresFullAuth(pathname);
   const isAuthPageRoute = isAuthPage(pathname);
-  
-  // Solo usar el hook useAuth en páginas que lo requieren
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const auth = needsFullAuth ? useAuth() : null;
+
+  // Siempre llamar useAuth, pero solo usar su valor cuando sea necesario
+  const auth = useAuth();
 
   // Memoizar el valor del contexto
   const contextValue = useMemo(() => {
-    if (needsFullAuth && auth) {
+    // Si necesitamos autenticación completa, usar el hook completo
+    if (needsFullAuth) {
       return auth;
     }
-    
+
     // Para páginas de auth, usar estado mínimo
     if (isAuthPageRoute) {
       return MINIMAL_AUTH_STATE;
     }
-    
+
     // Para otras páginas públicas, usar estado básico
     return MINIMAL_AUTH_STATE;
   }, [needsFullAuth, auth, isAuthPageRoute]);
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
