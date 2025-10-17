@@ -27,6 +27,8 @@ const ALLOWED_EMAIL_DOMAINS = [
   'hey.com',
   'pm.me',
   'proton.me',
+  'zaga.com',
+  'zaga.com.ar',
 ];
 
 /**

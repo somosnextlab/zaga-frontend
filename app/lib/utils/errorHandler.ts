@@ -12,7 +12,7 @@ export enum ErrorType {
   AUTHORIZATION = 'AUTHORIZATION',
   NETWORK = 'NETWORK',
   SERVER = 'SERVER',
-  UNKNOWN = 'UNKNOWN'
+  UNKNOWN = 'UNKNOWN',
 }
 
 /**
@@ -22,7 +22,7 @@ export enum ErrorSeverity {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
+  CRITICAL = 'CRITICAL',
 }
 
 /**
@@ -53,7 +53,7 @@ const DEFAULT_LOG_CONFIG: LogConfig = {
   enableConsole: process.env.NODE_ENV === 'development',
   enableRemoteLogging: process.env.NODE_ENV === 'production',
   logLevel: ErrorSeverity.LOW,
-  sanitizeData: true
+  sanitizeData: true,
 };
 
 /**
@@ -125,12 +125,10 @@ export class ErrorHandler {
     statusCode?: number,
     url?: string
   ): AppError {
-    return this.createError(
-      ErrorType.NETWORK,
-      message,
-      ErrorSeverity.MEDIUM,
-      { statusCode, url: this.sanitizeUrl(url) }
-    );
+    return this.createError(ErrorType.NETWORK, message, ErrorSeverity.MEDIUM, {
+      statusCode,
+      url: this.sanitizeUrl(url),
+    });
   }
 
   /**
@@ -141,12 +139,10 @@ export class ErrorHandler {
     statusCode?: number,
     details?: Record<string, unknown>
   ): AppError {
-    return this.createError(
-      ErrorType.SERVER,
-      message,
-      ErrorSeverity.HIGH,
-      { statusCode, ...this.sanitizeDetails(details) }
-    );
+    return this.createError(ErrorType.SERVER, message, ErrorSeverity.HIGH, {
+      statusCode,
+      ...this.sanitizeDetails(details),
+    });
   }
 
   /**
@@ -155,7 +151,7 @@ export class ErrorHandler {
   logError(error: AppError, context?: string): void {
     if (this.shouldLog(error)) {
       const logData = this.prepareLogData(error, context);
-      
+
       if (this.config.enableConsole) {
         this.logToConsole(error, logData);
       }
@@ -170,15 +166,10 @@ export class ErrorHandler {
    * Convierte un error de JavaScript a AppError
    */
   fromJSError(error: Error, type: ErrorType = ErrorType.UNKNOWN): AppError {
-    return this.createError(
-      type,
-      error.message,
-      ErrorSeverity.MEDIUM,
-      { 
-        stack: error.stack,
-        name: error.name 
-      }
-    );
+    return this.createError(type, error.message, ErrorSeverity.MEDIUM, {
+      stack: error.stack,
+      name: error.name,
+    });
   }
 
   /**
@@ -187,11 +178,12 @@ export class ErrorHandler {
   getUserMessage(error: AppError): string {
     const userMessages: Record<ErrorType, string> = {
       [ErrorType.VALIDATION]: 'Por favor, revisa los datos ingresados',
-      [ErrorType.AUTHENTICATION]: 'Error de autenticación. Verifica tus credenciales',
+      [ErrorType.AUTHENTICATION]:
+        'Error de autenticación. Verifica tus credenciales',
       [ErrorType.AUTHORIZATION]: 'No tienes permisos para realizar esta acción',
       [ErrorType.NETWORK]: 'Error de conexión. Inténtalo más tarde',
       [ErrorType.SERVER]: 'Error del servidor. Inténtalo más tarde',
-      [ErrorType.UNKNOWN]: 'Ocurrió un error inesperado'
+      [ErrorType.UNKNOWN]: 'Ocurrió un error inesperado',
     };
 
     return userMessages[error.type] || userMessages[ErrorType.UNKNOWN];
@@ -205,16 +197,21 @@ export class ErrorHandler {
       [ErrorSeverity.LOW]: 1,
       [ErrorSeverity.MEDIUM]: 2,
       [ErrorSeverity.HIGH]: 3,
-      [ErrorSeverity.CRITICAL]: 4
+      [ErrorSeverity.CRITICAL]: 4,
     };
 
-    return severityLevels[error.severity] >= severityLevels[this.config.logLevel];
+    return (
+      severityLevels[error.severity] >= severityLevels[this.config.logLevel]
+    );
   }
 
   /**
    * Prepara los datos para logging
    */
-  private prepareLogData(error: AppError, context?: string): Record<string, unknown> {
+  private prepareLogData(
+    error: AppError,
+    context?: string
+  ): Record<string, unknown> {
     return {
       type: error.type,
       severity: error.severity,
@@ -222,16 +219,19 @@ export class ErrorHandler {
       code: error.code,
       timestamp: error.timestamp.toISOString(),
       context,
-      ...(error.details && { details: error.details })
+      ...(error.details && { details: error.details }),
     };
   }
 
   /**
    * Registra en consola de forma segura
    */
-  private logToConsole(error: AppError, logData: Record<string, unknown>): void {
+  private logToConsole(
+    error: AppError,
+    logData: Record<string, unknown>
+  ): void {
     const logMethod = this.getConsoleMethod(error.severity);
-    
+
     if (error.severity === ErrorSeverity.CRITICAL) {
       logMethod('🚨 CRITICAL ERROR:', logData);
     } else {
@@ -264,20 +264,25 @@ export class ErrorHandler {
     // Por ahora solo simulamos el envío
     if (process.env.NODE_ENV === 'production') {
       // Simular envío a servicio de logging
-      console.log('📤 Remote logging:', { errorId: error.timestamp.getTime(), ...logData });
+      console.log('📤 Remote logging:', {
+        errorId: error.timestamp.getTime(),
+        ...logData,
+      });
     }
   }
 
   /**
    * Sanitiza detalles para evitar información sensible
    */
-  private sanitizeDetails(details?: Record<string, unknown>): Record<string, unknown> | undefined {
+  private sanitizeDetails(
+    details?: Record<string, unknown>
+  ): Record<string, unknown> | undefined {
     if (!details || !this.config.sanitizeData) {
       return details;
     }
 
     const sanitized: Record<string, unknown> = {};
-    
+
     for (const [key, value] of Object.entries(details)) {
       // No incluir información sensible
       if (this.isSensitiveKey(key)) {
@@ -295,14 +300,23 @@ export class ErrorHandler {
    */
   private isSensitiveKey(key: string): boolean {
     const sensitiveKeys = [
-      'password', 'pass', 'pwd',
-      'token', 'secret', 'key',
-      'auth', 'credential',
-      'email', 'phone', 'ssn',
-      'credit', 'card', 'bank'
+      'password',
+      'pass',
+      'pwd',
+      'token',
+      'secret',
+      'key',
+      'auth',
+      'credential',
+      'email',
+      'phone',
+      'ssn',
+      'credit',
+      'card',
+      'bank',
     ];
 
-    return sensitiveKeys.some(sensitive => 
+    return sensitiveKeys.some(sensitive =>
       key.toLowerCase().includes(sensitive)
     );
   }
@@ -315,7 +329,7 @@ export class ErrorHandler {
       // Truncar strings largos
       return value.length > 100 ? value.substring(0, 100) + '...' : value;
     }
-    
+
     if (Array.isArray(value)) {
       return value.slice(0, 10); // Limitar arrays grandes
     }
@@ -332,7 +346,7 @@ export class ErrorHandler {
    */
   private sanitizeUrl(url?: string): string | undefined {
     if (!url) return url;
-    
+
     try {
       const urlObj = new URL(url);
       // Remover parámetros de query sensibles
@@ -358,10 +372,9 @@ export const handleError = (
   context?: string,
   type: ErrorType = ErrorType.UNKNOWN
 ): AppError => {
-  const appError = error instanceof Error 
-    ? errorHandler.fromJSError(error, type)
-    : error;
-  
+  const appError =
+    error instanceof Error ? errorHandler.fromJSError(error, type) : error;
+
   errorHandler.logError(appError, context);
   return appError;
 };

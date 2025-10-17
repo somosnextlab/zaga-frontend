@@ -12,8 +12,16 @@ import {
   ProfileCreationResponse,
   AuthState,
 } from '../types/auth';
-import { errorHandler, createAuthError, createValidationError } from '../utils/errorHandler';
-import { validateEmail, validatePassword, sanitizeInput } from '../utils/validation';
+import {
+  errorHandler,
+  createAuthError,
+  createValidationError,
+} from '../utils/errorHandler';
+import {
+  validateEmail,
+  validatePassword,
+  sanitizeInput,
+} from '../utils/validation';
 
 /**
  * Interfaz para respuestas de autenticación
@@ -93,14 +101,20 @@ export class AuthService {
       // Validar datos de entrada
       const emailValidation = validateEmail(formData.email);
       if (!emailValidation.isValid) {
-        const validationError = createValidationError('email', emailValidation.error!);
+        const validationError = createValidationError(
+          'email',
+          emailValidation.error!
+        );
         errorHandler.logError(validationError, 'AuthService.register');
         return this.createErrorResult(emailValidation.error!);
       }
 
       const passwordValidation = validatePassword(formData.password);
       if (!passwordValidation.isValid) {
-        const validationError = createValidationError('password', passwordValidation.error!);
+        const validationError = createValidationError(
+          'password',
+          passwordValidation.error!
+        );
         errorHandler.logError(validationError, 'AuthService.register');
         return this.createErrorResult(passwordValidation.error!);
       }
@@ -136,9 +150,9 @@ export class AuthService {
     } catch (error) {
       const authError = createAuthError(
         'Error inesperado durante el registro',
-        { 
+        {
           email: formData.email,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         }
       );
       errorHandler.logError(authError, 'AuthService.register');
@@ -169,10 +183,9 @@ export class AuthService {
       });
 
       if (error) {
-        const authError = createAuthError(
-          `Error de login: ${error.message}`,
-          { email: sanitizedEmail }
-        );
+        const authError = createAuthError(`Error de login: ${error.message}`, {
+          email: sanitizedEmail,
+        });
         errorHandler.logError(authError, 'AuthService.login');
         return this.createErrorResult(error.message);
       }
@@ -213,9 +226,9 @@ export class AuthService {
     } catch (error) {
       const authError = createAuthError(
         'Error inesperado durante el inicio de sesión',
-        { 
+        {
           email: formData.email,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         }
       );
       errorHandler.logError(authError, 'AuthService.login');
@@ -236,6 +249,12 @@ export class AuthService {
 
       // Manejar respuesta 409 (usuario ya registrado)
       if (response.status === 409) {
+        // Usuario ya registrado en el backend - comportamiento esperado
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            'User already registered in backend (409) - marking as registered'
+          );
+        }
         // Marcar inmediatamente como registrado para evitar loops
         await this.updateUserMetadata({ backend_registered: true });
         return { success: true };
@@ -261,13 +280,10 @@ export class AuthService {
         return { success: false, error: result.message };
       }
     } catch (error) {
-      const backendError = createAuthError(
-        'Error al registrar en el sistema',
-        { 
-          userId: user.id,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        }
-      );
+      const backendError = createAuthError('Error al registrar en el sistema', {
+        userId: user.id,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
       errorHandler.logError(backendError, 'AuthService.registerInBackend');
       return {
         success: false,
@@ -532,14 +548,11 @@ export class AuthService {
    */
   private async handleBackendError(response: Response): Promise<BackendResult> {
     const errorText = await response.text();
-    
-    const backendError = createAuthError(
-      `Backend error: ${response.status}`,
-      { 
-        status: response.status,
-        errorText: errorText.substring(0, 200) // Truncar para evitar logs largos
-      }
-    );
+
+    const backendError = createAuthError(`Backend error: ${response.status}`, {
+      status: response.status,
+      errorText: errorText.substring(0, 200), // Truncar para evitar logs largos
+    });
     errorHandler.logError(backendError, 'AuthService.handleBackendError');
 
     const errorMessages: Record<number, string> = {

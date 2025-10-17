@@ -7,7 +7,7 @@ import {
   validatePasswordMatch,
   validateName,
   validatePhone,
-  sanitizeInput
+  sanitizeInput,
 } from '../validation';
 
 describe('Validation Utils', () => {
@@ -48,7 +48,9 @@ describe('Validation Utils', () => {
     test('07 - should reject email with invalid domain', () => {
       const result = validateEmail('test@invalid-domain.com');
       expect(result.isValid).toBe(false);
-      expect(result.error).toContain('Solo se permiten emails de los siguientes proveedores');
+      expect(result.error).toContain(
+        'Solo se permiten emails de los siguientes proveedores'
+      );
     });
 
     test('08 - should provide suggestions for invalid domain', () => {
@@ -75,7 +77,9 @@ describe('Validation Utils', () => {
     test('11 - should reject password shorter than 8 characters', () => {
       const result = validatePassword('Pass1!');
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('La contraseña debe tener al menos 8 caracteres');
+      expect(result.error).toBe(
+        'La contraseña debe tener al menos 8 caracteres'
+      );
     });
 
     test('12 - should reject password without uppercase letter', () => {
@@ -157,13 +161,17 @@ describe('Validation Utils', () => {
     test('24 - should reject name longer than 50 characters', () => {
       const result = validateName('A'.repeat(51));
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('El nombre no puede tener más de 50 caracteres');
+      expect(result.error).toBe(
+        'El nombre no puede tener más de 50 caracteres'
+      );
     });
 
     test('25 - should reject name with invalid characters', () => {
       const result = validateName('Juan123');
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('El nombre solo puede contener letras, espacios, guiones y apostrofes');
+      expect(result.error).toBe(
+        'El nombre solo puede contener letras, espacios, guiones y apostrofes'
+      );
     });
   });
 
@@ -187,19 +195,25 @@ describe('Validation Utils', () => {
     test('29 - should reject phone with letters', () => {
       const result = validatePhone('123-abc-4567');
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('El teléfono debe contener entre 10 y 15 dígitos');
+      expect(result.error).toBe(
+        'El teléfono debe contener entre 10 y 15 dígitos'
+      );
     });
 
     test('30 - should reject phone too short', () => {
       const result = validatePhone('123');
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('El teléfono debe contener entre 10 y 15 dígitos');
+      expect(result.error).toBe(
+        'El teléfono debe contener entre 10 y 15 dígitos'
+      );
     });
 
     test('31 - should reject phone too long', () => {
       const result = validatePhone('1234567890123456');
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('El teléfono debe contener entre 10 y 15 dígitos');
+      expect(result.error).toBe(
+        'El teléfono debe contener entre 10 y 15 dígitos'
+      );
     });
   });
 

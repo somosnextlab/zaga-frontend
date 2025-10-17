@@ -11,7 +11,11 @@ import {
 } from '../types/auth';
 import { ROUTES } from '../constants/routes';
 import { errorHandler, createAuthError } from '../utils/errorHandler';
-import { checkLoginRateLimit, recordLoginAttempt, getRateLimitInfo } from '../utils/rateLimiter';
+import {
+  checkLoginRateLimit,
+  recordLoginAttempt,
+  getRateLimitInfo,
+} from '../utils/rateLimiter';
 
 /**
  * Interfaz para respuestas de operaciones de autenticación
@@ -44,8 +48,10 @@ export const useAuthActions = () => {
         // Verificar rate limiting
         if (!checkLoginRateLimit(formData.email, clientIP, userAgent)) {
           const rateLimitInfo = getRateLimitInfo(formData.email, clientIP);
-          const resetTime = new Date(rateLimitInfo.resetTime).toLocaleTimeString();
-          
+          const resetTime = new Date(
+            rateLimitInfo.resetTime
+          ).toLocaleTimeString();
+
           return {
             success: false,
             error: `Demasiados intentos de inicio de sesión. Inténtalo de nuevo después de las ${resetTime}`,
@@ -60,7 +66,8 @@ export const useAuthActions = () => {
         if (result.success && result.user) {
           // Obtener el rol del usuario para redirección
           const role = result.user.user_metadata?.role;
-          const redirectRoute = role === 'admin' ? ROUTES.ADMIN_DASHBOARD : ROUTES.USER_DASHBOARD;
+          const redirectRoute =
+            role === 'admin' ? ROUTES.ADMIN_DASHBOARD : ROUTES.USER_DASHBOARD;
           router.push(redirectRoute);
 
           return { success: true };
@@ -69,29 +76,29 @@ export const useAuthActions = () => {
             result.error || 'Error durante el inicio de sesión',
             { email: formData.email, timestamp: new Date().toISOString() }
           );
-          
+
           errorHandler.logError(authError, 'useAuthActions.login');
-          
-          return { 
-            success: false, 
-            error: errorHandler.getUserMessage(authError)
+
+          return {
+            success: false,
+            error: errorHandler.getUserMessage(authError),
           };
         }
       } catch (error) {
         const authError = createAuthError(
           'Error inesperado durante el inicio de sesión',
-          { 
+          {
             email: formData.email,
             error: error instanceof Error ? error.message : 'Unknown error',
             timestamp: new Date().toISOString(),
           }
         );
-        
+
         errorHandler.logError(authError, 'useAuthActions.login');
-        
-        return { 
-          success: false, 
-          error: errorHandler.getUserMessage(authError)
+
+        return {
+          success: false,
+          error: errorHandler.getUserMessage(authError),
         };
       }
     },
@@ -111,18 +118,18 @@ export const useAuthActions = () => {
       } catch (error) {
         const authError = createAuthError(
           'Error inesperado durante el registro',
-          { 
+          {
             email: formData.email,
             error: error instanceof Error ? error.message : 'Unknown error',
             timestamp: new Date().toISOString(),
           }
         );
-        
+
         errorHandler.logError(authError, 'useAuthActions.register');
-        
-        return { 
-          success: false, 
-          error: errorHandler.getUserMessage(authError)
+
+        return {
+          success: false,
+          error: errorHandler.getUserMessage(authError),
         };
       }
     },
@@ -142,17 +149,17 @@ export const useAuthActions = () => {
       } catch (error) {
         const authError = createAuthError(
           'Error inesperado durante el registro en backend',
-          { 
+          {
             error: error instanceof Error ? error.message : 'Unknown error',
             timestamp: new Date().toISOString(),
           }
         );
-        
+
         errorHandler.logError(authError, 'useAuthActions.registerInBackend');
-        
-        return { 
-          success: false, 
-          error: errorHandler.getUserMessage(authError)
+
+        return {
+          success: false,
+          error: errorHandler.getUserMessage(authError),
         };
       }
     },
@@ -172,17 +179,17 @@ export const useAuthActions = () => {
       } catch (error) {
         const authError = createAuthError(
           'Error inesperado durante la creación del perfil',
-          { 
+          {
             error: error instanceof Error ? error.message : 'Unknown error',
             timestamp: new Date().toISOString(),
           }
         );
-        
+
         errorHandler.logError(authError, 'useAuthActions.createProfile');
-        
-        return { 
-          success: false, 
-          error: errorHandler.getUserMessage(authError)
+
+        return {
+          success: false,
+          error: errorHandler.getUserMessage(authError),
         };
       }
     },
@@ -206,17 +213,17 @@ export const useAuthActions = () => {
     } catch (error) {
       const authError = createAuthError(
         'Error inesperado durante el cierre de sesión',
-        { 
+        {
           error: error instanceof Error ? error.message : 'Unknown error',
           timestamp: new Date().toISOString(),
         }
       );
-      
+
       errorHandler.logError(authError, 'useAuthActions.signOut');
-      
-      return { 
-        success: false, 
-        error: errorHandler.getUserMessage(authError)
+
+      return {
+        success: false,
+        error: errorHandler.getUserMessage(authError),
       };
     }
   }, [router]);

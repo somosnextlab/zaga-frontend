@@ -22,26 +22,26 @@ export const RATE_LIMIT_CONFIGS = {
     windowMs: 15 * 60 * 1000, // 15 minutos
     maxAttempts: 5, // 5 intentos por ventana
     blockDurationMs: 30 * 60 * 1000, // 30 minutos de bloqueo
-    cleanupIntervalMs: 5 * 60 * 1000 // Limpiar cada 5 minutos
+    cleanupIntervalMs: 5 * 60 * 1000, // Limpiar cada 5 minutos
   },
   REGISTER: {
     windowMs: 60 * 60 * 1000, // 1 hora
     maxAttempts: 3, // 3 registros por hora
     blockDurationMs: 60 * 60 * 1000, // 1 hora de bloqueo
-    cleanupIntervalMs: 10 * 60 * 1000 // Limpiar cada 10 minutos
+    cleanupIntervalMs: 10 * 60 * 1000, // Limpiar cada 10 minutos
   },
   PASSWORD_RESET: {
     windowMs: 60 * 60 * 1000, // 1 hora
     maxAttempts: 3, // 3 intentos por hora
     blockDurationMs: 60 * 60 * 1000, // 1 hora de bloqueo
-    cleanupIntervalMs: 10 * 60 * 1000 // Limpiar cada 10 minutos
+    cleanupIntervalMs: 10 * 60 * 1000, // Limpiar cada 10 minutos
   },
   API_CALLS: {
     windowMs: 60 * 1000, // 1 minuto
     maxAttempts: 100, // 100 llamadas por minuto
     blockDurationMs: 5 * 60 * 1000, // 5 minutos de bloqueo
-    cleanupIntervalMs: 60 * 1000 // Limpiar cada minuto
-  }
+    cleanupIntervalMs: 60 * 1000, // Limpiar cada minuto
+  },
 } as const;
 
 /**
@@ -90,7 +90,7 @@ export class RateLimiter {
   ): boolean {
     const now = Date.now();
     const rateLimitInfo = this.getOrCreateRateLimitInfo(key);
-    
+
     // Verificar si está bloqueado
     if (rateLimitInfo.blockedUntil && now < rateLimitInfo.blockedUntil) {
       return false;
@@ -126,7 +126,7 @@ export class RateLimiter {
   ): void {
     const now = Date.now();
     const rateLimitInfo = this.getOrCreateRateLimitInfo(key);
-    
+
     // Limpiar intentos antiguos
     this.cleanupOldAttempts(rateLimitInfo, config.windowMs);
 
@@ -135,12 +135,14 @@ export class RateLimiter {
       timestamp: now,
       success,
       userAgent: this.sanitizeUserAgent(userAgent),
-      ip: this.sanitizeIP(ip)
+      ip: this.sanitizeIP(ip),
     });
 
     // Si fue exitoso, limpiar intentos fallidos
     if (success) {
-      rateLimitInfo.attempts = rateLimitInfo.attempts.filter(attempt => attempt.success);
+      rateLimitInfo.attempts = rateLimitInfo.attempts.filter(
+        attempt => attempt.success
+      );
       rateLimitInfo.blockedUntil = undefined;
     }
   }
@@ -159,21 +161,30 @@ export class RateLimiter {
   } {
     const rateLimitInfo = this.getOrCreateRateLimitInfo(key);
     const now = Date.now();
-    
+
     // Limpiar intentos antiguos
     this.cleanupOldAttempts(rateLimitInfo, RATE_LIMIT_CONFIGS.LOGIN.windowMs);
 
-    const isBlocked = rateLimitInfo.blockedUntil ? now < rateLimitInfo.blockedUntil : false;
+    const isBlocked = rateLimitInfo.blockedUntil
+      ? now < rateLimitInfo.blockedUntil
+      : false;
     const attempts = rateLimitInfo.attempts.length;
-    const remaining = Math.max(0, RATE_LIMIT_CONFIGS.LOGIN.maxAttempts - attempts);
-    const resetTime = attempts > 0 ? rateLimitInfo.attempts[0].timestamp + RATE_LIMIT_CONFIGS.LOGIN.windowMs : now;
+    const remaining = Math.max(
+      0,
+      RATE_LIMIT_CONFIGS.LOGIN.maxAttempts - attempts
+    );
+    const resetTime =
+      attempts > 0
+        ? rateLimitInfo.attempts[0].timestamp +
+          RATE_LIMIT_CONFIGS.LOGIN.windowMs
+        : now;
 
     return {
       attempts,
       remaining,
       resetTime,
       isBlocked,
-      blockedUntil: rateLimitInfo.blockedUntil
+      blockedUntil: rateLimitInfo.blockedUntil,
     };
   }
 
@@ -207,7 +218,7 @@ export class RateLimiter {
     return {
       totalKeys: this.store.size,
       blockedKeys,
-      totalAttempts
+      totalAttempts,
     };
   }
 
@@ -218,7 +229,7 @@ export class RateLimiter {
     if (!this.store.has(key)) {
       this.store.set(key, {
         attempts: [],
-        lastCleanup: Date.now()
+        lastCleanup: Date.now(),
       });
     }
     return this.store.get(key)!;
@@ -227,14 +238,17 @@ export class RateLimiter {
   /**
    * Limpia intentos antiguos
    */
-  private cleanupOldAttempts(rateLimitInfo: RateLimitInfo, windowMs: number): void {
+  private cleanupOldAttempts(
+    rateLimitInfo: RateLimitInfo,
+    windowMs: number
+  ): void {
     const now = Date.now();
     const cutoff = now - windowMs;
-    
+
     rateLimitInfo.attempts = rateLimitInfo.attempts.filter(
       attempt => attempt.timestamp > cutoff
     );
-    
+
     rateLimitInfo.lastCleanup = now;
   }
 
@@ -263,7 +277,7 @@ export class RateLimiter {
         attempt => now - attempt.timestamp < maxAge
       );
       const isBlocked = info.blockedUntil && now < info.blockedUntil;
-      
+
       if (!hasRecentAttempts && !isBlocked) {
         this.store.delete(key);
       }
@@ -275,7 +289,7 @@ export class RateLimiter {
    */
   private sanitizeUserAgent(userAgent?: string): string | undefined {
     if (!userAgent) return undefined;
-    
+
     // Truncar y limpiar user agent
     return userAgent.substring(0, 200).replace(/[<>]/g, '');
   }
@@ -285,13 +299,13 @@ export class RateLimiter {
    */
   private sanitizeIP(ip?: string): string | undefined {
     if (!ip) return undefined;
-    
+
     // Validar formato de IP básico
     const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
     if (ipRegex.test(ip)) {
       return ip;
     }
-    
+
     // Para IPv6, truncar
     return ip.substring(0, 45);
   }
@@ -332,7 +346,13 @@ export const recordLoginAttempt = (
   userAgent?: string
 ): void => {
   const key = `login:${email}:${ip || 'unknown'}`;
-  rateLimiter.recordAttempt(key, RATE_LIMIT_CONFIGS.LOGIN, success, userAgent, ip);
+  rateLimiter.recordAttempt(
+    key,
+    RATE_LIMIT_CONFIGS.LOGIN,
+    success,
+    userAgent,
+    ip
+  );
 };
 
 /**
@@ -357,7 +377,13 @@ export const recordRegisterAttempt = (
   userAgent?: string
 ): void => {
   const key = `register:${email}:${ip || 'unknown'}`;
-  rateLimiter.recordAttempt(key, RATE_LIMIT_CONFIGS.REGISTER, success, userAgent, ip);
+  rateLimiter.recordAttempt(
+    key,
+    RATE_LIMIT_CONFIGS.REGISTER,
+    success,
+    userAgent,
+    ip
+  );
 };
 
 /**

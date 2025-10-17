@@ -34,15 +34,18 @@ function VerifyEmailContent() {
         const access_token = searchParams.get('access_token');
         const refresh_token = searchParams.get('refresh_token');
 
-        console.log('URL params:', {
-          verified,
-          error,
-          token,
-          type,
-          token_hash,
-          access_token,
-          refresh_token,
-        });
+        // Debug: URL params (solo en desarrollo)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('URL params:', {
+            verified,
+            error,
+            token,
+            type,
+            token_hash,
+            access_token,
+            refresh_token,
+          });
+        }
 
         // Si hay un error en la URL, mostrar error
         if (error) {
@@ -62,7 +65,10 @@ function VerifyEmailContent() {
           } = await supabase.auth.getUser();
 
           if (user && user.email_confirmed_at) {
-            console.log('User verified successfully:', user);
+            // Debug: User verified (solo en desarrollo)
+            if (process.env.NODE_ENV === 'development') {
+              console.log('User verified successfully:', user);
+            }
             setVerificationStatus('success');
             setIsVerifying(false);
 
@@ -89,7 +95,10 @@ function VerifyEmailContent() {
 
         // Si el usuario ya está autenticado y su email está verificado, mostrar éxito
         if (user && user.email_confirmed_at) {
-          console.log('User already authenticated and email verified:', user);
+          // Debug: User already authenticated (solo en desarrollo)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('User already authenticated and email verified:', user);
+          }
           setVerificationStatus('success');
           setIsVerifying(false);
 
