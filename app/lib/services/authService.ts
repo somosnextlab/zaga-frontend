@@ -2,8 +2,8 @@
 
 import { supabaseClient } from '../supabase/client';
 import { apiPost, parseApiResponse } from '../../../lib/api';
+import { User } from '@supabase/supabase-js';
 import {
-  User,
   UserRole,
   RegisterFormData,
   LoginFormData,
@@ -408,7 +408,7 @@ export class AuthService {
    * @returns Rol del usuario o null si no es válido
    */
   private getUserRole(user: User): UserRole | null {
-    const role = user.user_metadata?.role;
+    const role = user.app_metadata?.role;
     const validRoles: UserRole[] = ['admin', 'cliente', 'usuario'];
     return validRoles.includes(role as UserRole) ? (role as UserRole) : null;
   }
@@ -488,7 +488,7 @@ export class AuthService {
    * @returns Resultado del procesamiento
    */
   private async handleBackendRegistration(user: User): Promise<BackendResult> {
-    const userRole = user.user_metadata?.role;
+    const userRole = user.app_metadata?.role;
     const isAdmin = userRole === 'admin';
     const needsBackendRegistration =
       !isAdmin && !user.user_metadata?.backend_registered;

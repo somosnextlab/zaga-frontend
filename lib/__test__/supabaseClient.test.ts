@@ -83,11 +83,11 @@ describe('Supabase Client', () => {
     expect(mockSupabaseClient.auth.getUser).toHaveBeenCalled();
   });
 
-  test('05 - should get user role from user_metadata', async () => {
+  test('05 - should get user role from app_metadata', async () => {
     const mockUser = {
       id: 'user-123',
       email: 'admin@example.com',
-      user_metadata: {
+      app_metadata: {
         role: 'admin',
       },
     };

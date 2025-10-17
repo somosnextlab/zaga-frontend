@@ -354,7 +354,7 @@ describe('useAuth', () => {
       const mockUser = {
         id: '123',
         email: 'admin@example.com',
-        user_metadata: { role: 'admin' },
+        app_metadata: { role: 'admin' },
       };
 
       (authService.login as jest.Mock).mockResolvedValue({
