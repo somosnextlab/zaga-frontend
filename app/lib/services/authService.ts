@@ -52,6 +52,20 @@ export class AuthService {
   }
 
   /**
+   * Verifica si Supabase está configurado correctamente
+   * @returns true si la configuración es válida
+   */
+  private isSupabaseConfigured(): boolean {
+    try {
+      const config = this.supabase;
+      return !!config;
+    } catch (error) {
+      console.warn('Supabase not properly configured:', error);
+      return false;
+    }
+  }
+
+  /**
    * Registra un nuevo usuario en Supabase
    * @param formData - Datos del formulario de registro
    * @returns Promise con el resultado del registro
@@ -60,6 +74,11 @@ export class AuthService {
     formData: RegisterFormData
   ): Promise<{ success: boolean; error?: string }> {
     try {
+      // Verificar configuración de Supabase
+      if (!this.isSupabaseConfigured()) {
+        return this.createErrorResult('Servicio de autenticación no disponible');
+      }
+
       const { data, error } = await this.supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -93,6 +112,11 @@ export class AuthService {
    */
   async login(formData: LoginFormData): Promise<AuthResult> {
     try {
+      // Verificar configuración de Supabase
+      if (!this.isSupabaseConfigured()) {
+        return this.createErrorResult('Servicio de autenticación no disponible');
+      }
+
       const { data, error } = await this.supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -214,6 +238,11 @@ export class AuthService {
    */
   async getCurrentUser(): Promise<User | null> {
     try {
+      // Verificar configuración de Supabase
+      if (!this.isSupabaseConfigured()) {
+        return null;
+      }
+
       const {
         data: { user },
       } = await this.supabase.auth.getUser();
@@ -230,6 +259,11 @@ export class AuthService {
    */
   async getAuthState(): Promise<AuthState> {
     try {
+      // Verificar configuración de Supabase
+      if (!this.isSupabaseConfigured()) {
+        return this.createEmptyAuthState();
+      }
+
       const user = await this.getCurrentUser();
 
       if (!user) {
@@ -261,6 +295,11 @@ export class AuthService {
    */
   async signOut(): Promise<{ success: boolean; error?: string }> {
     try {
+      // Verificar configuración de Supabase
+      if (!this.isSupabaseConfigured()) {
+        return this.createErrorResult('Servicio de autenticación no disponible');
+      }
+
       const { error } = await this.supabase.auth.signOut();
 
       if (error) {
@@ -305,9 +344,21 @@ export class AuthService {
    * @returns Función para desuscribirse
    */
   onAuthStateChange(callback: (user: User | null) => void) {
-    return this.supabase.auth.onAuthStateChange((_, session) => {
-      callback(session?.user ?? null);
-    });
+    try {
+      // Verificar configuración de Supabase
+      if (!this.isSupabaseConfigured()) {
+        // Retornar función de desuscripción vacía si no está configurado
+        return { data: { subscription: { unsubscribe: () => {} } } };
+      }
+
+      return this.supabase.auth.onAuthStateChange((_, session) => {
+        callback(session?.user ?? null);
+      });
+    } catch (error) {
+      console.warn('Auth state change listener error:', error);
+      // Retornar función de desuscripción vacía en caso de error
+      return { data: { subscription: { unsubscribe: () => {} } } };
+    }
   }
 
   // ==================== MÉTODOS HELPER ====================

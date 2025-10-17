@@ -64,6 +64,7 @@ Crea un archivo `.env.local` en la raíz del proyecto:
 NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_supabase_anon_key
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ### Instalación
