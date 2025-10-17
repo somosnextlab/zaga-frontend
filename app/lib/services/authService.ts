@@ -12,6 +12,8 @@ import {
   ProfileCreationResponse,
   AuthState,
 } from '../types/auth';
+import { errorHandler, createAuthError, createValidationError } from '../utils/errorHandler';
+import { validateEmail, validatePassword, sanitizeInput } from '../utils/validation';
 
 /**
  * Interfaz para respuestas de autenticación
@@ -88,15 +90,38 @@ export class AuthService {
         );
       }
 
+      // Validar datos de entrada
+      const emailValidation = validateEmail(formData.email);
+      if (!emailValidation.isValid) {
+        const validationError = createValidationError('email', emailValidation.error!);
+        errorHandler.logError(validationError, 'AuthService.register');
+        return this.createErrorResult(emailValidation.error!);
+      }
+
+      const passwordValidation = validatePassword(formData.password);
+      if (!passwordValidation.isValid) {
+        const validationError = createValidationError('password', passwordValidation.error!);
+        errorHandler.logError(validationError, 'AuthService.register');
+        return this.createErrorResult(passwordValidation.error!);
+      }
+
+      // Sanitizar datos
+      const sanitizedEmail = sanitizeInput(formData.email);
+
       const { data, error } = await this.supabase.auth.signUp({
-        email: formData.email,
+        email: sanitizedEmail,
         password: formData.password,
         options: {
-          emailRedirectTo: `${this.getBaseUrl()}/api/auth/callback`,
+          emailRedirectTo: `${this.getBaseUrl()}/auth/verify-email`,
         },
       });
 
       if (error) {
+        const authError = createAuthError(
+          `Error de registro: ${error.message}`,
+          { email: sanitizedEmail }
+        );
+        errorHandler.logError(authError, 'AuthService.register');
         return this.createErrorResult(error.message);
       }
 
@@ -109,7 +134,14 @@ export class AuthService {
 
       return { success: true };
     } catch (error) {
-      console.error('Registration error:', error);
+      const authError = createAuthError(
+        'Error inesperado durante el registro',
+        { 
+          email: formData.email,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      );
+      errorHandler.logError(authError, 'AuthService.register');
       return this.createErrorResult('Error inesperado durante el registro');
     }
   }
@@ -128,16 +160,29 @@ export class AuthService {
         );
       }
 
+      // Sanitizar email
+      const sanitizedEmail = sanitizeInput(formData.email);
+
       const { data, error } = await this.supabase.auth.signInWithPassword({
-        email: formData.email,
+        email: sanitizedEmail,
         password: formData.password,
       });
 
       if (error) {
+        const authError = createAuthError(
+          `Error de login: ${error.message}`,
+          { email: sanitizedEmail }
+        );
+        errorHandler.logError(authError, 'AuthService.login');
         return this.createErrorResult(error.message);
       }
 
       if (!data.user) {
+        const authError = createAuthError(
+          'No se pudo obtener información del usuario',
+          { email: sanitizedEmail }
+        );
+        errorHandler.logError(authError, 'AuthService.login');
         return this.createErrorResult(
           'No se pudo obtener información del usuario'
         );
@@ -166,7 +211,14 @@ export class AuthService {
         needsBackendRegistration: false,
       };
     } catch (error) {
-      console.error('Login error:', error);
+      const authError = createAuthError(
+        'Error inesperado durante el inicio de sesión',
+        { 
+          email: formData.email,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      );
+      errorHandler.logError(authError, 'AuthService.login');
       return this.createErrorResult(
         'Error inesperado durante el inicio de sesión'
       );
@@ -180,14 +232,10 @@ export class AuthService {
    */
   async registerInBackend(user: User): Promise<BackendResult> {
     try {
-      console.log('Attempting backend registration for user:', user.id);
       const response = await apiPost('/usuarios/registro-inicial');
-
-      console.log('Backend registration response status:', response.status);
 
       // Manejar respuesta 409 (usuario ya registrado)
       if (response.status === 409) {
-        console.log('User already registered (409), considering as success');
         // Marcar inmediatamente como registrado para evitar loops
         await this.updateUserMetadata({ backend_registered: true });
         return { success: true };
@@ -203,14 +251,24 @@ export class AuthService {
         await parseApiResponse<BackendRegistrationResponse>(response);
 
       if (result.success) {
-        console.log('Backend registration successful');
         return { success: true };
       } else {
-        console.error('Backend registration failed:', result.message);
+        const backendError = createAuthError(
+          `Backend registration failed: ${result.message}`,
+          { userId: user.id }
+        );
+        errorHandler.logError(backendError, 'AuthService.registerInBackend');
         return { success: false, error: result.message };
       }
     } catch (error) {
-      console.error('Backend registration error:', error);
+      const backendError = createAuthError(
+        'Error al registrar en el sistema',
+        { 
+          userId: user.id,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      );
+      errorHandler.logError(backendError, 'AuthService.registerInBackend');
       return {
         success: false,
         error: `Error al registrar en el sistema: ${
@@ -474,7 +532,15 @@ export class AuthService {
    */
   private async handleBackendError(response: Response): Promise<BackendResult> {
     const errorText = await response.text();
-    console.error('Backend error:', response.status, errorText);
+    
+    const backendError = createAuthError(
+      `Backend error: ${response.status}`,
+      { 
+        status: response.status,
+        errorText: errorText.substring(0, 200) // Truncar para evitar logs largos
+      }
+    );
+    errorHandler.logError(backendError, 'AuthService.handleBackendError');
 
     const errorMessages: Record<number, string> = {
       401: 'Token de autorización inválido. Por favor, inicia sesión nuevamente.',

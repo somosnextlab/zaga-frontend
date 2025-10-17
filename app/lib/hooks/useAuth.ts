@@ -10,6 +10,7 @@ import {
   ProfileFormData,
 } from '../types/auth';
 import { ROUTES } from '../constants/routes';
+import { errorHandler, createAuthError } from '../utils/errorHandler';
 
 /**
  * Interfaz para respuestas de operaciones de autenticación
@@ -59,10 +60,18 @@ export const useAuth = () => {
    */
   const handleAuthError = useCallback(
     (error: unknown, operation: string): AuthOperationResult => {
-      console.error(`${operation} error:`, error);
+      const authError = createAuthError(
+        `Error inesperado durante ${operation}`,
+        { 
+          operation,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      );
+      errorHandler.logError(authError, `useAuth.${operation}`);
+      
       return {
         success: false,
-        error: `Error inesperado durante ${operation}`,
+        error: errorHandler.getUserMessage(authError),
       };
     },
     []
@@ -106,7 +115,12 @@ export const useAuth = () => {
 
       updateAuthState({ ...state, isInitializing: false, isLoading: false });
     } catch (error) {
-      console.error('Auth initialization error:', error);
+      const authError = createAuthError(
+        'Error durante la inicialización de autenticación',
+        { error: error instanceof Error ? error.message : 'Unknown error' }
+      );
+      errorHandler.logError(authError, 'useAuth.initializeAuth');
+      
       updateAuthState({
         isInitializing: false,
         isLoading: false,
