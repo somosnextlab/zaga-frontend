@@ -59,6 +59,25 @@ if (siteUrl) {
   console.log('❌ NEXT_PUBLIC_SITE_URL no configurada - esto causará problemas de redirección');
 }
 
+// Verificar URL del backend
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+if (backendUrl) {
+  if (backendUrl.startsWith('https://')) {
+    console.log('✅ NEXT_PUBLIC_BACKEND_URL usa HTTPS (correcto para producción)');
+  } else if (backendUrl.startsWith('http://localhost')) {
+    console.log('✅ NEXT_PUBLIC_BACKEND_URL usa localhost (correcto para desarrollo)');
+  } else {
+    console.log('⚠️  NEXT_PUBLIC_BACKEND_URL no usa HTTPS ni localhost');
+  }
+  
+  // Verificar que no esté mezclando dominios
+  if (backendUrl.includes('zaga.com.ar') && !backendUrl.startsWith('https://zaga-backend')) {
+    console.log('❌ NEXT_PUBLIC_BACKEND_URL parece estar mezclando dominios incorrectamente');
+  }
+} else {
+  console.log('❌ NEXT_PUBLIC_BACKEND_URL no configurada - esto causará errores 405 en el backend');
+}
+
 // Verificar configuración de Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 if (supabaseUrl) {

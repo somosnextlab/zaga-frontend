@@ -188,6 +188,8 @@ export class AuthService {
       // Manejar respuesta 409 (usuario ya registrado)
       if (response.status === 409) {
         console.log('User already registered (409), considering as success');
+        // Marcar inmediatamente como registrado para evitar loops
+        await this.updateUserMetadata({ backend_registered: true });
         return { success: true };
       }
 
@@ -422,13 +424,8 @@ export class AuthService {
       return { success: true };
     }
 
-    const backendResult = await this.registerInBackend(user);
-
-    if (backendResult.success) {
-      await this.updateUserMetadata({ backend_registered: true });
-    }
-
-    return backendResult;
+    // El método registerInBackend ya maneja la actualización del flag backend_registered
+    return await this.registerInBackend(user);
   }
 
   /**
