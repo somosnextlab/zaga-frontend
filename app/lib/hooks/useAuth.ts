@@ -62,13 +62,13 @@ export const useAuth = () => {
     (error: unknown, operation: string): AuthOperationResult => {
       const authError = createAuthError(
         `Error inesperado durante ${operation}`,
-        { 
+        {
           operation,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         }
       );
       errorHandler.logError(authError, `useAuth.${operation}`);
-      
+
       return {
         success: false,
         error: errorHandler.getUserMessage(authError),
@@ -120,7 +120,7 @@ export const useAuth = () => {
         { error: error instanceof Error ? error.message : 'Unknown error' }
       );
       errorHandler.logError(authError, 'useAuth.initializeAuth');
-      
+
       updateAuthState({
         isInitializing: false,
         isLoading: false,

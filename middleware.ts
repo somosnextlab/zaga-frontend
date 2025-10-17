@@ -13,6 +13,13 @@ import { ROUTES } from './app/lib/constants/routes';
  * Middleware de autenticación y autorización
  */
 export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // Solo procesar rutas que requieren autenticación
+  if (!isProtectedRoute(pathname) && !isAdminRoute(pathname)) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({
     request: {
       headers: req.headers,
@@ -48,7 +55,6 @@ export async function middleware(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { pathname } = req.nextUrl;
 
   // Redirigir usuarios no autenticados que intentan acceder a rutas protegidas
   if (!user && isProtectedRoute(pathname)) {
