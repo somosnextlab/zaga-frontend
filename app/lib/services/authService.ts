@@ -48,12 +48,12 @@ export class AuthService {
     if (process.env.NEXT_PUBLIC_SITE_URL) {
       return process.env.NEXT_PUBLIC_SITE_URL;
     }
-    
+
     // En el cliente, usar la URL actual
     if (typeof window !== 'undefined') {
       return window.location.origin;
     }
-    
+
     // Fallback para desarrollo local
     return 'http://localhost:3000';
   }
@@ -83,14 +83,16 @@ export class AuthService {
     try {
       // Verificar configuración de Supabase
       if (!this.isSupabaseConfigured()) {
-        return this.createErrorResult('Servicio de autenticación no disponible');
+        return this.createErrorResult(
+          'Servicio de autenticación no disponible'
+        );
       }
 
       const { data, error } = await this.supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${this.getBaseUrl()}/auth/verify-email`,
+          emailRedirectTo: `${this.getBaseUrl()}/api/auth/callback`,
         },
       });
 
@@ -121,7 +123,9 @@ export class AuthService {
     try {
       // Verificar configuración de Supabase
       if (!this.isSupabaseConfigured()) {
-        return this.createErrorResult('Servicio de autenticación no disponible');
+        return this.createErrorResult(
+          'Servicio de autenticación no disponible'
+        );
       }
 
       const { data, error } = await this.supabase.auth.signInWithPassword({
@@ -193,8 +197,9 @@ export class AuthService {
       }
 
       // Procesar respuesta exitosa
-      const result =
-        await parseApiResponse<BackendRegistrationResponse>(response);
+      const result = await parseApiResponse<BackendRegistrationResponse>(
+        response
+      );
 
       if (result.success) {
         console.log('Backend registration successful');
@@ -304,7 +309,9 @@ export class AuthService {
     try {
       // Verificar configuración de Supabase
       if (!this.isSupabaseConfigured()) {
-        return this.createErrorResult('Servicio de autenticación no disponible');
+        return this.createErrorResult(
+          'Servicio de autenticación no disponible'
+        );
       }
 
       const { error } = await this.supabase.auth.signOut();
