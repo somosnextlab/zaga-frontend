@@ -363,12 +363,12 @@ export class AuthService {
       const {
         data: { user },
       } = await this.supabase.auth.getUser();
-      
+
       // Si hay usuario, persistir la sesión
       if (user) {
         this.persistUserData(user);
       }
-      
+
       return user;
     } catch (error) {
       console.error('Get current user error:', error);
@@ -449,38 +449,46 @@ export class AuthService {
   private async getUserRole(user: User): Promise<UserRole | null> {
     const supabaseRole = user.app_metadata?.role;
     const validRoles: UserRole[] = ['admin', 'cliente', 'usuario'];
-    
+
     // Si es admin (asignado en Supabase), usar ese rol
     if (supabaseRole === 'admin') {
       console.log('getUserRole: Usuario admin detectado desde Supabase');
       return 'admin';
     }
 
-    // Para otros usuarios, consultar la base de datos
+    // Para otros usuarios, consultar el backend a través del nuevo endpoint
     try {
-      const response = await fetch('/api/auth/user-role', {
+      // Obtener el token de acceso de la sesión
+      const accessToken = sessionService.getAccessToken();
+      if (!accessToken) {
+        console.error('getUserRole: No hay token de acceso disponible');
+        return null;
+      }
+
+      const response = await fetch('/api/usuarios/rol-usuarios', {
         method: 'GET',
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       });
 
       if (!response.ok) {
-        console.error('Error obteniendo rol desde BD:', response.status);
+        console.error('Error obteniendo rol desde backend:', response.status);
         return null;
       }
 
       const data = await response.json();
-      
+
       if (data.success && validRoles.includes(data.role)) {
-        console.log('getUserRole: Rol obtenido desde BD:', data.role);
+        console.log('getUserRole: Rol obtenido desde backend:', data.role);
         return data.role as UserRole;
       }
 
-      console.warn('getUserRole: Rol no válido desde BD:', data.role);
+      console.warn('getUserRole: Rol no válido desde backend:', data.role);
       return null;
     } catch (error) {
-      console.error('Error consultando rol desde BD:', error);
+      console.error('Error consultando rol desde backend:', error);
       return null;
     }
   }
@@ -648,7 +656,11 @@ export class AuthService {
    * Persiste los tokens de sesión en el almacenamiento local
    * @param session - Sesión de Supabase con tokens
    */
-  private persistSessionTokens(session: { access_token: string; refresh_token: string; expires_in?: number }): void {
+  private persistSessionTokens(session: {
+    access_token: string;
+    refresh_token: string;
+    expires_in?: number;
+  }): void {
     if (!session?.access_token || !session?.refresh_token) {
       console.warn('No se pueden persistir tokens: sesión inválida');
       return;
@@ -657,13 +669,13 @@ export class AuthService {
     try {
       // Calcular tiempo de expiración (Supabase usa 3600 segundos por defecto)
       const expiresIn = session.expires_in || 3600;
-      
+
       // Persistir access token en localStorage
       sessionService.setAccessToken(session.access_token, expiresIn);
-      
+
       // Persistir refresh token en httpOnly cookie
       sessionService.setRefreshToken(session.refresh_token, 2592000); // 30 días
-      
+
       if (process.env.NODE_ENV === 'development') {
         console.log('Tokens de sesión persistidos correctamente');
       }
@@ -715,7 +727,9 @@ export class AuthService {
           backend_registered: userData.backend_registered as boolean,
           profile_completed: userData.profile_completed as boolean,
         },
-        email_confirmed_at: userData.email_verified ? new Date().toISOString() : undefined,
+        email_confirmed_at: userData.email_verified
+          ? new Date().toISOString()
+          : undefined,
         last_sign_in_at: userData.last_sign_in as string,
         created_at: userData.created_at as string,
       };
@@ -745,13 +759,15 @@ export class AuthService {
       if (error) {
         // Si el refresh token es inválido, limpiar la sesión
         sessionService.clearSession();
-        return this.createErrorResult('Sesión expirada. Por favor, inicia sesión nuevamente');
+        return this.createErrorResult(
+          'Sesión expirada. Por favor, inicia sesión nuevamente'
+        );
       }
 
       if (data.session) {
         // Persistir nuevos tokens
         this.persistSessionTokens(data.session);
-        
+
         // Actualizar datos del usuario si hay cambios
         if (data.user) {
           this.persistUserData(data.user);
@@ -772,7 +788,10 @@ export class AuthService {
    * Verifica si la sesión actual es válida y la renueva si es necesario
    * @returns Promise con el estado de la sesión
    */
-  async validateAndRefreshSession(): Promise<{ isValid: boolean; needsRefresh: boolean }> {
+  async validateAndRefreshSession(): Promise<{
+    isValid: boolean;
+    needsRefresh: boolean;
+  }> {
     try {
       // Verificar si la sesión actual es válida
       if (sessionService.isSessionValid()) {

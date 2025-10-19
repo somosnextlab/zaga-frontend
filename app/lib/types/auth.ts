@@ -117,6 +117,14 @@ export interface ProfileCreationResponse {
   };
 }
 
+/**
+ * Respuesta del endpoint de rol de usuario desde el backend
+ */
+export interface UserRoleResponse {
+  success: boolean;
+  role: UserRole;
+}
+
 // ==================== TIPOS DE UTILIDAD ====================
 
 /**
