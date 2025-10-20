@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthActions } from '@/app/lib/hooks/useAuthActions';
-import { RegisterFormData } from '@/app/lib/types/auth';
 import {
-  validateEmail,
-  validatePassword,
-  validatePasswordMatch,
-  sanitizeInput,
-} from '@/app/lib/utils/validation';
+  initializeAutofillFix,
+  applyAutofillFix,
+} from '@/app/lib/utils/autofillFix';
+import { RegisterFormData, registerSchema } from '@/app/lib/schemas/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -19,82 +19,45 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 interface RegisterFormErrors {
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
   general?: string;
 }
 
 export default function RegisterPage() {
   const router = useRouter();
   const { register } = useAuthActions();
-  const [formData, setFormData] = useState<RegisterFormData>({
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
   const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const sanitizedValue = sanitizeInput(value);
+  // Inicializar solución de autofill
+  useEffect(() => {
+    initializeAutofillFix();
+  }, []);
 
-    setFormData(prev => ({
-      ...prev,
-      [name]: sanitizedValue,
-    }));
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-    if (errors[name as keyof RegisterFormErrors]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: RegisterFormErrors = {};
-
-    // Validar email con validación robusta
-    const emailValidation = validateEmail(formData.email);
-    if (!emailValidation.isValid) {
-      newErrors.email = emailValidation.error;
-    }
-
-    // Validar contraseña con validación robusta
-    const passwordValidation = validatePassword(formData.password);
-    if (!passwordValidation.isValid) {
-      newErrors.password = passwordValidation.error;
-    }
-
-    // Validar coincidencia de contraseñas
-    const passwordMatchValidation = validatePasswordMatch(
-      formData.password,
-      formData.confirmPassword
-    );
-    if (!passwordMatchValidation.isValid) {
-      newErrors.confirmPassword = passwordMatchValidation.error;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
+  const onSubmit = async (data: RegisterFormData) => {
     setErrors({});
+    setIsSubmitting(true);
 
     try {
-      const result = await register(formData);
+      const result = await register(data);
 
       if (result.success) {
         if (result.error) {
@@ -140,94 +103,98 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {errors.general && (
-                <div
-                  className={`px-4 py-3 rounded-md ${
-                    errors.general.includes('verifica tu email')
-                      ? 'bg-blue-50 border border-blue-200 text-blue-700'
-                      : 'bg-red-50 border border-red-200 text-red-700'
-                  }`}
-                >
-                  {errors.general}
-                </div>
-              )}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                {errors.general && (
+                  <div
+                    className={`px-4 py-3 rounded-md ${
+                      errors.general.includes('verifica tu email')
+                        ? 'bg-blue-50 border border-blue-200 text-blue-700'
+                        : 'bg-red-50 border border-red-200 text-red-700'
+                    }`}
+                  >
+                    {errors.general}
+                  </div>
+                )}
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Email
-                </label>
-                <Input
-                  id="email"
+                <FormField
+                  control={form.control}
                   name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={errors.email ? 'border-red-500' : ''}
-                  placeholder="tu@email.com"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          ref={el => {
+                            if (el) applyAutofillFix(el, true); // Permitir autofill básico
+                          }}
+                          type="email"
+                          autoComplete="email"
+                          placeholder="tu@email.com"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                )}
-              </div>
 
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Contraseña
-                </label>
-                <Input
-                  id="password"
+                <FormField
+                  control={form.control}
                   name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className={errors.password ? 'border-red-500' : ''}
-                  placeholder="••••••••"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contraseña</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          ref={el => {
+                            if (el) applyAutofillFix(el, true); // Permitir autofill básico
+                          }}
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="••••••••"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                )}
-              </div>
 
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Confirmar Contraseña
-                </label>
-                <Input
-                  id="confirmPassword"
+                <FormField
+                  control={form.control}
                   name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  className={errors.confirmPassword ? 'border-red-500' : ''}
-                  placeholder="••••••••"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirmar Contraseña</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          ref={el => {
+                            if (el) applyAutofillFix(el, true); // Permitir autofill básico
+                          }}
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="••••••••"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.confirmPassword}
-                  </p>
-                )}
-              </div>
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Creando cuenta...' : 'Crear Cuenta'}
-              </Button>
-            </form>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Creando cuenta...' : 'Crear Cuenta'}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
 

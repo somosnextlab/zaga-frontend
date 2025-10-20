@@ -42,26 +42,14 @@ export interface AuthUser {
 // ==================== INTERFACES DE FORMULARIOS ====================
 
 /**
- * Datos del formulario de login
+ * Datos del formulario de login (inferido de Zod)
  */
-export interface LoginFormData {
-  email: string;
-  password: string;
-}
+export type { LoginFormData, RegisterFormData, ProfileFormData, ChangePasswordFormData } from '../schemas/auth';
 
 /**
- * Datos del formulario de registro
+ * Datos del formulario de perfil extendido (para el backend)
  */
-export interface RegisterFormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-/**
- * Datos del formulario de perfil
- */
-export interface ProfileFormData {
+export interface ExtendedProfileFormData {
   tipo_doc: DocumentType;
   numero_doc: string;
   nombre: string;
