@@ -3,7 +3,7 @@ export const mockApiPost = jest.fn();
 export const mockParseApiResponse = jest.fn();
 
 // Mock por defecto para la API
-jest.mock('@/lib/api', () => ({
+jest.mock('@/api', () => ({
   apiPost: mockApiPost,
   parseApiResponse: mockParseApiResponse,
 }));

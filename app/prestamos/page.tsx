@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiGet, parseApiResponse } from '@/lib/api';
-import { getUserRole } from '@/app/lib/utils/auth';
-import { supabaseClient } from '@/lib/supabaseClient';
+import { apiGet, parseApiResponse } from '../api';
+import { supabaseClient } from '../lib/supabase/client';
+import { getUserRole } from '../lib/utils/auth';
 import {
   Card,
   CardContent,
@@ -52,10 +52,8 @@ export default function PrestamosPage() {
         setError(null);
 
         const supabase = supabaseClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        const role = getUserRole(user);
+        await supabase.auth.getUser();
+        const role = await getUserRole();
         setUserRole(role);
         const response = await apiGet('/prestamos');
         const data = await parseApiResponse<PrestamosResponse>(response);
@@ -76,7 +74,7 @@ export default function PrestamosPage() {
 
   const handleLogout = async () => {
     try {
-      const { supabaseClient } = await import('@/lib/supabaseClient');
+      const { supabaseClient } = await import('../lib/supabase/client');
       const supabase = supabaseClient();
       await supabase.auth.signOut();
       router.push('/auth/login');

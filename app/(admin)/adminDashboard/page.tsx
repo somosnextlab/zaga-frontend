@@ -1,10 +1,10 @@
 'use client';
 
-import { DashboardLayout } from '@/components/core/DashboardLayout';
-import { StatCard } from '@/components/core/StatCard';
-import { QuickActions } from '@/components/core/QuickActions';
-import { AuthGuard } from '@/app/components/auth/AuthGuard';
-import { useAuthContext } from '@/app/components/auth/ConditionalAuthProvider';
+import { DashboardLayout } from '@/components/core/DashboardLayout/DashboardLayout';
+import { StatCard } from '@/components/core/StatCard/StatCard';
+import { QuickActions } from '@/components/core/QuickActions/QuickActions';
+import { AuthGuard } from '@/app/components/auth/AuthGuard/AuthGuard';
+import { useAuthContext } from '@/app/components/auth/ConditionalAuthProvider/ConditionalAuthProvider';
 
 export default function AdminDashboard() {
   const { user } = useAuthContext();

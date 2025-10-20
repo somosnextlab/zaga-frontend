@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthActions } from '@/app/lib/hooks/useAuthActions';
+import { useAuthActions } from '@/app/lib/auth/hooks/useAuthActions';
 import {
   initializeAutofillFix,
   applyAutofillFix,
 } from '@/app/lib/utils/autofillFix';
-import { LoginFormData, loginSchema } from '@/app/lib/schemas/auth';
+import { LoginFormData, loginSchema } from '@/app/lib/auth/schemas/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -72,10 +72,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900">
             Iniciar Sesión
           </h2>
           <p className="mt-2 text-sm text-gray-600">

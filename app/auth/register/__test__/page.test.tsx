@@ -3,7 +3,7 @@
  */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
-import { useAuthActions } from '@/app/lib/hooks/useAuthActions';
+import { useAuthActions } from '@/lib/auth/hooks/useAuthActions';
 import RegisterPage from '../page';
 
 // Mock de Next.js router
@@ -12,13 +12,13 @@ jest.mock('next/navigation', () => ({
 }));
 
 // Mock del hook de autenticación
-jest.mock('@/app/lib/hooks/useAuthActions');
+jest.mock('@/lib/auth/hooks/useAuthActions');
 const mockUseAuthActions = useAuthActions as jest.MockedFunction<
   typeof useAuthActions
 >;
 
 // Mock de la utilidad de autofill
-jest.mock('@/app/lib/utils/autofillFix', () => ({
+jest.mock('@/lib/utils/autofillFix', () => ({
   initializeAutofillFix: jest.fn(),
   applyAutofillFix: jest.fn(),
 }));

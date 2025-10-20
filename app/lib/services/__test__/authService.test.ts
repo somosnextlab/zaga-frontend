@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { AuthService } from '../authService';
+import { AuthService } from '../../auth/services/authService';
 
 // Mock de las dependencias
 jest.mock('../../supabase/client', () => ({
@@ -19,7 +19,7 @@ jest.mock('../../supabase/client', () => ({
   }),
 }));
 
-jest.mock('../../../../lib/api', () => ({
+jest.mock('@/api', () => ({
   apiPost: jest.fn(),
   parseApiResponse: jest.fn(),
 }));

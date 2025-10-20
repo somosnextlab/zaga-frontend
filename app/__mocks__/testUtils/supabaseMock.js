@@ -13,6 +13,6 @@ export const mockSupabaseClient = () => ({
 });
 
 // Mock por defecto para Supabase
-jest.mock('@/app/lib/supabase/client', () => ({
+jest.mock('@/lib/supabase/client', () => ({
   supabaseClient: mockSupabaseClient,
 }));

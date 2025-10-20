@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ConditionalAuthProvider } from './components/auth/ConditionalAuthProvider';
-import { Header } from '../components/core/Header';
+import { ConditionalAuthProvider } from './components/auth/ConditionalAuthProvider/ConditionalAuthProvider';
+import { Header } from './components/core/Header/Header';
 
 const inter = Inter({
   variable: '--font-inter',

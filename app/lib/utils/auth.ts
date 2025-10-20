@@ -1,53 +1,54 @@
-import { User } from '@supabase/supabase-js';
-import { ROUTES } from '../constants/routes';
-import { UserRole } from '../types/auth';
+/**
+ * Utilidades de autenticación para Zaga Frontend
+ */
+
+import { supabaseClient } from '../supabase/client';
 
 /**
- * Obtiene el rol del usuario desde app_metadata
- * @param user - Usuario de Supabase o null
- * @returns Rol del usuario ('admin' o 'cliente')
+ * Obtiene el rol del usuario actual
  */
-export const getUserRole = (user: User | null): UserRole => {
-  const role = user?.app_metadata?.role;
-  return role === 'admin' ? 'admin' : 'cliente';
+export const getUserRole = async (): Promise<string | null> => {
+  try {
+    const supabase = supabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return null;
+    }
+
+    // Obtener el rol del usuario desde los metadatos
+    const role = user.user_metadata?.role || user.app_metadata?.role;
+    return role || null;
+  } catch (error) {
+    console.error('Error getting user role:', error);
+    return null;
+  }
 };
 
 /**
- * Obtiene la ruta del dashboard según el rol del usuario
- * @param role - Rol del usuario
- * @returns Ruta del dashboard correspondiente
+ * Verifica si el usuario está autenticado
  */
-export const getDashboardRoute = (role: UserRole): string => {
-  return role === 'admin' ? ROUTES.ADMIN_DASHBOARD : ROUTES.USER_DASHBOARD;
+export const isAuthenticated = async (): Promise<boolean> => {
+  try {
+    const supabase = supabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    return !!user;
+  } catch (error) {
+    console.error('Error checking authentication:', error);
+    return false;
+  }
 };
 
 /**
- * Verifica si una ruta es protegida (requiere autenticación)
- * @param pathname - Ruta a verificar
- * @returns true si la ruta es protegida
+ * Obtiene el usuario actual
  */
-export const isProtectedRoute = (pathname: string): boolean => {
-  return (
-    pathname === ROUTES.USER_DASHBOARD ||
-    pathname === ROUTES.ADMIN_DASHBOARD ||
-    pathname.startsWith('/prestamos')
-  );
-};
-
-/**
- * Verifica si una ruta es de administración
- * @param pathname - Ruta a verificar
- * @returns true si la ruta es de admin
- */
-export const isAdminRoute = (pathname: string): boolean => {
-  return pathname === ROUTES.ADMIN_DASHBOARD;
-};
-
-/**
- * Verifica si una ruta es privada (solo para clientes)
- * @param pathname - Ruta a verificar
- * @returns true si la ruta es privada
- */
-export const isPrivateRoute = (pathname: string): boolean => {
-  return pathname === ROUTES.USER_DASHBOARD;
+export const getCurrentUser = async () => {
+  try {
+    const supabase = supabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    return null;
+  }
 };

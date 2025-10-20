@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 import { renderHook, act } from '@testing-library/react';
-import { useAuth } from '../useAuth';
-import { authService } from '../../services/authService';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { authService } from '../../auth/services/authService';
 
 // Mock del router
 const mockPush = jest.fn();
@@ -14,7 +14,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 // Mock de authService
-jest.mock('../../services/authService', () => ({
+jest.mock('../../auth/services/authService', () => ({
   authService: {
     validateAndRefreshSession: jest.fn(),
     getAuthState: jest.fn(),
@@ -24,7 +24,7 @@ jest.mock('../../services/authService', () => ({
 }));
 
 // Mock de sessionService
-jest.mock('../../services/sessionService', () => ({
+jest.mock('../../auth/services/sessionService', () => ({
   sessionService: {
     isSessionValid: jest.fn(),
     clearSession: jest.fn(),
@@ -44,7 +44,7 @@ describe('useAuth - Session Persistence', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockPush.mockClear();
-    
+
     // Configurar mocks por defecto
     (authService.onAuthStateChange as jest.Mock).mockReturnValue({
       data: {
@@ -167,12 +167,12 @@ describe('useAuth - Session Persistence', () => {
 
       const { result } = renderHook(() => useAuth());
 
-      let refreshResult;
+      let refreshResult: { success: boolean; error?: string } | undefined;
       await act(async () => {
         refreshResult = await result.current.refreshSession();
       });
 
-      expect(refreshResult.success).toBe(true);
+      expect(refreshResult?.success).toBe(true);
       expect(authService.refreshSession).toHaveBeenCalled();
     });
 
@@ -184,13 +184,13 @@ describe('useAuth - Session Persistence', () => {
 
       const { result } = renderHook(() => useAuth());
 
-      let refreshResult;
+      let refreshResult: { success: boolean; error?: string } | undefined;
       await act(async () => {
         refreshResult = await result.current.refreshSession();
       });
 
-      expect(refreshResult.success).toBe(false);
-      expect(refreshResult.error).toBe('Token expirado');
+      expect(refreshResult?.success).toBe(false);
+      expect(refreshResult?.error).toBe('Token expirado');
     });
   });
 

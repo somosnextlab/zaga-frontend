@@ -1,64 +1,55 @@
 # 🏦 Zaga Frontend
 
-Frontend de la aplicación Zaga, una plataforma de préstamos desarrollada con Next.js 15 y Supabase Auth.
+Plataforma de préstamos desarrollada con Next.js 15, Supabase Auth y Tailwind CSS.
 
 ## 🚀 Características
 
-- **Autenticación segura** con Supabase Auth
-- **Control de acceso basado en roles** (Admin/Cliente)
-- **Dashboard diferenciado** según el tipo de usuario
+- **Autenticación segura** con Supabase Auth y roles (Admin/Cliente)
+- **Dashboard diferenciado** según tipo de usuario
 - **API wrapper** con JWT automático
-- **Diseño responsive** y moderno
-- **Componentes reutilizables** y escalables
+- **Diseño responsive** con shadcn/ui
+- **Componentes reutilizables** siguiendo principios SOLID
 
-## 🛠️ Tecnologías
+## 🛠️ Stack Tecnológico
 
 - **Framework:** Next.js 15 (App Router)
 - **Autenticación:** Supabase Auth
-- **Estilos:** Tailwind CSS
-- **UI Components:** shadcn/ui
+- **Estilos:** Tailwind CSS + SCSS
+- **UI:** shadcn/ui
 - **Lenguaje:** TypeScript
-- **Formateo:** Prettier
-- **Linting:** ESLint
+- **Testing:** Jest + React Testing Library
 
 ## 📁 Estructura del Proyecto
 
 ```
 zaga-frontend/
 ├── app/                          # App Router de Next.js
-│   ├── (admin)/                  # Rutas del panel administrativo
-│   │   └── adminDashboard/       # Dashboard de administrador
-│   ├── (private)/                # Rutas del panel de cliente
-│   │   └── userDashboard/        # Dashboard de cliente
-│   ├── auth/                     # Autenticación
-│   │   ├── login/               # Página de login
-│   │   └── signout/             # Ruta de logout
-│   ├── lib/                     # Utilidades y configuración
-│   │   ├── constants/           # Constantes (rutas, etc.)
-│   │   ├── supabase/            # Cliente Supabase
-│   │   ├── types/               # Tipos TypeScript
-│   │   └── utils/               # Funciones utilitarias
-│   └── prestamos/               # Página de préstamos
-├── components/                   # Componentes reutilizables
-│   ├── core/                    # Componentes principales
-│   │   ├── DashboardLayout.tsx  # Layout común para dashboards
-│   │   ├── StatCard.tsx         # Tarjeta de estadísticas
-│   │   ├── QuickActions.tsx     # Acciones rápidas
-│   │   ├── footer.tsx           # Footer
-│   │   └── loan-simulator.tsx   # Simulador de préstamos
-│   └── ui/                      # Componentes UI (shadcn/ui)
-├── lib/                         # Utilidades globales
-│   ├── api.ts                   # Wrapper para API con JWT
-│   ├── supabaseClient.ts        # Cliente Supabase
-│   └── utils.ts                 # Utilidades generales
-└── middleware.ts                # Middleware de autenticación
+│   ├── (admin)/                  # Panel administrativo
+│   ├── (private)/                # Panel de cliente
+│   ├── auth/                     # Autenticación (login, register, etc.)
+│   ├── api/                      # API Routes
+│   ├── components/               # Componentes reutilizables
+│   │   ├── auth/                 # Componentes de autenticación
+│   │   ├── core/                 # Componentes principales
+│   │   └── ui/                   # Componentes UI (shadcn/ui)
+│   ├── lib/                      # Utilidades y configuración
+│   │   ├── auth/                 # Lógica de autenticación
+│   │   ├── constants/            # Constantes
+│   │   ├── hooks/                # Hooks personalizados
+│   │   ├── services/             # Servicios
+│   │   ├── supabase/             # Cliente Supabase
+│   │   └── utils/                # Utilidades
+│   ├── prestamos/                # Página de préstamos
+│   ├── api.ts                    # Wrapper API con JWT
+│   └── page.tsx                  # Página principal
+├── docs/                         # Documentación
+├── middleware.ts                 # Middleware de autenticación
+└── package.json                  # Dependencias
 ```
 
 ## ⚙️ Configuración
 
 ### Variables de Entorno
-
-Crea un archivo `.env.local` en la raíz del proyecto:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
@@ -70,143 +61,94 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ### Instalación
 
 ```bash
-# Instalar dependencias
-npm install
-
-# Ejecutar en modo desarrollo
-npm run dev
-
-# Construir para producción
-npm run build
-
-# Ejecutar en producción
-npm start
+npm install          # Instalar dependencias
+npm run dev          # Desarrollo
+npm run build        # Producción
+npm run start        # Servidor producción
 ```
 
 ## 🔐 Autenticación
 
-### Roles de Usuario
+**Roles:** Admin (acceso completo) | Cliente (panel personal)
 
-- **Admin:** Acceso completo al sistema, gestión de usuarios y préstamos
-- **Cliente:** Acceso a su panel personal, visualización de préstamos propios
+**Flujo:**
+1. Login en `/auth/login`
+2. Supabase valida credenciales
+3. Redirección según rol: Admin → `/adminDashboard` | Cliente → `/userDashboard`
+4. JWT automático en todas las requests
 
-### Flujo de Autenticación
+## 🏗️ Arquitectura
 
-1. **Login:** Usuario ingresa credenciales en `/auth/login`
-2. **Verificación:** Supabase valida las credenciales
-3. **Redirección:** Según el rol (`app_metadata.role`):
-   - Admin → `/adminDashboard`
-   - Cliente → `/userDashboard`
-4. **JWT:** Token incluido automáticamente en todas las requests al backend
+### Estructura de Componentes (SOLID)
+```
+ComponentName/
+├── ComponentName.tsx           # Componente principal
+├── ComponentName.types.ts      # Tipos TypeScript
+├── ComponentName.module.scss   # Estilos SCSS
+└── __test__/                   # Tests
+    └── ComponentName.test.tsx
+```
+
+### Convenciones
+- **Componentes**: PascalCase (`DashboardLayout`)
+- **Archivos**: PascalCase para componentes, camelCase para utilidades
+- **Tests**: `[nombre].test.tsx`
 
 ## 🎨 Componentes Principales
 
-### DashboardLayout
-
-Layout común para ambos dashboards con:
-
-- Header con información del usuario
-- Indicador de rol
-- Área de contenido personalizable
-
-### StatCard
-
-Tarjeta reutilizable para mostrar estadísticas:
-
-- Icono personalizable
-- Título y valor
-- Colores configurables
-
-### QuickActions
-
-Componente para acciones rápidas:
-
-- Grid responsive
-- Iconos y títulos personalizables
-- Número de columnas configurable
+- **DashboardLayout**: Layout común con header y área de contenido
+- **StatCard**: Tarjeta de estadísticas reutilizable
+- **QuickActions**: Grid de acciones rápidas responsive
 
 ## 🔌 API Integration
 
-### apiFetch
-
-Wrapper que automáticamente:
-
-- Incluye JWT en el header `Authorization`
-- Maneja errores 401 (redirección a login)
-- Proporciona funciones helper: `apiGet`, `apiPost`, `apiPut`
-
 ```typescript
-// Ejemplo de uso
+// Uso del wrapper API
 const response = await apiGet('/prestamos');
 const data = await parseApiResponse<PrestamosResponse>(response);
 ```
 
-## 🛡️ Seguridad
-
-- **Middleware:** Protección de rutas en el servidor
-- **JWT:** Tokens seguros para autenticación
-- **RLS:** Row Level Security en Supabase
-- **Validación:** Validación de tipos con TypeScript
-
-## 📱 Responsive Design
-
-- **Mobile-first:** Diseño optimizado para móviles
-- **Breakpoints:** Adaptación a diferentes tamaños de pantalla
-- **Touch-friendly:** Interfaz táctil optimizada
+**Características:**
+- JWT automático en headers
+- Manejo de errores 401
+- Funciones helper: `apiGet`, `apiPost`, `apiPut`
 
 ## 🧪 Testing
 
+**Estado:** ✅ Lint | ✅ Build | ⚠️ Tests (configuración actualizada)
+
 ```bash
-# Ejecutar tests
-npm test
-
-# Tests con coverage
-npm run test:coverage
-
-# Tests una sola vez
-npm run test:single
+npm test                    # Ejecutar tests
+npm run test:coverage       # Tests con coverage
 ```
+
+**Framework:** Jest + React Testing Library
 
 ## 🚀 Deployment
 
-### Vercel (Recomendado)
-
 ```bash
-# Instalar Vercel CLI
 npm i -g vercel
-
-# Deploy
 vercel
 ```
 
-### Variables de Entorno en Producción
+## 📋 Scripts
 
-Asegúrate de configurar las mismas variables de entorno en tu plataforma de deployment.
+- `npm run dev` - Desarrollo
+- `npm run build` - Producción
+- `npm run lint` - ESLint
+- `npm test` - Tests
 
-## 📋 Scripts Disponibles
+## 🔄 Cambios Recientes
 
-- `npm run dev` - Servidor de desarrollo
-- `npm run build` - Construcción para producción
-- `npm run start` - Servidor de producción
-- `npm run lint` - Linting con ESLint
-- `npm test` - Ejecutar tests
-- `npm run test:coverage` - Tests con coverage
+### ✅ Reestructuración Completa
+- `components/` y `lib/` movidos dentro de `app/`
+- Componentes anidados con archivos `.types.ts` y `.module.scss`
+- Imports actualizados para nueva estructura
+- Lint limpio y build exitoso
+- Archivos duplicados eliminados
 
-## 🤝 Contribución
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto es propiedad de NextLab.
-
-## 🆘 Soporte
-
-Para soporte técnico, contacta al equipo de desarrollo de NextLab.
+### 🚧 En Progreso
+- Tests: Mocks actualizados, ajustes menores pendientes
 
 ---
 

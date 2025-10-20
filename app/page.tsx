@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { HeroSection } from '@/components/core/HeroSection';
-import { Benefits } from '@/components/core/Benefits';
-import { Process } from '@/components/core/Process';
-import { FAQ } from '@/components/core/FAQ';
-import { Footer } from '@/components/core/footer';
+import { HeroSection } from '@/components/core/HeroSection/HeroSection';
+import { Benefits } from '@/components/core/Benefits/Benefits';
+import { Process } from '@/components/core/Process/Process';
+import { FAQ } from '@/components/core/FAQ/FAQ';
+import { Footer } from './components/core/Footer/Footer';
 
 export const dynamic = 'force-dynamic';
 

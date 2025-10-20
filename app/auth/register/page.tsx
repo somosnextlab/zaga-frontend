@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthActions } from '@/app/lib/hooks/useAuthActions';
+import { useAuthActions } from '@/app/lib/auth/hooks/useAuthActions';
 import {
   initializeAutofillFix,
   applyAutofillFix,
 } from '@/app/lib/utils/autofillFix';
-import { RegisterFormData, registerSchema } from '@/app/lib/schemas/auth';
+import { RegisterFormData, registerSchema } from '@/app/lib/auth/schemas/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/app/lib/hooks/useAuth';
+import { useAuth } from '@/app/lib/auth/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import {
   Card,
