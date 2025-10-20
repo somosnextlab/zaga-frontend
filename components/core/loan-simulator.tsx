@@ -100,7 +100,7 @@ export function LoanSimulator() {
               min={1000}
               max={50000}
               step={1000}
-              className="[&_[role=slider]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&_[role=slider]]:shadow-lg"
+              className="[&_[data-slot=slider-track]]:bg-[hsl(var(--color-zaga-silver))]/20 [&_[data-slot=slider-track]]:h-2 [&_[data-slot=slider-range]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
             />
           </div>
           <div className="flex justify-between text-caption text-[hsl(var(--color-zaga-silver))] px-4">
@@ -126,7 +126,7 @@ export function LoanSimulator() {
               min={3}
               max={36}
               step={1}
-              className="[&_[role=slider]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&_[role=slider]]:shadow-lg"
+              className="[&_[data-slot=slider-track]]:bg-[hsl(var(--color-zaga-silver))]/20 [&_[data-slot=slider-track]]:h-2 [&_[data-slot=slider-range]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
             />
           </div>
           <div className="flex justify-between text-caption text-[hsl(var(--color-zaga-silver))] px-4">
@@ -166,7 +166,7 @@ export function LoanSimulator() {
         <Button
           onClick={handleContinuar}
           disabled={isLoading}
-          className="w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white"
+          className="cursor-pointer w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white"
           size="lg"
         >
           {isLoading ? 'Procesando...' : 'Continuar con mi solicitud'}
