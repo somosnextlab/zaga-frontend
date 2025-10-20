@@ -27,6 +27,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
+// Deshabilitar prerenderizado para esta página
+export const dynamic = 'force-dynamic';
+
 interface LoginFormErrors {
   general?: string;
   rateLimit?: string;

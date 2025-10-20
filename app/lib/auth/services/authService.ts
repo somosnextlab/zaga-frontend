@@ -77,6 +77,13 @@ export class AuthService {
    */
   private isSupabaseConfigured(): boolean {
     try {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      
+      if (!url || !anonKey || url === 'https://placeholder.supabase.co') {
+        return false;
+      }
+      
       const config = this.supabase;
       return !!config;
     } catch (error) {
