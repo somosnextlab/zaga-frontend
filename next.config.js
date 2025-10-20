@@ -1,6 +1,3 @@
-import packageJson from './package.json' with { type: 'json' };
-const { version } = packageJson;
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Configuración para paquetes externos del servidor
@@ -8,11 +5,6 @@ const nextConfig = {
   
   // Output optimizado para Vercel
   output: 'standalone',
-  
-  // Variables de entorno disponibles en el cliente
-  env: {
-    version,
-  },
   
   // Configuración de webpack para manejar variables de entorno
   webpack: (config, { isServer }) => {
