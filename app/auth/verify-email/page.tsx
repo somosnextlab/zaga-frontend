@@ -226,7 +226,7 @@ function VerifyEmailContent() {
               </div>
             )}
 
-            <Button onClick={handleContinue} className="w-full">
+            <Button onClick={handleContinue} className="w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white">
               {verificationStatus === 'success'
                 ? 'Continuar al Login'
                 : 'Intentar de Nuevo'}
