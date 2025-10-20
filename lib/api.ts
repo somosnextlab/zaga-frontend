@@ -6,7 +6,7 @@ import { getAccessToken } from './supabaseClient';
  * URL base del backend
  */
 const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
 
 /**
  * Headers por defecto para las peticiones

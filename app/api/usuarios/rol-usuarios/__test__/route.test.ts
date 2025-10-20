@@ -10,7 +10,8 @@ const mockFetch = jest.fn();
 describe('API - Usuarios Rol Usuarios', () => {
   beforeEach(() => {
     global.fetch = mockFetch as jest.MockedFunction<typeof fetch>;
-    process.env.BACKEND_API_URL = 'http://localhost:8000';
+    process.env.NEXT_PUBLIC_BACKEND_URL =
+      'https://zaga-backend-production.up.railway.app';
   });
 
   afterEach(() => {
@@ -28,7 +29,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     });
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3001/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer valid-token',
@@ -45,7 +46,7 @@ describe('API - Usuarios Rol Usuarios', () => {
       role: 'cliente',
     });
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost:8000/usuarios/rol-usuarios',
+      'https://zaga-backend-production.up.railway.app/usuarios/rol-usuario',
       {
         method: 'GET',
         headers: {
@@ -58,7 +59,7 @@ describe('API - Usuarios Rol Usuarios', () => {
 
   test('02 - should return 401 when no authorization header', async () => {
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/mi-rol'
+      'http://localhost:3000/api/usuarios/rol-usuario'
     );
 
     const response = await GET(request);
@@ -73,7 +74,7 @@ describe('API - Usuarios Rol Usuarios', () => {
 
   test('03 - should return 401 when authorization header is invalid', async () => {
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Invalid token',
@@ -99,7 +100,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     });
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer invalid-token',
@@ -124,7 +125,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     });
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer valid-token',
@@ -151,7 +152,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     });
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer valid-token',
@@ -172,7 +173,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     mockFetch.mockRejectedValueOnce(new TypeError('fetch failed'));
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer valid-token',
@@ -197,7 +198,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     });
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer valid-token',
@@ -227,7 +228,7 @@ describe('API - Usuarios Rol Usuarios', () => {
       });
 
       const request = new NextRequest(
-        'http://localhost:3000/api/usuarios/rol-usuarios',
+        'http://localhost:3000/api/usuarios/rol-usuario',
         {
           headers: {
             authorization: 'Bearer valid-token',
@@ -258,7 +259,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     });
 
     const request = new NextRequest(
-      'http://localhost:3000/api/usuarios/rol-usuarios',
+      'http://localhost:3000/api/usuarios/rol-usuario',
       {
         headers: {
           authorization: 'Bearer valid-token',
@@ -269,7 +270,7 @@ describe('API - Usuarios Rol Usuarios', () => {
     await GET(request);
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost:8000/usuarios/rol-usuarios',
+      'https://zaga-backend-production.up.railway.app/usuarios/rol-usuario',
       expect.any(Object)
     );
   });

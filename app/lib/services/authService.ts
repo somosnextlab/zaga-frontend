@@ -452,7 +452,6 @@ export class AuthService {
 
     // Si es admin (asignado en Supabase), usar ese rol
     if (supabaseRole === 'admin') {
-      console.log('getUserRole: Usuario admin detectado desde Supabase');
       return 'admin';
     }
 
@@ -481,7 +480,6 @@ export class AuthService {
       const data = await response.json();
 
       if (data.success && validRoles.includes(data.role)) {
-        console.log('getUserRole: Rol obtenido desde backend:', data.role);
         return data.role as UserRole;
       }
 

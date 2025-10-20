@@ -19,8 +19,8 @@ export async function GET(request: NextRequest) {
     const token = authHeader.substring(7); // Remover 'Bearer '
 
     // Llamar al endpoint del backend
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/usuarios/rol-usuarios`, {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const response = await fetch(`${backendUrl}/usuarios/rol-usuario`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
