@@ -37,18 +37,32 @@ export async function GET(request: NextRequest) {
         }
       );
 
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-      if (!error) {
-        // Verificar si el usuario necesita completar su perfil
+      if (!error && data?.session) {
+        // Obtener el usuario después del intercambio de código
         const {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user) {
-          // Redirigir a la página de verificación de email para mostrar el estado
+        if (user && user.email_confirmed_at) {
+          // Si el email está confirmado, redirigir con los tokens
+          const redirectUrl = new URL(`${origin}/auth/verify-email`);
+          redirectUrl.searchParams.set(
+            'access_token',
+            data.session.access_token
+          );
+          redirectUrl.searchParams.set(
+            'refresh_token',
+            data.session.refresh_token
+          );
+          redirectUrl.searchParams.set('verified', 'true');
+
+          return NextResponse.redirect(redirectUrl.toString());
+        } else {
+          // Si el email no está confirmado, redirigir con error
           return NextResponse.redirect(
-            `${origin}/auth/verify-email?verified=true`
+            `${origin}/auth/verify-email?error=email_not_confirmed`
           );
         }
       }

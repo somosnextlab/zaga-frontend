@@ -27,10 +27,18 @@ describe('API - Auth Callback', () => {
     jest.clearAllMocks();
   });
 
-  test('01 - should redirect to verify-email with verified=true when code is valid', async () => {
+  test('01 - should redirect to verify-email with tokens when code is valid', async () => {
     const mockSupabase = {
       auth: {
-        exchangeCodeForSession: jest.fn().mockResolvedValue({ error: null }),
+        exchangeCodeForSession: jest.fn().mockResolvedValue({
+          data: {
+            session: {
+              access_token: 'test-access-token',
+              refresh_token: 'test-refresh-token',
+            },
+          },
+          error: null,
+        }),
         getUser: jest.fn().mockResolvedValue({
           data: {
             user: {
@@ -52,7 +60,7 @@ describe('API - Auth Callback', () => {
 
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe(
-      'http://localhost:3000/auth/verify-email?verified=true'
+      'http://localhost:3000/auth/verify-email?access_token=test-access-token&refresh_token=test-refresh-token&verified=true'
     );
   });
 
@@ -92,7 +100,15 @@ describe('API - Auth Callback', () => {
   test('04 - should handle POST requests by redirecting to GET', async () => {
     const mockSupabase = {
       auth: {
-        exchangeCodeForSession: jest.fn().mockResolvedValue({ error: null }),
+        exchangeCodeForSession: jest.fn().mockResolvedValue({
+          data: {
+            session: {
+              access_token: 'test-access-token',
+              refresh_token: 'test-refresh-token',
+            },
+          },
+          error: null,
+        }),
         getUser: jest.fn().mockResolvedValue({
           data: {
             user: {
@@ -117,7 +133,7 @@ describe('API - Auth Callback', () => {
 
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe(
-      'http://localhost:3000/auth/verify-email?verified=true'
+      'http://localhost:3000/auth/verify-email?access_token=test-access-token&refresh_token=test-refresh-token&verified=true'
     );
   });
 

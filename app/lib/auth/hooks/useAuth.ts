@@ -207,7 +207,7 @@ export const useAuth = () => {
           throw new Error('Usuario no encontrado');
         }
 
-        const result = await authService.registerInBackend(user);
+        const result = await authService.registerInBackend();
 
         if (result.success) {
           const newState = await authService.getAuthState();

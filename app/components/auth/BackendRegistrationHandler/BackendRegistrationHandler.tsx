@@ -21,7 +21,7 @@ export const BackendRegistrationHandler: React.FC<BackendRegistrationHandlerProp
   onError,
 }) => {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [registrationStatus, setRegistrationStatus] = useState<
     'processing' | 'success' | 'error'
   >('processing');
@@ -29,7 +29,7 @@ export const BackendRegistrationHandler: React.FC<BackendRegistrationHandlerProp
 
   useEffect(() => {
     const handleBackendRegistration = async () => {
-      if (!user || !isAuthenticated || isLoading) {
+      if (!user || !isAuthenticated) {
         return;
       }
 
@@ -38,7 +38,7 @@ export const BackendRegistrationHandler: React.FC<BackendRegistrationHandlerProp
         const { authService } = await import('@/app/lib/auth/services/authService');
         
         // Ejecutar registro en backend
-        const result = await authService.registerInBackend(user);
+        const result = await authService.registerInBackend();
         
         if (result.success) {
           setRegistrationStatus('success');
@@ -72,7 +72,7 @@ export const BackendRegistrationHandler: React.FC<BackendRegistrationHandlerProp
     };
 
     handleBackendRegistration();
-  }, [user, isAuthenticated, isLoading, router, onComplete, onError]);
+  }, [user, isAuthenticated, router, onComplete, onError]);
 
   if (registrationStatus === 'success') {
     return (
@@ -115,14 +115,14 @@ export const BackendRegistrationHandler: React.FC<BackendRegistrationHandlerProp
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Card className="max-w-md w-full">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-red-600">
-              Error de Configuración
-            </CardTitle>
-            <CardDescription>
-              Hubo un problema al configurar tu cuenta
-            </CardDescription>
-          </CardHeader>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl text-red-600">
+            Error de Configuración
+          </CardTitle>
+          <CardDescription>
+            Tu cuenta fue creada exitosamente, pero hubo un problema al configurarla en el sistema
+          </CardDescription>
+        </CardHeader>
           <CardContent className="text-center">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
               <svg
@@ -142,12 +142,26 @@ export const BackendRegistrationHandler: React.FC<BackendRegistrationHandlerProp
             <p className="text-gray-600 mb-4">
               {errorMessage}
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-            >
-              Intentar de Nuevo
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+              >
+                Reintentar Configuración
+              </button>
+              <button
+                onClick={() => router.push('/auth/login')}
+                className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700"
+              >
+                Ir al Login
+              </button>
+              <button
+                onClick={() => router.push('/')}
+                className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300"
+              >
+                Volver al Inicio
+              </button>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -3,7 +3,6 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '../services/authService';
-import { User } from '@supabase/supabase-js';
 import {
   LoginFormData,
   RegisterFormData,
@@ -138,13 +137,12 @@ export const useAuthActions = () => {
 
   /**
    * Maneja el registro en el backend
-   * @param user - Usuario a registrar en el backend
    * @returns Promise con el resultado del registro en backend
    */
   const registerInBackend = useCallback(
-    async (user: User): Promise<AuthOperationResult> => {
+    async (): Promise<AuthOperationResult> => {
       try {
-        const result = await authService.registerInBackend(user);
+        const result = await authService.registerInBackend();
         return result;
       } catch (error) {
         const authError = createAuthError(

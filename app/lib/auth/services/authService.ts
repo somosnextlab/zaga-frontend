@@ -135,7 +135,7 @@ export class AuthService {
         email: sanitizedEmail,
         password: formData.password,
         options: {
-          emailRedirectTo: `${this.getBaseUrl()}/auth/verify-email`,
+          emailRedirectTo: `${this.getBaseUrl()}/api/auth/callback`,
         },
       });
 
@@ -170,7 +170,7 @@ export class AuthService {
   }
 
   /**
-   * Inicia sesión y maneja el registro automático en el backend
+   * Inicia sesión
    * @param formData - Datos del formulario de login
    * @returns Promise con el resultado del login
    */
@@ -192,19 +192,10 @@ export class AuthService {
       });
 
       if (error) {
-        const authError = createAuthError(`Error de login: ${error.message}`, {
-          email: sanitizedEmail,
-        });
-        errorHandler.logError(authError, 'AuthService.login');
         return this.createErrorResult(error.message);
       }
 
       if (!data.user) {
-        const authError = createAuthError(
-          'No se pudo obtener información del usuario',
-          { email: sanitizedEmail }
-        );
-        errorHandler.logError(authError, 'AuthService.login');
         return this.createErrorResult(
           'No se pudo obtener información del usuario'
         );
@@ -219,31 +210,12 @@ export class AuthService {
       // Persistir tokens de sesión
       this.persistSessionTokens(data.session);
 
-      // Manejar registro en backend si es necesario
-      const backendResult = await this.handleBackendRegistration(data.user);
-      if (!backendResult.success) {
-        return {
-          success: false,
-          error: backendResult.error,
-          needsBackendRegistration: true,
-          user: data.user,
-        };
-      }
-
       return {
         success: true,
         user: data.user,
         needsBackendRegistration: false,
       };
-    } catch (error) {
-      const authError = createAuthError(
-        'Error inesperado durante el inicio de sesión',
-        {
-          email: formData.email,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        }
-      );
-      errorHandler.logError(authError, 'AuthService.login');
+    } catch {
       return this.createErrorResult(
         'Error inesperado durante el inicio de sesión'
       );
@@ -252,10 +224,9 @@ export class AuthService {
 
   /**
    * Registra el usuario en el backend después del login exitoso
-   * @param user - Usuario a registrar en el backend
    * @returns Promise con el resultado del registro
    */
-  async registerInBackend(user: User): Promise<BackendResult> {
+  async registerInBackend(): Promise<BackendResult> {
     try {
       // Obtener el token de acceso de la sesión
       const accessToken = sessionService.getAccessToken();
@@ -273,60 +244,26 @@ export class AuthService {
 
       // Manejar respuesta 409 (usuario ya registrado)
       if (response.status === 409) {
-        // Marcar inmediatamente como registrado para evitar loops
         await this.updateUserMetadata({ backend_registered: true });
         return { success: true };
       }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const backendError = createAuthError(
-          `Backend registration failed: ${errorData.error || response.statusText}`,
-          { userId: user.id, status: response.status }
-        );
-        errorHandler.logError(backendError, 'AuthService.registerInBackend');
         return { success: false, error: errorData.error || 'Error al registrar en el sistema' };
       }
 
       const result = await response.json();
 
       if (result.success) {
-        // Marcar como registrado en backend
         await this.updateUserMetadata({ backend_registered: true });
         return { success: true };
       } else {
-        const backendError = createAuthError(
-          `Backend registration failed: ${result.error}`,
-          { userId: user.id }
-        );
-        errorHandler.logError(backendError, 'AuthService.registerInBackend');
         return { success: false, error: result.error };
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      // Determinar si es un error que debe generar reintentos automáticos
-      const isRetryableError =
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('network') ||
-        errorMessage.includes('timeout') ||
-        errorMessage.includes('ECONNREFUSED') ||
-        errorMessage.includes('ENOTFOUND');
-
-      const backendError = createAuthError('Error al registrar en el sistema', {
-        userId: user.id,
-        error: errorMessage,
-        isRetryable: isRetryableError,
-      });
-      errorHandler.logError(backendError, 'AuthService.registerInBackend');
-
-      return {
-        success: false,
-        error: isRetryableError
-          ? 'Error de conexión. Reintentando automáticamente...'
-          : `Error al registrar en el sistema: ${errorMessage}`,
-      };
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return { success: false, error: `Error al registrar en el sistema: ${errorMessage}` };
     }
   }
 
@@ -407,7 +344,8 @@ export class AuthService {
       }
 
       const role = await this.getUserRole(user);
-      const needsBackendRegistration = this.shouldRegisterInBackend(user, role);
+      const isAdmin = role === 'admin';
+      const needsBackendRegistration = !isAdmin && !user.user_metadata?.backend_registered;
       const needsProfileCompletion = !user.user_metadata?.profile_completed;
 
       return {
@@ -573,35 +511,6 @@ export class AuthService {
     return { isValid: true };
   }
 
-  /**
-   * Maneja el registro en backend si es necesario
-   * @param user - Usuario a procesar
-   * @returns Resultado del procesamiento
-   */
-  private async handleBackendRegistration(user: User): Promise<BackendResult> {
-    const userRole = user.app_metadata?.role;
-    const isAdmin = userRole === 'admin';
-    const needsBackendRegistration =
-      !isAdmin && !user.user_metadata?.backend_registered;
-
-    if (!needsBackendRegistration) {
-      return { success: true };
-    }
-
-    // El método registerInBackend ya maneja la actualización del flag backend_registered
-    return await this.registerInBackend(user);
-  }
-
-  /**
-   * Determina si el usuario necesita registro en backend
-   * @param user - Usuario a evaluar
-   * @param role - Rol del usuario
-   * @returns true si necesita registro en backend
-   */
-  private shouldRegisterInBackend(user: User, role: UserRole | null): boolean {
-    const isAdmin = role === 'admin';
-    return !isAdmin && !user.user_metadata?.backend_registered;
-  }
 
   /**
    * Crea un estado de autenticación vacío

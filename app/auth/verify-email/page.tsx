@@ -19,19 +19,14 @@ function VerifyEmailContent() {
   const { isLoading } = useAuth();
   const [isVerifying, setIsVerifying] = useState(true);
   const [verificationStatus, setVerificationStatus] = useState<
-    'success' | 'error' | 'pending' | 'backend-registration'
-  >('pending');
+    'success' | 'error' | 'backend-registration'
+  >('success');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        // Obtener parámetros de la URL
-        const verified = searchParams.get('verified');
         const error = searchParams.get('error');
-        const token = searchParams.get('token');
-        const type = searchParams.get('type');
-        const token_hash = searchParams.get('token_hash');
         const access_token = searchParams.get('access_token');
         const refresh_token = searchParams.get('refresh_token');
 
@@ -43,90 +38,31 @@ function VerifyEmailContent() {
           return;
         }
 
-        // Si viene del callback exitoso, verificar el estado del usuario
-        if (verified === 'true') {
+        // Si hay tokens, establecer la sesión
+        if (access_token && refresh_token) {
           const { supabaseClient } = await import('@/app/lib/supabase/client');
           const supabase = supabaseClient();
 
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
-
-          if (user && user.email_confirmed_at) {
-            // Cambiar a estado de registro en backend
-            setVerificationStatus('backend-registration');
-            setIsVerifying(false);
-            return;
-          } else {
-            setVerificationStatus('error');
-            setErrorMessage('No se pudo verificar el email');
-            setIsVerifying(false);
-            return;
-          }
-        }
-
-        // Verificar si el usuario ya está autenticado
-        const { supabaseClient } = await import('@/app/lib/supabase/client');
-        const supabase = supabaseClient();
-
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        // Si el usuario ya está autenticado y su email está verificado, mostrar éxito
-        if (user && user.email_confirmed_at) {
-          // Cambiar a estado de registro en backend
-          setVerificationStatus('backend-registration');
-          setIsVerifying(false);
-          return;
-        }
-
-        // Si hay access_token y refresh_token, es una verificación exitosa
-        if (access_token && refresh_token) {
-          // Establecer la sesión
-          const { error } = await supabase.auth.setSession({
+          const { error: sessionError } = await supabase.auth.setSession({
             access_token,
             refresh_token,
           });
 
-          if (error) {
-            console.error('Session error:', error);
+          if (sessionError) {
             setVerificationStatus('error');
-            setErrorMessage(error.message);
-          } else {
-            // Obtener el usuario después de establecer la sesión
-            const { data: { user } } = await supabase.auth.getUser();
-            
-            if (user && user.email_confirmed_at) {
-              // Cambiar a estado de registro en backend
-              setVerificationStatus('backend-registration');
-            } else {
-              setVerificationStatus('error');
-              setErrorMessage('No se pudo verificar el email');
-            }
+            setErrorMessage(sessionError.message);
+            setIsVerifying(false);
+            return;
           }
-        } else if (type === 'signup' && (token || token_hash)) {
-          // Verificar el email usando OTP
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: (token_hash || token) as string,
-            type: 'email',
-          });
 
-          if (error) {
-            console.error('Verification error:', error);
-            setVerificationStatus('error');
-            setErrorMessage(error.message);
+          // Verificar que el usuario esté autenticado y el email confirmado
+          const { data: { user } } = await supabase.auth.getUser();
+          
+          if (user && user.email_confirmed_at) {
+            setVerificationStatus('backend-registration');
           } else {
-            // Obtener el usuario después de la verificación OTP
-            const { data: { user } } = await supabase.auth.getUser();
-            
-            if (user && user.email_confirmed_at) {
-              // Cambiar a estado de registro en backend
-              setVerificationStatus('backend-registration');
-            } else {
-              setVerificationStatus('error');
-              setErrorMessage('No se pudo verificar el email');
-            }
+            setVerificationStatus('error');
+            setErrorMessage('No se pudo verificar el email');
           }
         } else {
           setVerificationStatus('error');
@@ -142,24 +78,11 @@ function VerifyEmailContent() {
     };
 
     verifyEmail();
-  }, [searchParams, router]);
+  }, [searchParams]);
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (verificationStatus === 'success') {
-      // Verificar si el usuario ya está autenticado
-      const { supabaseClient } = await import('@/app/lib/supabase/client');
-      const supabase = supabaseClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user && user.email_confirmed_at) {
-        // Si ya está autenticado, redirigir al dashboard
-        router.push('/userDashboard');
-      } else {
-        // Si no está autenticado, redirigir al login
-        router.push('/auth/login');
-      }
+      router.push('/userDashboard');
     } else {
       router.push('/auth/register');
     }
@@ -255,11 +178,31 @@ function VerifyEmailContent() {
               </div>
             )}
 
-            <Button onClick={handleContinue} className="w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white">
-              {verificationStatus === 'success'
-                ? 'Continuar al Login'
-                : 'Intentar de Nuevo'}
-            </Button>
+            <div className="space-y-3">
+              {verificationStatus === 'success' ? (
+                <Button onClick={handleContinue} className="w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white">
+                  Continuar al Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button onClick={handleContinue} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                    Reintentar Verificación
+                  </Button>
+                  <Button 
+                    onClick={() => router.push('/auth/login')} 
+                    className="w-full bg-gray-600 hover:bg-gray-700 text-white"
+                  >
+                    Ir al Login
+                  </Button>
+                  <Button 
+                    onClick={() => router.push('/')} 
+                    className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700"
+                  >
+                    Volver al Inicio
+                  </Button>
+                </>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
