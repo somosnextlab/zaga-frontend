@@ -7,7 +7,6 @@ import {
   RegisterFormData,
   LoginFormData,
   ProfileFormData,
-  BackendRegistrationResponse,
   ProfileCreationResponse,
   AuthState,
 } from '../types/auth';
@@ -258,22 +257,50 @@ export class AuthService {
    */
   async registerInBackend(user: User): Promise<BackendResult> {
     try {
-      const response = await apiPost('/usuarios/registro-inicial');
+      // Obtener el token de acceso de la sesión
+      const accessToken = sessionService.getAccessToken();
+      if (!accessToken) {
+        return { success: false, error: 'No hay token de acceso disponible' };
+      }
 
-      // Procesar respuesta exitosa
-      const result = await parseApiResponse<BackendRegistrationResponse>(
-        response
-      );
+      const response = await fetch('/api/usuarios/registro-inicial', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Manejar respuesta 409 (usuario ya registrado)
+      if (response.status === 409) {
+        // Marcar inmediatamente como registrado para evitar loops
+        await this.updateUserMetadata({ backend_registered: true });
+        return { success: true };
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const backendError = createAuthError(
+          `Backend registration failed: ${errorData.error || response.statusText}`,
+          { userId: user.id, status: response.status }
+        );
+        errorHandler.logError(backendError, 'AuthService.registerInBackend');
+        return { success: false, error: errorData.error || 'Error al registrar en el sistema' };
+      }
+
+      const result = await response.json();
 
       if (result.success) {
+        // Marcar como registrado en backend
+        await this.updateUserMetadata({ backend_registered: true });
         return { success: true };
       } else {
         const backendError = createAuthError(
-          `Backend registration failed: ${result.message}`,
+          `Backend registration failed: ${result.error}`,
           { userId: user.id }
         );
         errorHandler.logError(backendError, 'AuthService.registerInBackend');
-        return { success: false, error: result.message };
+        return { success: false, error: result.error };
       }
     } catch (error) {
       const errorMessage =

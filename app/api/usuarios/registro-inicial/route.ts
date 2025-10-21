@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Endpoint para obtener el rol del usuario desde el backend
- * Reemplaza la consulta directa a Supabase por una llamada al backend
+ * Endpoint para registrar un usuario en el backend
+ * Se ejecuta después de que el usuario se registra en Supabase Auth
  */
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     // Obtener el token de autorización del header
     const authHeader = request.headers.get('authorization');
@@ -29,8 +29,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${backendUrl}/usuarios/rol-usuario`, {
-      method: 'GET',
+    const response = await fetch(`${backendUrl}/usuarios/registro-inicial`, {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -47,11 +47,12 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      if (response.status === 404) {
-        return NextResponse.json(
-          { error: 'Usuario no encontrado' },
-          { status: 404 }
-        );
+      if (response.status === 409) {
+        // Usuario ya registrado, considerar como éxito
+        return NextResponse.json({
+          success: true,
+          message: 'Usuario ya registrado en el sistema'
+        });
       }
 
       return NextResponse.json(
@@ -63,7 +64,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
 
     // Validar la estructura de la respuesta
-    if (!data.success || !data.role) {
+    if (!data.success) {
       console.error('Respuesta inválida del backend:', data);
       return NextResponse.json(
         { error: 'Respuesta inválida del servidor' },
@@ -74,10 +75,12 @@ export async function GET(request: NextRequest) {
     // Retornar la respuesta del backend
     return NextResponse.json({
       success: data.success,
-      role: data.role,
+      message: data.message || 'Usuario registrado exitosamente en el sistema',
+      data: data.data
     });
+
   } catch (error) {
-    console.error('Error en rol-usuarios API:', error);
+    console.error('Error en registro inicial:', error);
 
     // Manejar errores de conexión al backend
     if (error instanceof TypeError && error.message.includes('fetch')) {

@@ -52,6 +52,20 @@ function VerifyEmailContent() {
           } = await supabase.auth.getUser();
 
           if (user && user.email_confirmed_at) {
+            // Ejecutar registro en backend si es necesario
+            try {
+              const { authService } = await import('@/app/lib/auth/services/authService');
+              const backendResult = await authService.registerInBackend(user);
+              
+              if (!backendResult.success) {
+                console.warn('Error en registro backend:', backendResult.error);
+                // No fallar aquí, el usuario ya está verificado
+              }
+            } catch (error) {
+              console.warn('Error ejecutando registro backend:', error);
+              // No fallar aquí, el usuario ya está verificado
+            }
+
             setVerificationStatus('success');
             setIsVerifying(false);
 
@@ -78,6 +92,20 @@ function VerifyEmailContent() {
 
         // Si el usuario ya está autenticado y su email está verificado, mostrar éxito
         if (user && user.email_confirmed_at) {
+          // Ejecutar registro en backend si es necesario
+          try {
+            const { authService } = await import('@/app/lib/auth/services/authService');
+            const backendResult = await authService.registerInBackend(user);
+            
+            if (!backendResult.success) {
+              console.warn('Error en registro backend:', backendResult.error);
+              // No fallar aquí, el usuario ya está verificado
+            }
+          } catch (error) {
+            console.warn('Error ejecutando registro backend:', error);
+            // No fallar aquí, el usuario ya está verificado
+          }
+
           setVerificationStatus('success');
           setIsVerifying(false);
 
@@ -101,6 +129,24 @@ function VerifyEmailContent() {
             setVerificationStatus('error');
             setErrorMessage(error.message);
           } else {
+            // Ejecutar registro en backend si es necesario
+            try {
+              const { authService } = await import('@/app/lib/auth/services/authService');
+              const { data: { user } } = await supabase.auth.getUser();
+              
+              if (user) {
+                const backendResult = await authService.registerInBackend(user);
+                
+                if (!backendResult.success) {
+                  console.warn('Error en registro backend:', backendResult.error);
+                  // No fallar aquí, el usuario ya está verificado
+                }
+              }
+            } catch (error) {
+              console.warn('Error ejecutando registro backend:', error);
+              // No fallar aquí, el usuario ya está verificado
+            }
+
             setVerificationStatus('success');
           }
         } else if (type === 'signup' && (token || token_hash)) {
@@ -115,6 +161,24 @@ function VerifyEmailContent() {
             setVerificationStatus('error');
             setErrorMessage(error.message);
           } else {
+            // Ejecutar registro en backend si es necesario
+            try {
+              const { authService } = await import('@/app/lib/auth/services/authService');
+              const { data: { user } } = await supabase.auth.getUser();
+              
+              if (user) {
+                const backendResult = await authService.registerInBackend(user);
+                
+                if (!backendResult.success) {
+                  console.warn('Error en registro backend:', backendResult.error);
+                  // No fallar aquí, el usuario ya está verificado
+                }
+              }
+            } catch (error) {
+              console.warn('Error ejecutando registro backend:', error);
+              // No fallar aquí, el usuario ya está verificado
+            }
+
             setVerificationStatus('success');
           }
         } else {
