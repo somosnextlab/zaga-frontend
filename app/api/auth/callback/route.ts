@@ -12,12 +12,14 @@ export async function GET(request: NextRequest) {
     const code = searchParams.get('code');
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
+    const codeVerifier = searchParams.get('code_verifier');
 
     console.log('Auth callback received:', {
       url: request.url,
       origin,
       code: !!code,
       codeValue: code?.substring(0, 10) + '...',
+      codeVerifier: !!codeVerifier,
       error,
       errorDescription,
     });
