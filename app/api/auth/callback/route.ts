@@ -14,7 +14,10 @@ export async function GET(request: NextRequest) {
     const errorDescription = searchParams.get('error_description');
 
     console.log('Auth callback received:', {
+      url: request.url,
+      origin,
       code: !!code,
+      codeValue: code?.substring(0, 10) + '...',
       error,
       errorDescription,
     });
@@ -28,6 +31,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (code) {
+      console.log('Processing code exchange...');
       const cookieStore = await cookies();
 
       const supabase = createServerClient(
@@ -53,8 +57,16 @@ export async function GET(request: NextRequest) {
         }
       );
 
+      console.log('Attempting code exchange...');
       const { data, error: exchangeError } =
         await supabase.auth.exchangeCodeForSession(code);
+
+      console.log('Code exchange result:', {
+        hasData: !!data,
+        hasSession: !!data?.session,
+        hasError: !!exchangeError,
+        errorMessage: exchangeError?.message,
+      });
 
       if (exchangeError) {
         console.error('Code exchange error:', exchangeError);
@@ -70,6 +82,13 @@ export async function GET(request: NextRequest) {
           error: userError,
         } = await supabase.auth.getUser();
 
+        console.log('Get user result:', {
+          hasUser: !!user,
+          hasError: !!userError,
+          errorMessage: userError?.message,
+          emailConfirmed: user?.email_confirmed_at,
+        });
+
         if (userError) {
           console.error('Get user error:', userError);
           return NextResponse.redirect(
@@ -79,6 +98,7 @@ export async function GET(request: NextRequest) {
 
         if (user && user.email_confirmed_at) {
           // Si el email está confirmado, redirigir con los tokens
+          console.log('Email confirmed, redirecting with tokens');
           const redirectUrl = new URL(`${origin}/auth/verify-email`);
           redirectUrl.searchParams.set(
             'access_token',
@@ -90,6 +110,7 @@ export async function GET(request: NextRequest) {
           );
           redirectUrl.searchParams.set('verified', 'true');
 
+          console.log('Redirecting to:', redirectUrl.toString());
           return NextResponse.redirect(redirectUrl.toString());
         } else {
           // Si el email no está confirmado, redirigir con error
