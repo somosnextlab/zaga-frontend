@@ -3,10 +3,7 @@ import * as React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/app/lib/constants/routes';
 import './LoanSimulator.module.scss';
-import { useAuthContext } from '../../auth/ConditionalAuthProvider/ConditionalAuthProvider';
 
 function formatMXN(n: number) {
   return n.toLocaleString('es-MX', {
@@ -19,9 +16,7 @@ function formatMXN(n: number) {
 export function LoanSimulator() {
   const [monto, setMonto] = React.useState(25000);
   const [plazo, setPlazo] = React.useState(12);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const router = useRouter();
-  const { user, role } = useAuthContext();
+  const [isLoading] = React.useState(false);
 
   // Tasa anual del 12% (1% mensual)
   const tasaAnual = 0.12;
@@ -37,42 +32,7 @@ export function LoanSimulator() {
   const totalPagar = pagoMensual * plazo;
 
   const handleContinuar = async () => {
-    setIsLoading(true);
-
-    try {
-      if (user) {
-        // Usuario logueado - verificar rol
-        if (role === 'admin') {
-          // Admin no puede solicitar préstamos - mostrar mensaje
-          alert(
-            'Los administradores no pueden solicitar préstamos. Esta función está disponible solo para clientes.'
-          );
-          return;
-        } else if (role === 'usuario' || role === 'cliente') {
-          // Usuario/Cliente - redirigir al UserDashboard
-          router.push(ROUTES.USER_DASHBOARD);
-        } else {
-          // Rol no reconocido - redirigir al registro
-          router.push(ROUTES.REGISTER || '/auth/register');
-        }
-      } else {
-        // Usuario no logueado - redirigir al registro con parámetros del simulador
-        const params = new URLSearchParams({
-          monto: monto.toString(),
-          plazo: plazo.toString(),
-          pagoMensual: Math.round(pagoMensual).toString(),
-        });
-        router.push(
-          `${ROUTES.REGISTER || '/auth/register'}?${params.toString()}`
-        );
-      }
-    } catch (error) {
-      console.error('Error al verificar autenticación:', error);
-      // En caso de error, redirigir al registro
-      router.push(ROUTES.REGISTER || '/auth/register');
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('continuar')
   };
 
   return (

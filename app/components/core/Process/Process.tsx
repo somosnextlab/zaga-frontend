@@ -5,10 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, CheckCircle2, Wallet, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/app/lib/constants/routes';
 import './Process.module.scss';
-import { useAuthContext } from '../../auth/ConditionalAuthProvider/ConditionalAuthProvider';
 
 const steps = [
   {
@@ -35,40 +32,10 @@ const steps = [
 ];
 
 export const Process: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { user, role } = useAuthContext();
+  const [isLoading] = useState(false);
 
   const handleSolicitarPrestamo = async () => {
-    setIsLoading(true);
-
-    try {
-      if (user) {
-        // Usuario logueado - verificar rol
-        if (role === 'admin') {
-          // Admin no puede solicitar préstamos - mostrar mensaje
-          alert(
-            'Los administradores no pueden solicitar préstamos. Esta función está disponible solo para clientes.'
-          );
-          return;
-        } else if (role === 'usuario' || role === 'cliente') {
-          // Usuario/Cliente - redirigir al UserDashboard
-          router.push(ROUTES.USER_DASHBOARD);
-        } else {
-          // Rol no reconocido - redirigir al registro
-          router.push(ROUTES.REGISTER || '/auth/register');
-        }
-      } else {
-        // Usuario no logueado - redirigir al registro
-        router.push(ROUTES.REGISTER || '/auth/register');
-      }
-    } catch (error) {
-      console.error('Error al verificar autenticación:', error);
-      // En caso de error, redirigir al registro
-      router.push(ROUTES.REGISTER || '/auth/register');
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('solicitar prestamo');
   };
 
   return (
