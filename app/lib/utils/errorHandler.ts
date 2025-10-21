@@ -380,6 +380,28 @@ export const handleError = (
 };
 
 /**
+ * Función helper para crear errores de red
+ */
+export const createNetworkError = (
+  message: string,
+  statusCode?: number,
+  url?: string
+): AppError => {
+  return errorHandler.handleNetworkError(message, statusCode, url);
+};
+
+/**
+ * Función helper para crear errores de servidor
+ */
+export const createServerError = (
+  message: string,
+  statusCode?: number,
+  details?: Record<string, unknown>
+): AppError => {
+  return errorHandler.handleServerError(message, statusCode, details);
+};
+
+/**
  * Función helper para crear errores de validación
  */
 export const createValidationError = (

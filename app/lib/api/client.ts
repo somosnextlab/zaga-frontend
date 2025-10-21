@@ -26,24 +26,8 @@ const HTTP_STATUS = {
 } as const;
 
 // ==================== TIPOS ====================
-
-/**
- * Opciones para peticiones API
- */
-interface ApiRequestOptions extends RequestInit {
-  skipAuth?: boolean;
-  timeout?: number;
-}
-
-/**
- * Respuesta de la API con información adicional
- */
-interface ApiResponse<T = unknown> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: Headers;
-}
+// Los tipos se importan desde types.ts para evitar duplicación
+import type { ApiRequestOptions, ApiResponse } from './types';
 
 // ==================== FUNCIONES HELPER ====================
 

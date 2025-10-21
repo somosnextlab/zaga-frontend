@@ -373,6 +373,7 @@ export const useAuth = () => {
 
   /**
    * Valores computados del estado de autenticación
+   * Memoizado para evitar recálculos innecesarios
    */
   const computedValues = useMemo(
     () => ({
@@ -383,7 +384,13 @@ export const useAuth = () => {
       needsBackendRegistration: authState.needsBackendRegistration,
       needsProfileCompletion: authState.needsProfileCompletion,
     }),
-    [authState]
+    [
+      authState.role,
+      authState.isAuthenticated,
+      authState.isLoading,
+      authState.needsBackendRegistration,
+      authState.needsProfileCompletion,
+    ]
   );
 
   /**

@@ -1,26 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-
-/**
- * Configuración de Supabase para el servidor
- */
-const getSupabaseConfig = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // Durante el build/prerender, las variables pueden no estar disponibles
-  // Retornamos valores por defecto para evitar errores de prerender
-  if (!url || !anonKey) {
-    console.warn('Supabase environment variables not available during build');
-    return {
-      url: 'https://dummy.supabase.co',
-      anonKey: 'dummy-key',
-    };
-  }
-
-  return { url, anonKey };
-};
+import { getSupabaseConfig } from './config';
 
 /**
  * Cliente de Supabase para Server Components

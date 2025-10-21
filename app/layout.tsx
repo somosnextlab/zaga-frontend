@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ConditionalAuthProvider } from './components/auth/ConditionalAuthProvider/ConditionalAuthProvider';
+import { ErrorBoundary } from './components/ui/error/ErrorBoundary';
+import { ConditionalAuthProviderWithSuspense } from './components/auth/LazyAuthComponents';
 import { Header } from './components/core/Header/Header';
 
 const inter = Inter({
@@ -27,10 +28,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <ConditionalAuthProvider>
-          <Header />
-          <main>{children}</main>
-        </ConditionalAuthProvider>
+        <ErrorBoundary>
+          <ConditionalAuthProviderWithSuspense>
+            <Header />
+            <main>{children}</main>
+          </ConditionalAuthProviderWithSuspense>
+        </ErrorBoundary>
       </body>
     </html>
   );
