@@ -22,7 +22,7 @@ interface DynamicImportState<T> {
  * @param options - Opciones de configuración
  * @returns Estado del dynamic import y función de retry
  */
-export const useDynamicImport = <T = any>(
+export const useDynamicImport = <T = unknown>(
   importFn: () => Promise<{ default: React.ComponentType<T> }>,
   options: UseDynamicImportOptions = {}
 ) => {
@@ -44,10 +44,10 @@ export const useDynamicImport = <T = any>(
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
       
-      const module = await importFn();
+      const importedModule = await importFn();
       
       setState({
-        Component: module.default,
+        Component: importedModule.default,
         isLoading: false,
         error: null,
         retryCount: 0,
@@ -89,7 +89,7 @@ export const useDynamicImport = <T = any>(
  * @param importFn - Función que retorna el dynamic import
  * @returns Componente y estado de carga
  */
-export const useLazyComponent = <T = any>(
+export const useLazyComponent = <T = unknown>(
   importFn: () => Promise<{ default: React.ComponentType<T> }>
 ) => {
   const { Component, isLoading, error, retry, canRetry } = useDynamicImport(importFn);

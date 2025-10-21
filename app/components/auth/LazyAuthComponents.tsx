@@ -5,9 +5,20 @@ import { ComponentLoading } from '../ui/loading/ComponentLoading';
 import { createLazyNamedComponent } from '../../lib/utils/lazyImport';
 
 // Dynamic imports para componentes de autenticación
-export const LazyAuthGuard = createLazyNamedComponent(() => import('./AuthGuard/AuthGuard'), 'AuthGuard');
-export const LazyConditionalAuthProvider = createLazyNamedComponent(() => import('./ConditionalAuthProvider/ConditionalAuthProvider'), 'ConditionalAuthProvider');
-export const LazyBackendRegistrationHandler = createLazyNamedComponent(() => import('./BackendRegistrationHandler/BackendRegistrationHandler'), 'BackendRegistrationHandler');
+export const LazyAuthGuard = createLazyNamedComponent(
+  () => import('./AuthGuard/AuthGuard'),
+  'AuthGuard'
+);
+export const LazyConditionalAuthProvider = createLazyNamedComponent<{
+  children: React.ReactNode;
+}>(
+  () => import('./ConditionalAuthProvider/ConditionalAuthProvider'),
+  'ConditionalAuthProvider'
+);
+export const LazyBackendRegistrationHandler = createLazyNamedComponent(
+  () => import('./BackendRegistrationHandler/BackendRegistrationHandler'),
+  'BackendRegistrationHandler'
+);
 
 // Wrappers con Suspense para cada componente
 export const AuthGuardWithSuspense = () => (
@@ -16,11 +27,13 @@ export const AuthGuardWithSuspense = () => (
   </Suspense>
 );
 
-export const ConditionalAuthProviderWithSuspense = ({ children }: { children: React.ReactNode }) => (
+export const ConditionalAuthProviderWithSuspense = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
   <Suspense fallback={<ComponentLoading size="md" />}>
-    <LazyConditionalAuthProvider>
-      {children}
-    </LazyConditionalAuthProvider>
+    <LazyConditionalAuthProvider>{children}</LazyConditionalAuthProvider>
   </Suspense>
 );
 

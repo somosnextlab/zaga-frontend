@@ -18,7 +18,7 @@ export const LoanSimulatorWithSuspense = () => (
 );
 
 export const DashboardLayoutWithSuspense = () => (
-  <Suspense fallback={<ComponentLoading size="lg" />}>
+  <Suspense fallback={<ComponentLoading size="md" />}>
     <LazyDashboardLayout />
   </Suspense>
 );

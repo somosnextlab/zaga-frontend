@@ -4,7 +4,6 @@
  */
 
 export * from '../auth/schemas/auth';
-export * from '../auth/utils/validation';
 
 // Re-exportar funciones de validación con nombres más específicos
 export {

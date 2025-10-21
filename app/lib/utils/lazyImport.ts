@@ -11,25 +11,25 @@ import { ComponentType, lazy } from 'react';
  * @param exportName - Nombre del export (opcional, usa 'default' si no se especifica)
  * @returns Componente lazy
  */
-export const createLazyComponent = <T = any>(
-  importFn: () => Promise<any>,
+export const createLazyComponent = <T = unknown>(
+  importFn: () => Promise<Record<string, unknown>>,
   exportName?: string
 ): ComponentType<T> => {
   return lazy(async () => {
-    const module = await importFn();
+    const importedModule = await importFn();
     
     // Si se especifica un export name, usarlo
     if (exportName) {
-      return { default: module[exportName] };
+      return { default: importedModule[exportName] as ComponentType<T> };
     }
     
     // Si hay un default export, usarlo
-    if (module.default) {
-      return { default: module.default };
+    if (importedModule.default) {
+      return { default: importedModule.default as ComponentType<T> };
     }
     
     // Si no hay default, usar el primer export disponible
-    const firstExport = Object.values(module)[0] as ComponentType<T>;
+    const firstExport = Object.values(importedModule)[0] as ComponentType<T>;
     if (firstExport) {
       return { default: firstExport };
     }
@@ -41,7 +41,7 @@ export const createLazyComponent = <T = any>(
 /**
  * Helper específico para páginas (que siempre tienen default export)
  */
-export const createLazyPage = <T = any>(
+export const createLazyPage = <T = unknown>(
   importFn: () => Promise<{ default: ComponentType<T> }>
 ): ComponentType<T> => {
   return lazy(importFn);
@@ -50,9 +50,9 @@ export const createLazyPage = <T = any>(
 /**
  * Helper específico para componentes con named exports
  */
-export const createLazyNamedComponent = <T = any>(
-  importFn: () => Promise<any>,
+export const createLazyNamedComponent = <T = unknown>(
+  importFn: () => Promise<Record<string, unknown>>,
   exportName: string
 ): ComponentType<T> => {
-  return createLazyComponent(importFn, exportName);
+  return createLazyComponent<T>(importFn, exportName);
 };
