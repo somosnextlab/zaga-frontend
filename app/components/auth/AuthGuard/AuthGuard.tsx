@@ -139,7 +139,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
    */
   const BackendRegistrationComponent = () => (
     <BackendRegistrationHandler
-      onSuccess={() => {
+      onComplete={() => {
         // El hook se encargará de actualizar el estado
       }}
       onError={error => {

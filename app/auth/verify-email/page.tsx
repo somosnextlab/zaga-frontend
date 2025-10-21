@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { BackendRegistrationHandler } from '@/app/components/auth/BackendRegistrationHandler/BackendRegistrationHandler';
 
 function VerifyEmailContent() {
   const router = useRouter();
@@ -18,7 +19,7 @@ function VerifyEmailContent() {
   const { isLoading } = useAuth();
   const [isVerifying, setIsVerifying] = useState(true);
   const [verificationStatus, setVerificationStatus] = useState<
-    'success' | 'error' | 'pending'
+    'success' | 'error' | 'pending' | 'backend-registration'
   >('pending');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -52,27 +53,9 @@ function VerifyEmailContent() {
           } = await supabase.auth.getUser();
 
           if (user && user.email_confirmed_at) {
-            // Ejecutar registro en backend si es necesario
-            try {
-              const { authService } = await import('@/app/lib/auth/services/authService');
-              const backendResult = await authService.registerInBackend(user);
-              
-              if (!backendResult.success) {
-                console.warn('Error en registro backend:', backendResult.error);
-                // No fallar aquí, el usuario ya está verificado
-              }
-            } catch (error) {
-              console.warn('Error ejecutando registro backend:', error);
-              // No fallar aquí, el usuario ya está verificado
-            }
-
-            setVerificationStatus('success');
+            // Cambiar a estado de registro en backend
+            setVerificationStatus('backend-registration');
             setIsVerifying(false);
-
-            // Redirigir automáticamente al dashboard después de un breve delay
-            setTimeout(() => {
-              router.push('/userDashboard');
-            }, 1500);
             return;
           } else {
             setVerificationStatus('error');
@@ -92,27 +75,9 @@ function VerifyEmailContent() {
 
         // Si el usuario ya está autenticado y su email está verificado, mostrar éxito
         if (user && user.email_confirmed_at) {
-          // Ejecutar registro en backend si es necesario
-          try {
-            const { authService } = await import('@/app/lib/auth/services/authService');
-            const backendResult = await authService.registerInBackend(user);
-            
-            if (!backendResult.success) {
-              console.warn('Error en registro backend:', backendResult.error);
-              // No fallar aquí, el usuario ya está verificado
-            }
-          } catch (error) {
-            console.warn('Error ejecutando registro backend:', error);
-            // No fallar aquí, el usuario ya está verificado
-          }
-
-          setVerificationStatus('success');
+          // Cambiar a estado de registro en backend
+          setVerificationStatus('backend-registration');
           setIsVerifying(false);
-
-          // Redirigir automáticamente al dashboard después de un breve delay
-          setTimeout(() => {
-            router.push('/userDashboard');
-          }, 1500);
           return;
         }
 
@@ -129,25 +94,16 @@ function VerifyEmailContent() {
             setVerificationStatus('error');
             setErrorMessage(error.message);
           } else {
-            // Ejecutar registro en backend si es necesario
-            try {
-              const { authService } = await import('@/app/lib/auth/services/authService');
-              const { data: { user } } = await supabase.auth.getUser();
-              
-              if (user) {
-                const backendResult = await authService.registerInBackend(user);
-                
-                if (!backendResult.success) {
-                  console.warn('Error en registro backend:', backendResult.error);
-                  // No fallar aquí, el usuario ya está verificado
-                }
-              }
-            } catch (error) {
-              console.warn('Error ejecutando registro backend:', error);
-              // No fallar aquí, el usuario ya está verificado
+            // Obtener el usuario después de establecer la sesión
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (user && user.email_confirmed_at) {
+              // Cambiar a estado de registro en backend
+              setVerificationStatus('backend-registration');
+            } else {
+              setVerificationStatus('error');
+              setErrorMessage('No se pudo verificar el email');
             }
-
-            setVerificationStatus('success');
           }
         } else if (type === 'signup' && (token || token_hash)) {
           // Verificar el email usando OTP
@@ -161,25 +117,16 @@ function VerifyEmailContent() {
             setVerificationStatus('error');
             setErrorMessage(error.message);
           } else {
-            // Ejecutar registro en backend si es necesario
-            try {
-              const { authService } = await import('@/app/lib/auth/services/authService');
-              const { data: { user } } = await supabase.auth.getUser();
-              
-              if (user) {
-                const backendResult = await authService.registerInBackend(user);
-                
-                if (!backendResult.success) {
-                  console.warn('Error en registro backend:', backendResult.error);
-                  // No fallar aquí, el usuario ya está verificado
-                }
-              }
-            } catch (error) {
-              console.warn('Error ejecutando registro backend:', error);
-              // No fallar aquí, el usuario ya está verificado
+            // Obtener el usuario después de la verificación OTP
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (user && user.email_confirmed_at) {
+              // Cambiar a estado de registro en backend
+              setVerificationStatus('backend-registration');
+            } else {
+              setVerificationStatus('error');
+              setErrorMessage('No se pudo verificar el email');
             }
-
-            setVerificationStatus('success');
           }
         } else {
           setVerificationStatus('error');
@@ -226,6 +173,24 @@ function VerifyEmailContent() {
           <p className="mt-4 text-gray-600">Verificando email...</p>
         </div>
       </div>
+    );
+  }
+
+  // Mostrar componente de registro en backend
+  if (verificationStatus === 'backend-registration') {
+    return (
+      <BackendRegistrationHandler
+        onComplete={() => {
+          setVerificationStatus('success');
+          setTimeout(() => {
+            router.push('/userDashboard');
+          }, 1500);
+        }}
+        onError={(error) => {
+          setVerificationStatus('error');
+          setErrorMessage(error);
+        }}
+      />
     );
   }
 
