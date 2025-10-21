@@ -10,6 +10,22 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get('code');
+    const error = searchParams.get('error');
+    const errorDescription = searchParams.get('error_description');
+
+    console.log('Auth callback received:', {
+      code: !!code,
+      error,
+      errorDescription,
+    });
+
+    // Si hay un error en los parámetros de Supabase, redirigir con error
+    if (error) {
+      console.error('Supabase auth error:', error, errorDescription);
+      return NextResponse.redirect(
+        `${origin}/auth/verify-email?error=verification_failed`
+      );
+    }
 
     if (code) {
       const cookieStore = await cookies();
@@ -37,13 +53,29 @@ export async function GET(request: NextRequest) {
         }
       );
 
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      const { data, error: exchangeError } =
+        await supabase.auth.exchangeCodeForSession(code);
 
-      if (!error && data?.session) {
+      if (exchangeError) {
+        console.error('Code exchange error:', exchangeError);
+        return NextResponse.redirect(
+          `${origin}/auth/verify-email?error=verification_failed`
+        );
+      }
+
+      if (data?.session) {
         // Obtener el usuario después del intercambio de código
         const {
           data: { user },
+          error: userError,
         } = await supabase.auth.getUser();
+
+        if (userError) {
+          console.error('Get user error:', userError);
+          return NextResponse.redirect(
+            `${origin}/auth/verify-email?error=verification_failed`
+          );
+        }
 
         if (user && user.email_confirmed_at) {
           // Si el email está confirmado, redirigir con los tokens
@@ -68,7 +100,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Si hay error o no hay código, redirigir a la página de verificación con error
+    // Si no hay código, redirigir a la página de verificación con error
     return NextResponse.redirect(
       `${origin}/auth/verify-email?error=verification_failed`
     );

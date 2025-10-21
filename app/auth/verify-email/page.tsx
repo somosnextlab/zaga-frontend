@@ -29,6 +29,7 @@ function VerifyEmailContent() {
         const error = searchParams.get('error');
         const access_token = searchParams.get('access_token');
         const refresh_token = searchParams.get('refresh_token');
+        const verified = searchParams.get('verified');
 
         // Si hay un error en la URL, mostrar error
         if (error) {
@@ -38,11 +39,44 @@ function VerifyEmailContent() {
           return;
         }
 
-        // Si hay tokens, establecer la sesión
-        if (access_token && refresh_token) {
+        // Si viene del callback exitoso, verificar el estado del usuario
+        if (verified === 'true') {
           const { supabaseClient } = await import('@/app/lib/supabase/client');
           const supabase = supabaseClient();
 
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (user && user.email_confirmed_at) {
+            setVerificationStatus('backend-registration');
+            setIsVerifying(false);
+            return;
+          } else {
+            setVerificationStatus('error');
+            setErrorMessage('No se pudo verificar el email');
+            setIsVerifying(false);
+            return;
+          }
+        }
+
+        // Verificar si el usuario ya está autenticado
+        const { supabaseClient } = await import('@/app/lib/supabase/client');
+        const supabase = supabaseClient();
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        // Si el usuario ya está autenticado y su email está verificado, mostrar éxito
+        if (user && user.email_confirmed_at) {
+          setVerificationStatus('backend-registration');
+          setIsVerifying(false);
+          return;
+        }
+
+        // Si hay tokens, establecer la sesión
+        if (access_token && refresh_token) {
           const { error: sessionError } = await supabase.auth.setSession({
             access_token,
             refresh_token,
@@ -56,8 +90,10 @@ function VerifyEmailContent() {
           }
 
           // Verificar que el usuario esté autenticado y el email confirmado
-          const { data: { user } } = await supabase.auth.getUser();
-          
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
           if (user && user.email_confirmed_at) {
             setVerificationStatus('backend-registration');
           } else {
@@ -109,7 +145,7 @@ function VerifyEmailContent() {
             router.push('/userDashboard');
           }, 1500);
         }}
-        onError={(error) => {
+        onError={error => {
           setVerificationStatus('error');
           setErrorMessage(error);
         }}
@@ -180,22 +216,28 @@ function VerifyEmailContent() {
 
             <div className="space-y-3">
               {verificationStatus === 'success' ? (
-                <Button onClick={handleContinue} className="w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white">
+                <Button
+                  onClick={handleContinue}
+                  className="w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white"
+                >
                   Continuar al Dashboard
                 </Button>
               ) : (
                 <>
-                  <Button onClick={handleContinue} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button
+                    onClick={handleContinue}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  >
                     Reintentar Verificación
                   </Button>
-                  <Button 
-                    onClick={() => router.push('/auth/login')} 
+                  <Button
+                    onClick={() => router.push('/auth/login')}
                     className="w-full bg-gray-600 hover:bg-gray-700 text-white"
                   >
                     Ir al Login
                   </Button>
-                  <Button 
-                    onClick={() => router.push('/')} 
+                  <Button
+                    onClick={() => router.push('/')}
                     className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700"
                   >
                     Volver al Inicio
