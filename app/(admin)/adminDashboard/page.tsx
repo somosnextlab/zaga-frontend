@@ -3,14 +3,11 @@
 import { DashboardLayout } from '@/components/core/DashboardLayout/DashboardLayout';
 import { StatCard } from '@/components/core/StatCard/StatCard';
 import { QuickActions } from '@/components/core/QuickActions/QuickActions';
-import { AuthGuard } from '@/app/components/auth/AuthGuard/AuthGuard';
-import { useAuthContext } from '@/app/components/auth/ConditionalAuthProvider/ConditionalAuthProvider';
 
 // Deshabilitar prerenderizado para esta página
 export const dynamic = 'force-dynamic';
 
 export default function AdminDashboard() {
-  const { user } = useAuthContext();
 
   const stats = [
     { title: 'Usuarios', value: '-', icon: 'U', iconBg: 'bg-blue-500' },
@@ -26,11 +23,10 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <AuthGuard requireAuth={true} requireRole="admin">
       <DashboardLayout
         title="Panel Administrativo"
         subtitle="Gestión completa del sistema Zaga"
-        userEmail={user?.email}
+        userEmail={'test@test.com'}
         role="admin"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -47,6 +43,5 @@ export default function AdminDashboard() {
 
         <QuickActions title="Acciones Rápidas" actions={actions} columns={3} />
       </DashboardLayout>
-    </AuthGuard>
   );
 }

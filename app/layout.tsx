@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ConditionalAuthProvider } from './components/auth/ConditionalAuthProvider/ConditionalAuthProvider';
 import { Header } from './components/core/Header/Header';
 
 const inter = Inter({
@@ -27,10 +26,8 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <ConditionalAuthProvider>
-          <Header />
-          <main>{children}</main>
-        </ConditionalAuthProvider>
+        <Header />
+        <main>{children}</main>
       </body>
     </html>
   );

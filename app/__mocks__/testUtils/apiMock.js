@@ -2,8 +2,5 @@
 export const mockApiPost = jest.fn();
 export const mockParseApiResponse = jest.fn();
 
-// Mock por defecto para la API
-jest.mock('@/api', () => ({
-  apiPost: mockApiPost,
-  parseApiResponse: mockParseApiResponse,
-}));
+// Mock de fetch global para tests
+global.fetch = jest.fn();

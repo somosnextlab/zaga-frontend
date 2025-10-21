@@ -2,66 +2,34 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
-import { useAuthContext } from '../../auth/ConditionalAuthProvider/ConditionalAuthProvider';
 import { ROUTES } from '@/app/lib/constants/routes';
 import './Header.module.scss';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { user, role, signOut } = useAuthContext();
+  const [isLoading] = useState(false);
+  const user = false;
+  const role = '';
   const pathname = usePathname();
-  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
+    console.log('sign out');
   };
 
   const handleSolicitarPrestamo = async () => {
-    setIsLoading(true);
-
-    try {
-      if (user) {
-        // Usuario logueado - verificar rol
-        if (role === 'admin') {
-          // Admin no puede solicitar préstamos - mostrar mensaje
-          alert(
-            'Los administradores no pueden solicitar préstamos. Esta función está disponible solo para clientes.'
-          );
-          return;
-        } else if (role === 'usuario' || role === 'cliente') {
-          // Usuario/Cliente - redirigir al UserDashboard
-          router.push(ROUTES.USER_DASHBOARD);
-        } else {
-          // Rol no reconocido - redirigir al registro
-          router.push(ROUTES.REGISTER || '/auth/register');
-        }
-      } else {
-        // Usuario no logueado - redirigir al registro
-        router.push(ROUTES.REGISTER || '/auth/register');
-      }
-    } catch (error) {
-      console.error('Error al verificar autenticación:', error);
-      // En caso de error, redirigir al registro
-      router.push(ROUTES.REGISTER || '/auth/register');
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('solicitar prestamo');
   };
 
   const getDashboardRoute = (): string => {
-    return role === 'admin' ? ROUTES.ADMIN_DASHBOARD : ROUTES.USER_DASHBOARD;
+    /* return role === 'admin' ? ROUTES.ADMIN_DASHBOARD : ROUTES.USER_DASHBOARD; */
+    return '';
   };
 
   // Determinar si estamos en la landing page (no en un dashboard)

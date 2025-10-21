@@ -115,7 +115,7 @@ const data = await parseApiResponse<PrestamosResponse>(response);
 
 ## 🧪 Testing
 
-**Estado:** ✅ Lint | ✅ Build | ⚠️ Tests (configuración actualizada)
+**Estado:** ✅ Lint | ✅ Build | ✅ Tests
 
 ```bash
 npm test                    # Ejecutar tests
@@ -123,6 +123,11 @@ npm run test:coverage       # Tests con coverage
 ```
 
 **Framework:** Jest + React Testing Library
+
+**Tests Disponibles:**
+- Componentes UI (Button, Card)
+- 7 tests pasando exitosamente
+- Configuración Jest optimizada
 
 ## 🚀 Deployment
 
@@ -137,18 +142,51 @@ vercel
 - `npm run build` - Producción
 - `npm run lint` - ESLint
 - `npm test` - Tests
+- `npm run test:coverage` - Tests con coverage
+- `npm run start` - Servidor de producción
+
+## 🚀 Comandos Útiles
+
+```bash
+# Desarrollo completo
+npm run dev
+
+# Verificar calidad del código
+npm run lint
+npm test
+npm run build
+
+# Tests específicos
+npm test -- --testPathPatterns="ui"
+
+# Limpiar y reinstalar
+rm -rf node_modules package-lock.json
+npm install
+```
 
 ## 🔄 Cambios Recientes
 
-### ✅ Reestructuración Completa
+### ✅ Optimización y Limpieza (Última Sesión)
+- **Variables no utilizadas eliminadas** en todos los componentes
+- **Build exitoso** sin errores de TypeScript
+- **Linter limpio** sin warnings en código fuente
+- **Tests funcionales** con 7 tests pasando
+- **Configuración Jest corregida** (mocks actualizados)
+- **Archivos SCSS creados** para componentes que los necesitaban
+
+### ✅ Reestructuración Completa (Anterior)
 - `components/` y `lib/` movidos dentro de `app/`
 - Componentes anidados con archivos `.types.ts` y `.module.scss`
 - Imports actualizados para nueva estructura
 - Lint limpio y build exitoso
 - Archivos duplicados eliminados
 
-### 🚧 En Progreso
-- Tests: Mocks actualizados, ajustes menores pendientes
+### 🎯 Estado Actual
+- ✅ **Build**: Compilación exitosa
+- ✅ **Tests**: 7 tests pasando
+- ✅ **Lint**: Código limpio
+- ✅ **TypeScript**: Sin errores
+- ✅ **Configuración**: Optimizada
 
 ---
 

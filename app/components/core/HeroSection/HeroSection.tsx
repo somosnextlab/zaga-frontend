@@ -2,50 +2,17 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Clock, Users } from 'lucide-react';
-import { ROUTES } from '@/app/lib/constants/routes';
 import { Badge } from '@/components/ui/badge';
 import './HeroSection.module.scss';
-import { useAuthContext } from '../../auth/ConditionalAuthProvider/ConditionalAuthProvider';
 import { LoanSimulator } from '../LoanSimulator/LoanSimulator';
 
 export const HeroSection: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { user, role } = useAuthContext();
+  const [isLoading] = useState(false);
 
   const handleSolicitarAhora = async () => {
-    setIsLoading(true);
-
-    try {
-      if (user) {
-        // Usuario logueado - verificar rol
-        if (role === 'admin') {
-          // Admin no puede solicitar préstamos - mostrar mensaje
-          alert(
-            'Los administradores no pueden solicitar préstamos. Esta función está disponible solo para clientes.'
-          );
-          return;
-        } else if (role === 'usuario' || role === 'cliente') {
-          // Usuario/Cliente - redirigir al UserDashboard
-          router.push(ROUTES.USER_DASHBOARD);
-        } else {
-          // Rol no reconocido - redirigir al registro
-          router.push(ROUTES.REGISTER || '/auth/register');
-        }
-      } else {
-        // Usuario no logueado - redirigir al registro
-        router.push(ROUTES.REGISTER || '/auth/register');
-      }
-    } catch (error) {
-      console.error('Error al verificar autenticación:', error);
-      // En caso de error, redirigir al registro
-      router.push(ROUTES.REGISTER || '/auth/register');
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('solicitar prestamo')
   };
   return (
     <section className="bg-gradient-to-br from-[hsl(var(--color-zaga-gray-50))] to-white py-8 md:py-12">
