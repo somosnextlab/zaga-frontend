@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthActions } from '@/app/lib/auth/hooks/useAuthActions';
+
+// Deshabilitar prerenderizado para esta página
+export const dynamic = 'force-dynamic';
 import {
   initializeAutofillFix,
   applyAutofillFix,

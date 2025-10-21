@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { apiGet, parseApiResponse } from '../api';
 import { supabaseClient } from '../lib/supabase/client';
 import { getUserRole } from '../lib/utils/auth';
+
+// Deshabilitar prerenderizado para esta página
+export const dynamic = 'force-dynamic';
 import {
   Card,
   CardContent,

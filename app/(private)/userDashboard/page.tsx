@@ -6,6 +6,9 @@ import { QuickActions } from '@/components/core/QuickActions/QuickActions';
 import { AuthGuard } from '@/app/components/auth/AuthGuard/AuthGuard';
 import { useAuthContext } from '@/app/components/auth/ConditionalAuthProvider/ConditionalAuthProvider';
 
+// Deshabilitar prerenderizado para esta página
+export const dynamic = 'force-dynamic';
+
 export default function UserDashboard() {
   const { user, role } = useAuthContext();
 
