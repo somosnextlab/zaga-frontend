@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
-import { ROUTES } from '@/app/lib/constants/routes';
 import './Header.module.scss';
+import { ROUTES } from '@/app/utils/constants/routes';
+import { Button } from '@/app/components/ui/button';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
