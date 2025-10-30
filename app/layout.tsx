@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased body`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
