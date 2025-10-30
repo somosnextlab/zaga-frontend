@@ -6,21 +6,29 @@ export async function GET(request: Request) {
   const url = `${baseUrl}/auth/me`;
 
   try {
+    // Preferir Authorization ya formada; fallback a header personalizado access_token
+    const incomingAuthorization = request.headers.get("authorization");
+    const accessToken = request.headers.get("access_token");
+    const authorizationHeader =
+      incomingAuthorization || (accessToken ? `Bearer ${accessToken}` : "");
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${request.headers.get("access_token")}`,
+        accept: "application/json",
+        ...(authorizationHeader ? { Authorization: authorizationHeader } : {}),
       },
     });
     if (response.status === STATUS_OK) {
       const data = await response.json();
-      console.log(data)
       return new NextResponse(JSON.stringify(data), {
         status: response.status,
+        headers: { "content-type": "application/json" },
       });
     }
-    return new NextResponse(JSON.stringify(response), {
+    return new NextResponse(JSON.stringify({ status: response.status }), {
       status: response.status,
+      headers: { "content-type": "application/json" },
     });
   } catch (error) {
     return new NextResponse(

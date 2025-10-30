@@ -33,16 +33,29 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw error;
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      console.log(user);
-      if (user?.user_metadata.email_verified === true) {
+      const accessToken = data.session.access_token;
+
+      // Llamada a API interna que proxya al backend con Authorization Bearer
+      const response = await fetch("/api/auth", {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        const body = await response.text();
+        throw new Error(`Fallo /api/auth (${response.status}): ${body}`);
+      }
+      const authResponse: { data: { role: string } } = await response.json();
+      const { role } = authResponse?.data;
+
+      if (role === "usuario") {
         router.push("/protected");
       } else {
         router.push("/");
