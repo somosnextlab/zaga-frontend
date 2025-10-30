@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS personalizadas - Sistema completo shadcn/ui */
+:root {
+  /* Colores base */
+  --color-background: 0 0% 100%;
+  --color-foreground: 222.2 84% 4.9%;
+  --color-card: 0 0% 100%;
+  --color-card-foreground: 222.2 84% 4.9%;
+  --color-popover: 0 0% 100%;
+  --color-popover-foreground: 222.2 84% 4.9%;
+
+  /* Zaga Verde Principal - Color primario */
+  --color-primary: 120 15% 48%; /* #7A9B7E */
+  --color-primary-foreground: 0 0% 100%;
+
+  /* Zaga Verde Hover */
+  --color-primary-hover: 120 15% 42%; /* #6A8B6E */
+
+  /* Zaga Green - Color secundario */
+  --color-secondary: 210 40% 96%;
+  --color-secondary-foreground: 222.2 84% 4.9%;
+
+  /* Estados y variantes */
+  --color-muted: 210 40% 96%;
+  --color-muted-foreground: 215.4 16.3% 46.9%;
+  --color-accent: 120 15% 48%;
+  --color-accent-foreground: 0 0% 100%;
+
+  /* Estados destructivos */
+  --color-destructive: 0 84.2% 60.2%;
+  --color-destructive-foreground: 210 40% 98%;
+
+  /* Bordes y superficies */
+  --color-border: 214.3 31.8% 91.4%;
+  --color-input: 214.3 31.8% 91.4%;
+  --color-ring: 120 15% 48%;
+
+  /* Estados de éxito (Zaga Green) */
+  --color-success: 120 15% 48%;
+  --color-success-foreground: 0 0% 100%;
+
+  /* Estados de advertencia */
+  --color-warning: 38 92% 50%;
+  --color-warning-foreground: 48 96% 89%;
+
+  /* Estados de información */
+  --color-info: 199 89% 48%;
+  --color-info-foreground: 204 100% 97%;
+
+  /* Colores específicos para Zaga Landing */
+  --color-zaga-green-gray: 120 15% 48%; /* #7A9B7E - Verde grisáceo principal */
+  --color-zaga-green-hover: 120 15% 42%; /* #6A8B6E - Verde hover */
+  --color-zaga-silver: 210 15% 70%; /* Gris plata para subtítulos */
+  --color-zaga-black: 0 0% 9%; /* gray-900 para títulos */
+  --color-zaga-text: 0 0% 9%; /* gray-900 para texto general */
+  --color-zaga-white: 0 0% 100%; /* white */
+  --color-zaga-gray-50: 210 40% 98%; /* gray-50 */
+  --color-zaga-gray-100: 210 40% 96%; /* gray-100 */
+
+  /* Radius */
+  --radius: 0.5rem;
+}
+
+/* Dark mode - Zaga */
+.dark {
+  --color-background: 222.2 84% 4.9%;
+  --color-foreground: 210 40% 98%;
+  --color-card: 222.2 84% 4.9%;
+  --color-card-foreground: 210 40% 98%;
+  --color-popover: 222.2 84% 4.9%;
+  --color-popover-foreground: 210 40% 98%;
+
+  /* Zaga Blue - Color primario */
+  --color-primary: 217.2 91.2% 59.8%;
+  --color-primary-foreground: 222.2 84% 4.9%;
+
+  /* Zaga Green - Color secundario */
+  --color-secondary: 217.2 32.6% 17.5%;
+  --color-secondary-foreground: 210 40% 98%;
+
+  /* Estados y variantes */
+  --color-muted: 217.2 32.6% 17.5%;
+  --color-muted-foreground: 215 20.2% 65.1%;
+  --color-accent: 217.2 32.6% 17.5%;
+  --color-accent-foreground: 210 40% 98%;
+
+  /* Estados destructivos */
+  --color-destructive: 0 62.8% 30.6%;
+  --color-destructive-foreground: 210 40% 98%;
+
+  /* Bordes y superficies */
+  --color-border: 217.2 32.6% 17.5%;
+  --color-input: 217.2 32.6% 17.5%;
+  --color-ring: 224.3 76.3% 94.1%;
+
+  /* Estados de éxito (Zaga Green) */
+  --color-success: 142.1 70.6% 45.3%;
+  --color-success-foreground: 144.9 80.4% 10%;
+
+  /* Estados de advertencia */
+  --color-warning: 48 96% 89%;
+  --color-warning-foreground: 26 83% 14%;
+
+  /* Estados de información */
+  --color-info: 204 100% 97%;
+  --color-info-foreground: 199 89% 48%;
+
+  /* Colores específicos para Zaga Landing - Dark mode */
+  --color-zaga-green-gray: 120 15% 25%; /* Verde grisáceo oscuro */
+  --color-zaga-green-hover: 120 15% 35%; /* Verde hover oscuro */
+  --color-zaga-silver: 210 15% 85%; /* Gris plata claro */
+  --color-zaga-black: 0 0% 100%; /* Blanco para títulos */
+  --color-zaga-text: 0 0% 100%; /* Blanco para texto general */
+  --color-zaga-white: 0 0% 0%; /* Negro en dark mode */
+  --color-zaga-gray-50: 0 0% 9%; /* gray-900 en dark mode */
+  --color-zaga-gray-100: 0 0% 15%; /* gray-800 en dark mode */
+}
+
+/* Base styles */
+* {
+  border-color: hsl(var(--color-border));
+}
+
+body {
+  background-color: hsl(var(--color-background));
+  color: hsl(var(--color-foreground));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tipografía Zaga - Variables reutilizables */
+:root {
+  /* Tamaños de fuente */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
+
+  /* Pesos de fuente */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Alturas de línea */
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Espaciado de letras */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+}
+
+/* Clases de tipografía para Zaga */
+.text-hero-title {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-hero-subtitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.text-section-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-card-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.text-body {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.text-body-sm {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.text-caption {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  .text-hero-title {
+    font-size: var(--font-size-4xl);
+  }
+  
+  .text-hero-subtitle {
+    font-size: var(--font-size-base);
+  }
+  
+  .text-section-title {
+    font-size: var(--font-size-2xl);
+  }
+}
