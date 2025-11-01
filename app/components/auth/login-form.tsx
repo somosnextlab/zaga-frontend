@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
+import { LoginAuthResponse } from "@/app/types/login.types";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -11,6 +13,7 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
+import { PasswordInput } from "@/app/components/ui/password-input";
 import { Label } from "@/app/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,27 +36,32 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      const accessToken = data.session.access_token;
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+      if (authError) throw authError;
+      const accessToken = authData.session.access_token;
 
-      // Llamada a API interna que proxya al backend con Authorization Bearer
-      const response = await fetch("/api/auth", {
+      const {
+        data,
+        error: apiError,
+        response,
+      } = await fetchWithHeader({
+        url: "/api/auth",
         method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+        accessToken,
       });
-      if (!response.ok) {
-        const body = await response.text();
-        throw new Error(`Fallo /api/auth (${response.status}): ${body}`);
+
+      if (apiError || !data) {
+        const errorMessage =
+          apiError?.message || `Fallo /api/auth (${response.status})`;
+        throw new Error(errorMessage);
       }
-      const authResponse: { data: { role: string } } = await response.json();
-      const { role } = authResponse?.data;
+
+      const authResponse = data as LoginAuthResponse;
+      const { role } = authResponse.data;
 
       if (role === "usuario") {
         router.push("/protected");
@@ -101,9 +109,8 @@ export function LoginForm({
                     Olvidaste tu contraseña?
                   </Link>
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

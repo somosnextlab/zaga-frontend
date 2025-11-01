@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
+import { PasswordInput } from "@/app/components/ui/password-input";
 import { Label } from "@/app/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -54,9 +54,8 @@ export function UpdatePasswordForm({
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="password">Nueva contraseña</Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="Nueva contraseña"
                   required
                   value={password}
