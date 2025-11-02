@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import "./header.module.scss";
-import { Button } from "../../ui/button";
+import { Button } from "../../ui/Button/Button";
 import { ThemeSwitcher } from "../../auth/theme-switcher";
 import { AuthButton } from "../../auth/auth-button";
 import { User } from "@supabase/supabase-js";

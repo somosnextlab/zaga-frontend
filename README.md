@@ -49,7 +49,7 @@ Sistema de roles con Supabase:
 - **Admin**: `/adminDashboard`
 - **Cliente**: `/userDashboard`
 
-El middleware redirige automáticamente según el rol del usuario.
+El proxy redirige automáticamente según el rol del usuario.
 
 ## 🏗️ Arquitectura
 

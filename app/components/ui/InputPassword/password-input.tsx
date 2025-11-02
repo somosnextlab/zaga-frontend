@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Input } from "@/app/components/ui/input";
-import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/Input/input";
+import { Button } from "@/app/components/ui/Button/Button";
 import { cn } from "@/lib/utils";
 
 interface PasswordInputProps

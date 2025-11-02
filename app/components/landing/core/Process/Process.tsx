@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { FileText, CheckCircle2, Wallet, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import "./Process.module.scss";
-import { Card, CardContent } from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/button";
+import { Card, CardContent } from "@/app/components/ui/Card/card";
+import { Button } from "@/app/components/ui/Button/Button";
 
 const steps = [
   {

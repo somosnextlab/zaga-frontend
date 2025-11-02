@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCircle, Clock, Users } from "lucide-react";
 import "./heroSection.module.scss";
 import { LoanSimulator } from "../LoanSimulator/LoanSimulator";
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/app/components/ui/Button/Button";
 import { Badge } from "@/app/components/ui/badge";
 
 export const HeroSection: React.FC = () => {
@@ -48,7 +48,7 @@ export const HeroSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="cursor-pointer bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white group"
+                variant={"default"}
                 onClick={handleSolicitarAhora}
                 disabled={isLoading}
               >
@@ -67,7 +67,7 @@ export const HeroSection: React.FC = () => {
                   />
                 </svg>
               </Button>
-              <Button variant="ghost" asChild>
+              <Button variant={"outline"} size="lg" asChild>
                 <Link href="#beneficios">Conocer más</Link>
               </Button>
             </div>

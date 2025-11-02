@@ -10,7 +10,7 @@ import {
   HeadphonesIcon,
 } from 'lucide-react';
 import './benefits.module.scss';
-import { Card, CardContent } from '@/app/components/ui/card';
+import { Card, CardContent } from '@/app/components/ui/Card/card';
 
 const benefits = [
   {

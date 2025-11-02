@@ -4,17 +4,17 @@ import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
 import { LoginAuthResponse } from "@/app/types/login.types";
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/app/components/ui/Button/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { PasswordInput } from "@/app/components/ui/password-input";
-import { Label } from "@/app/components/ui/label";
+} from "@/app/components/ui/Card/card";
+import { Input } from "@/app/components/ui/Input/input";
+import { PasswordInput } from "@/app/components/ui/InputPassword/password-input";
+import { Label } from "@/app/components/ui/Label/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

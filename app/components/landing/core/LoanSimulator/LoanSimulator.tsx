@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
 import "./LoanSimulator.module.scss";
-import { Button } from "@/app/components/ui/button";
-import { Card, CardContent } from "@/app/components/ui/card";
-import { Slider } from "@/app/components/ui/slider";
+import { Button } from "@/app/components/ui/Button/Button";
+import { Card, CardContent } from "@/app/components/ui/Card/card";
+import { Slider } from "@/app/components/ui/Slider/slider";
 
 function formatMXN(n: number) {
   return n.toLocaleString("es-MX", {
