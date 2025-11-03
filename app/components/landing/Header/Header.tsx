@@ -2,28 +2,50 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import "./header.module.scss";
-import { Button } from "../../ui/button";
-import { ThemeSwitcher } from "../../auth/theme-switcher";
-import { AuthButton } from "../../auth/auth-button";
-import { User } from "@supabase/supabase-js";
+import { Button } from "../../ui/Button/Button";
+import { ThemeSwitcher } from "../../auth/themeSwitcher/theme-switcher";
+import { AuthButton } from "../../auth/authButtons/auth-button";
+import { useHeaderMode } from "@/app/hooks/useHeaderMode";
+import { useUserContext } from "@/app/context/UserContext/UserContextContext";
+import { getDashboardRouteByRole } from "@/app/utils/roleUtils";
+import { useRouter } from "next/navigation";
+import type { HeaderProps } from "./header.types";
+import { LANDING_NAVIGATION_ITEMS } from "@/app/utils/constants/routes";
 
-export const Header: React.FC = () => {
+/**
+ * Componente Header que se adapta según el contexto de la aplicación
+ * (landing page, rutas protegidas, páginas de autenticación)
+ */
+export const Header: React.FC<HeaderProps> = ({ className }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const pathname = usePathname();
+  const { showLandingNavigation, showProtectedNavigation, mode, isAuthenticated } =
+    useHeaderMode();
+  const { role } = useUserContext();
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Determinar si estamos en la landing page (no en un dashboard)
-  const isLandingPage = pathname === "/";
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const handleGoToDashboard = () => {
+    if (role) {
+      const dashboardRoute = getDashboardRouteByRole(role);
+      router.push(dashboardRoute);
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
+    <header
+      className={`sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md ${
+        className || ""
+      }`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -38,34 +60,42 @@ export const Header: React.FC = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation - Solo mostrar si no hay usuario logueado */}
-          {!user && isLandingPage && (
+          {/* Desktop Navigation - Landing Page */}
+          {showLandingNavigation && (
             <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="#beneficios"
-                className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
-              >
-                Beneficios
-              </Link>
-              <Link
-                href="#como-funciona"
-                className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
-              >
-                Cómo funciona
-              </Link>
-              <Link
-                href="#faq"
-                className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
-              >
-                Preguntas
-              </Link>
+              {LANDING_NAVIGATION_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          )}
+
+          {/* Desktop Navigation - Protected Routes */}
+          {showProtectedNavigation && (
+            <nav className="hidden md:flex items-center space-x-8">
+              {/* Aquí se pueden agregar enlaces para usuarios autenticados */}
             </nav>
           )}
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeSwitcher />
-            <AuthButton setUser={setUser} user={user} />
+            {/* Botón Ir al Dashboard - Solo mostrar si está autenticado y en landing page */}
+            {isAuthenticated && mode === "landing" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleGoToDashboard}
+              >
+                Ir al Dashboard
+              </Button>
+            )}
+            <AuthButton />
           </div>
 
           {/* Mobile Menu Button */}
@@ -74,6 +104,7 @@ export const Header: React.FC = () => {
             size="icon"
             className="md:hidden"
             onClick={toggleMenu}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>
@@ -83,37 +114,46 @@ export const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t bg-white/95 backdrop-blur-md">
             <div className="px-4 py-4 space-y-4">
-              {/* Navigation - Solo mostrar si no hay usuario logueado */}
-              {!user && isLandingPage && (
+              {/* Mobile Navigation - Landing Page */}
+              {showLandingNavigation && (
                 <nav className="flex flex-col space-y-4">
-                  <Link
-                    href="#beneficios"
-                    className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Beneficios
-                  </Link>
-                  <Link
-                    href="#como-funciona"
-                    className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Cómo funciona
-                  </Link>
-                  <Link
-                    href="#faq"
-                    className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Preguntas
-                  </Link>
+                  {LANDING_NAVIGATION_ITEMS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-[hsl(var(--color-zaga-text))] hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors"
+                      onClick={closeMenu}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                 </nav>
               )}
 
-              {/* CTAs */}
+              {/* Mobile Navigation - Protected Routes */}
+              {showProtectedNavigation && (
+                <nav className="flex flex-col space-y-4">
+                  {/* Aquí se pueden agregar enlaces para usuarios autenticados */}
+                </nav>
+              )}
+
+              {/* Mobile CTAs */}
               <div className="flex flex-col space-y-2 pt-4 border-t">
                 <ThemeSwitcher />
-                <AuthButton setUser={setUser} user={user} />
+                {/* Botón Ir al Dashboard - Solo mostrar si está autenticado y en landing page */}
+                {isAuthenticated && mode === "landing" && role && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      handleGoToDashboard();
+                      closeMenu();
+                    }}
+                  >
+                    Ir al Dashboard
+                  </Button>
+                )}
+                <AuthButton />
               </div>
             </div>
           </div>

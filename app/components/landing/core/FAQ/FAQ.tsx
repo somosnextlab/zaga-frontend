@@ -10,8 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/app/components/ui/accordion";
-import { Button } from "@/app/components/ui/button";
-import { Card, CardContent } from "@/app/components/ui/card";
+import { Button } from "@/app/components/ui/Button/Button";
+import { Card, CardContent } from "@/app/components/ui/Card/card";
 
 const faqs = [
   {
