@@ -1,27 +1,29 @@
 // Jest setup file para configurar el entorno de testing
-import '@testing-library/jest-dom';
-import React from 'react';
+// Este archivo solo se usa en el entorno de Jest, no en el build de producción
+import "@testing-library/jest-dom";
+import React from "react";
+
+// Declarar tipos globales de Jest para que TypeScript reconozca jest en este archivo
+declare const jest: {
+  mock: (module: string, factory: () => unknown) => void;
+  fn: () => jest.Mock;
+};
 
 // Mock de Next.js router
-// @ts-expect-error - jest está disponible en tiempo de ejecución en el entorno de Jest
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter() {
     return {
-      // @ts-expect-error - jest.fn está disponible en tiempo de ejecución
       push: jest.fn(),
-      // @ts-expect-error - jest.fn está disponible en tiempo de ejecución
       replace: jest.fn(),
-      // @ts-expect-error - jest.fn está disponible en tiempo de ejecución
       prefetch: jest.fn(),
-      // @ts-expect-error - jest.fn está disponible en tiempo de ejecución
       back: jest.fn(),
-      pathname: '/',
+      pathname: "/",
       query: {},
-      asPath: '/',
+      asPath: "/",
     };
   },
   usePathname() {
-    return '/';
+    return "/";
   },
   useSearchParams() {
     return new URLSearchParams();
@@ -29,11 +31,9 @@ jest.mock('next/navigation', () => ({
 }));
 
 // Mock de Next.js Link
-// @ts-expect-error - jest está disponible en tiempo de ejecución en el entorno de Jest
-jest.mock('next/link', () => {
+jest.mock("next/link", () => {
   // eslint-disable-next-line react/display-name
   return ({ children, href }: { children: React.ReactNode; href: string }) => {
-    return React.createElement('a', { href }, children);
+    return React.createElement("a", { href }, children);
   };
 });
-
