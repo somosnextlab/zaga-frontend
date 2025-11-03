@@ -1,7 +1,26 @@
 /**
  * Props del componente Header
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HeaderProps {
-  // Por ahora no tiene props específicas, pero se puede extender en el futuro
+  /**
+   * Clase CSS adicional para el header
+   * @optional
+   */
+  className?: string;
+}
+
+/**
+ * Configuración de los enlaces de navegación de la landing page
+ */
+export interface LandingNavigationItem {
+  href: string;
+  label: string;
+}
+
+/**
+ * Configuración de los enlaces de navegación para usuarios autenticados
+ */
+export interface ProtectedNavigationItem {
+  href: string;
+  label: string;
 }
