@@ -1,19 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "../ui/Button/Button";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { LogoutButton } from "./logout-button";
-import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 
-export function AuthButton({
-  setUser,
-  user,
-}: {
-  setUser: (user: User | null) => void;
-  user: User | null;
-}) {
+/**
+ * Hook personalizado para gestionar el estado de autenticación del usuario
+ * @returns Objeto con el usuario actual, estado de carga y función para actualizar el usuario
+ */
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -57,32 +53,5 @@ export function AuthButton({
     };
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex gap-2">
-        <Button size="sm" variant={"outline"} disabled>
-          Iniciar sesión
-        </Button>
-        <Button size="sm" variant={"default"} disabled>
-          Registrarme
-        </Button>
-      </div>
-    );
-  }
-
-  return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <LogoutButton />
-    </div>
-  ) : (
-    <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
-        <Link href="/auth/login">Iniciar sesión</Link>
-      </Button>
-      <Button asChild size="sm" variant={"default"}>
-        <Link href="/auth/sign-up">Registrarme</Link>
-      </Button>
-    </div>
-  );
+  return { user, loading };
 }

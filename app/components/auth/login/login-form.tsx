@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
 import { LoginAuthResponse } from "@/app/types/login.types";
+import { getDashboardRouteByRole } from "@/app/utils/roleUtils";
+import { useUserContext } from "@/app/context/UserContext/UserContextContext";
 import { Button } from "@/app/components/ui/Button/Button";
 import {
   Card,
@@ -28,6 +30,7 @@ export function LoginForm({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setRole } = useUserContext();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,13 +65,11 @@ export function LoginForm({
 
       const authResponse = data as LoginAuthResponse;
       const { role } = authResponse.data;
+      setRole(role);
 
-      if (role === "usuario") {
-        router.push("/protected");
-      } else {
-        router.push("/");
-      }
-      // Update this route to redirect to an authenticated route. The user already has an active session.
+      // Redirigir al dashboard correspondiente según el rol
+      const dashboardRoute = getDashboardRouteByRole(role);
+      router.push(dashboardRoute);
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
