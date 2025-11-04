@@ -3,9 +3,14 @@
 import React, { useState } from "react";
 import { FileText, CheckCircle2, Wallet, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "./Process.module.scss";
 import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Button } from "@/app/components/ui/Button/Button";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useUserContext } from "@/app/context/UserContext/UserContextContext";
+import { ROUTES } from "@/app/utils/constants/routes";
+import { UserRoleEnum } from "@/app/types/user.types";
 
 const steps = [
   {
@@ -33,9 +38,26 @@ const steps = [
 
 export const Process: React.FC = () => {
   const [isLoading] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
+  const {
+    state: { role },
+  } = useUserContext();
 
   const handleSolicitarPrestamo = async () => {
-    console.log("solicitar prestamo");
+    // Si hay sesión y el rol es usuario o cliente, redirigir a userDashboard
+    if (user && role) {
+      if (role === UserRoleEnum.USUARIO || role === UserRoleEnum.CLIENTE) {
+        router.push(ROUTES.USER_DASHBOARD);
+        return;
+      }
+      // Si es admin, no hacer nada
+      if (role === UserRoleEnum.ADMIN) {
+        return;
+      }
+    }
+    // Si no hay sesión, redirigir a login
+    router.push(ROUTES.LOGIN);
   };
 
   return (

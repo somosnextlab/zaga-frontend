@@ -2,25 +2,34 @@
  * Props del componente Header
  */
 export interface HeaderProps {
-  /**
-   * Clase CSS adicional para el header
-   * @optional
-   */
   className?: string;
 }
-
-/**
- * Configuración de los enlaces de navegación de la landing page
- */
-export interface LandingNavigationItem {
-  href: string;
-  label: string;
+export interface HeaderCTAsProps {
+  variant: "desktop" | "mobile";
+  showDashboardButton: boolean;
+  onDashboardClick?: () => void;
+  onDashboardClickAndClose?: () => void;
 }
 
-/**
- * Configuración de los enlaces de navegación para usuarios autenticados
- */
-export interface ProtectedNavigationItem {
-  href: string;
-  label: string;
+export interface HeaderNavigationProps {
+  variant: "desktop" | "mobile";
+  onLinkClick?: () => void;
+}
+
+export interface MobileMenuProps {
+  isOpen: boolean;
+  showLandingNavigation: boolean;
+  showDashboardButton: boolean;
+  onClose: () => void;
+  onDashboardClick: () => void;
+}
+
+export interface MobileMenuButtonProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+export interface UseFetchRoleParams {
+  isAuthenticated: boolean;
+  role: string | null;
 }
