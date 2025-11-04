@@ -3,7 +3,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LogoutButton } from "../logout-button";
-import { UserContextProvider } from "@/app/context/UserContext/UserContextContext";
+import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
 
 // Mock de Supabase client
@@ -48,9 +48,9 @@ describe("LogoutButton", () => {
 
   const renderWithProvider = () => {
     return render(
-      <UserContextProvider>
+      <UserProvider>
         <LogoutButton />
-      </UserContextProvider>
+      </UserProvider>
     );
   };
 

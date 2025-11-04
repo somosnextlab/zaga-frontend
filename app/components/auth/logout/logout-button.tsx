@@ -7,7 +7,9 @@ import { useUserContext } from "@/app/context/UserContext/UserContextContext";
 
 export function LogoutButton() {
   const router = useRouter();
-  const { reset } = useUserContext();
+  const {
+    actions: { reset },
+  } = useUserContext();
 
   const logout = async () => {
     const supabase = createClient();

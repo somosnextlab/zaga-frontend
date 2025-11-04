@@ -3,7 +3,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LoginForm } from "../login-form";
-import { UserContextProvider } from "@/app/context/UserContext/UserContextContext";
+import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
 
@@ -55,9 +55,9 @@ describe("LoginForm", () => {
 
   const renderWithProvider = () => {
     return render(
-      <UserContextProvider>
+      <UserProvider>
         <LoginForm />
-      </UserContextProvider>
+      </UserProvider>
     );
   };
 

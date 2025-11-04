@@ -1,22 +1,20 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireRole } from "@/app/utils/authUtils.server";
+import { UserRoleEnum } from "@/app/types/user.types";
 
 /**
  * Layout específico para rutas privadas (usuarios y clientes)
- * Verifica que el usuario esté autenticado antes de renderizar
+ * Verifica que el usuario tenga rol de usuario o cliente antes de renderizar
+ * Los administradores no pueden acceder a estas rutas
  */
 export default async function PrivateLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  // Verificar autenticación
-  const { data, error } = await supabase.auth.getClaims();
-  if (error || !data?.claims) {
-    redirect("/auth/login");
-  }
+  // Verificar que el usuario tenga rol de usuario o cliente
+  // Si tiene rol de admin, redirige automáticamente a su dashboard
+  // Si no está autenticado, redirige a login
+  await requireRole([UserRoleEnum.USUARIO, UserRoleEnum.CLIENTE]);
 
   return (
     <main className="min-h-screen flex flex-col">

@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/app/utils/authUtils.server";
 
 /**
  * Layout específico para rutas de administrador
@@ -10,17 +9,9 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  // Verificar autenticación y rol
-  const { data, error } = await supabase.auth.getClaims();
-  if (error || !data?.claims) {
-    redirect("/auth/login");
-  }
-
-  // TODO: Verificar que el usuario tenga rol de admin
-  // Actualmente solo verifica autenticación
-  // Implementar verificación de rol cuando esté disponible en los claims
+  // Verificar que el usuario tenga rol de admin
+  // Si no tiene el rol correcto, redirige automáticamente
+  await requireAdmin();
 
   return (
     <main className="min-h-screen flex flex-col">
