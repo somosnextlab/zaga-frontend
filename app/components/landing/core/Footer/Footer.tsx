@@ -11,7 +11,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import styles from "./footer.module.scss";
+import styles from "./Footer.module.scss";
 
 const socialLinks = [
   { icon: Facebook, href: "#", label: "Facebook" },
