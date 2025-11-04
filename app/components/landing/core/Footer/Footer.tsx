@@ -38,7 +38,6 @@ const legalLinks = [
   { name: "Términos y Condiciones", href: "#" },
   { name: "Política de Privacidad", href: "#" },
   { name: "Aviso Legal", href: "#" },
-  { name: "Cookies", href: "#" },
 ];
 
 export const Footer: React.FC = () => {
