@@ -2,12 +2,13 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { useAuth } from "../useAuth";
 import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import { mockSupabaseUser } from "@/__mocks__/test-data";
 
 // Mock de Supabase client
-jest.mock("@/lib/supabase/client", () => ({
-  createClient: jest.fn(),
-}));
+jest.mock("@/lib/supabase/client", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/supabase-client");
+});
 
 describe("useAuth", () => {
   let mockGetUser: jest.Mock;
@@ -46,8 +47,7 @@ describe("useAuth", () => {
   });
 
   test("02 - should fetch user on mount", async () => {
-    const mockUser = { id: "1", email: "test@example.com" } as User;
-    mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null });
+    mockGetUser.mockResolvedValue({ data: { user: mockSupabaseUser }, error: null });
 
     const { result } = renderHook(() => useAuth());
 
@@ -56,7 +56,7 @@ describe("useAuth", () => {
     });
 
     expect(mockGetUser).toHaveBeenCalledTimes(1);
-    expect(result.current.user).toEqual(mockUser);
+    expect(result.current.user).toEqual(mockSupabaseUser);
   });
 
   test("03 - should set user to null when getUser returns no user", async () => {
@@ -97,7 +97,6 @@ describe("useAuth", () => {
   });
 
   test("06 - should update user when auth state changes", async () => {
-    const mockUser = { id: "1", email: "test@example.com" } as User;
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
 
     const { result } = renderHook(() => useAuth());
@@ -108,16 +107,15 @@ describe("useAuth", () => {
 
     // Simular cambio de estado de autenticación
     const authStateChangeCallback = mockOnAuthStateChange.mock.calls[0][0];
-    authStateChangeCallback("SIGNED_IN", { user: mockUser } as any);
+    authStateChangeCallback("SIGNED_IN", { user: mockSupabaseUser } as any);
 
     await waitFor(() => {
-      expect(result.current.user).toEqual(mockUser);
+      expect(result.current.user).toEqual(mockSupabaseUser);
     });
   });
 
   test("07 - should set user to null when signed out", async () => {
-    const mockUser = { id: "1", email: "test@example.com" } as User;
-    mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null });
+    mockGetUser.mockResolvedValue({ data: { user: mockSupabaseUser }, error: null });
 
     const { result } = renderHook(() => useAuth());
 

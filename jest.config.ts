@@ -21,8 +21,8 @@ const config: Config = {
     "/node_modules/",
     "/.next/",
     "/coverage/",
-    "**/*.types.ts",
-    "**/*.d.ts",
+    ".*\\.types\\.ts$",
+    ".*\\.d\\.ts$",
   ],
 
   // Indicates which provider should be used to instrument code for coverage

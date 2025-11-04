@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,32 +6,31 @@ import { LoginForm } from "../login-form";
 import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
+import { mockPush } from "@/__mocks__/next-navigation";
+import {
+  mockCredentials,
+  mockSession,
+  mockUserData,
+  createMockFetchResponse,
+} from "@/__mocks__/test-data";
 
 // Mock de Supabase client
-jest.mock("@/lib/supabase/client", () => ({
-  createClient: jest.fn(),
-}));
+jest.mock("@/lib/supabase/client", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/supabase-client");
+});
 
 // Mock de API utils
-jest.mock("@/app/utils/apiCallUtils/apiUtils", () => ({
-  fetchWithHeader: jest.fn(),
-}));
+jest.mock("@/app/utils/apiCallUtils/apiUtils", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/api-utils");
+});
 
-// Mock de useRouter
-const mockPush = jest.fn();
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: jest.fn(),
-    prefetch: jest.fn(),
-    back: jest.fn(),
-    pathname: "/",
-    query: {},
-    asPath: "/",
-  }),
-  usePathname: () => "/",
-  useSearchParams: () => new URLSearchParams(),
-}));
+// Mock de next/navigation
+jest.mock("next/navigation", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/next-navigation");
+});
 
 describe("LoginForm", () => {
   let mockSignInWithPassword: jest.Mock;
@@ -93,9 +92,9 @@ describe("LoginForm", () => {
     renderWithProvider();
     const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement;
 
-    await user.type(emailInput, "test@example.com");
+    await user.type(emailInput, mockCredentials.email);
 
-    expect(emailInput.value).toBe("test@example.com");
+    expect(emailInput.value).toBe(mockCredentials.email);
   });
 
   test("06 - should update password input value when typing", async () => {
@@ -105,43 +104,22 @@ describe("LoginForm", () => {
       "password"
     ) as HTMLInputElement;
 
-    await user.type(passwordInput, "password123");
+    await user.type(passwordInput, mockCredentials.password);
 
-    expect(passwordInput.value).toBe("password123");
+    expect(passwordInput.value).toBe(mockCredentials.password);
   });
 
   test("07 - should call signInWithPassword on form submit with correct credentials", async () => {
     const user = userEvent.setup();
-    const mockSession = {
-      session: {
-        access_token: "mock-token",
-      },
-    };
 
     mockSignInWithPassword.mockResolvedValue({
       data: mockSession,
       error: null,
     });
 
-    (fetchWithHeader as jest.Mock).mockResolvedValue({
-      data: {
-        success: true,
-        data: {
-          userId: "1",
-          email: "test@example.com",
-          role: "usuario",
-          estado: "activo",
-          persona: {
-            id: "1",
-            nombre: "Test",
-            apellido: "User",
-            telefono: "1234567890",
-          },
-        },
-      },
-      error: undefined,
-      response: { status: 200 },
-    });
+    (fetchWithHeader as jest.Mock).mockResolvedValue(
+      createMockFetchResponse(mockUserData)
+    );
 
     renderWithProvider();
     const emailInput = screen.getByLabelText(/email/i);
@@ -152,14 +130,14 @@ describe("LoginForm", () => {
       name: /iniciar sesión/i,
     });
 
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "password123");
+    await user.type(emailInput, mockCredentials.email);
+    await user.type(passwordInput, mockCredentials.password);
     await user.click(submitButton);
 
     await waitFor(() => {
       expect(mockSignInWithPassword).toHaveBeenCalledWith({
-        email: "test@example.com",
-        password: "password123",
+        email: mockCredentials.email,
+        password: mockCredentials.password,
       });
     });
   });
@@ -181,7 +159,7 @@ describe("LoginForm", () => {
       name: /iniciar sesión/i,
     });
 
-    await user.type(emailInput, "test@example.com");
+    await user.type(emailInput, mockCredentials.email);
     await user.type(passwordInput, "wrongpassword");
     await user.click(submitButton);
 
@@ -209,8 +187,8 @@ describe("LoginForm", () => {
       name: /iniciar sesión/i,
     });
 
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "password123");
+    await user.type(emailInput, mockCredentials.email);
+    await user.type(passwordInput, mockCredentials.password);
     await user.click(submitButton);
 
     await waitFor(() => {

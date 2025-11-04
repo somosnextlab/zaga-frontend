@@ -37,3 +37,20 @@ jest.mock("next/link", () => {
     return React.createElement("a", { href }, children);
   };
 });
+
+// Mock de ResizeObserver para componentes que lo usan (como Slider de Radix UI)
+global.ResizeObserver = class ResizeObserver {
+  constructor(cb: ResizeObserverCallback) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this as any).cb = cb;
+  }
+  observe() {
+    // No-op
+  }
+  unobserve() {
+    // No-op
+  }
+  disconnect() {
+    // No-op
+  }
+} as unknown as typeof ResizeObserver;
