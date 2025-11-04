@@ -66,7 +66,7 @@ describe("AuthButton", () => {
   test("04 - should render user email and logout button when user is authenticated", () => {
     mockUseAuth.mockReturnValue({ user: mockSimpleUser, loading: false });
     renderWithProvider();
-    expect(screen.getByText(new RegExp(`hey, ${mockSimpleUser.email}!`, "i"))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`Hola, ${mockSimpleUser.email}!`, "i"))).toBeInTheDocument();
     expect(screen.getByText(/logout/i)).toBeInTheDocument();
   });
 
