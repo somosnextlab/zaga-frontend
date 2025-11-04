@@ -9,11 +9,18 @@ import {
   STATUS_OK,
   STATUS_SERVER_ERROR,
 } from "@/app/utils/constants/statusResponse";
+import {
+  createMockResponse,
+  createMockSimpleResponse,
+  mockUserData,
+  mockTokens,
+} from "@/__mocks__/test-data";
 
 // Mock de fetchWithHeaderServer
-jest.mock("@/app/utils/apiCallUtils/apiUtils.server", () => ({
-  fetchWithHeaderServer: jest.fn(),
-}));
+jest.mock("@/app/utils/apiCallUtils/apiUtils.server", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/api-utils-server");
+});
 
 describe("API - /api/auth", () => {
   const mockFetchWithHeaderServer =
@@ -29,30 +36,19 @@ describe("API - /api/auth", () => {
   });
 
   test("01 - should return user data with valid token", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({
+    const mockResponse = createMockResponse(
+      {
         success: true,
-        data: {
-          userId: "1",
-          email: "test@example.com",
-          role: "usuario",
-          estado: "activo",
-          persona: {
-            id: "1",
-            nombre: "Test",
-            apellido: "User",
-            telefono: "1234567890",
-          },
-        },
-      }),
-      { status: STATUS_OK, headers: { "content-type": "application/json" } }
+        data: mockUserData,
+      },
+      STATUS_OK
     );
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer valid-token",
+        authorization: `Bearer ${mockTokens.validToken}`,
       },
     });
 
@@ -65,21 +61,18 @@ describe("API - /api/auth", () => {
     expect(mockFetchWithHeaderServer).toHaveBeenCalledWith({
       url: "http://localhost:8000/auth/me",
       method: "GET",
-      accessToken: "valid-token",
+      accessToken: mockTokens.validToken,
     });
   });
 
   test("02 - should extract token from Authorization header", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({ success: true, data: {} }),
-      { status: STATUS_OK }
-    );
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer test-token-123",
+        authorization: `Bearer ${mockTokens.testToken}`,
       },
     });
 
@@ -87,22 +80,19 @@ describe("API - /api/auth", () => {
 
     expect(mockFetchWithHeaderServer).toHaveBeenCalledWith(
       expect.objectContaining({
-        accessToken: "test-token-123",
+        accessToken: mockTokens.testToken,
       })
     );
   });
 
   test("03 - should extract token from Authorization header with Bearer prefix", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({ success: true, data: {} }),
-      { status: STATUS_OK }
-    );
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer token-with-bearer",
+        authorization: `Bearer ${mockTokens.bearerToken}`,
       },
     });
 
@@ -110,22 +100,19 @@ describe("API - /api/auth", () => {
 
     expect(mockFetchWithHeaderServer).toHaveBeenCalledWith(
       expect.objectContaining({
-        accessToken: "token-with-bearer",
+        accessToken: mockTokens.bearerToken,
       })
     );
   });
 
   test("04 - should use access_token header as fallback", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({ success: true, data: {} }),
-      { status: STATUS_OK }
-    );
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        access_token: "fallback-token",
+        access_token: mockTokens.fallbackToken,
       },
     });
 
@@ -133,15 +120,13 @@ describe("API - /api/auth", () => {
 
     expect(mockFetchWithHeaderServer).toHaveBeenCalledWith(
       expect.objectContaining({
-        accessToken: "fallback-token",
+        accessToken: mockTokens.fallbackToken,
       })
     );
   });
 
   test("05 - should handle request without token", async () => {
-    const mockResponse = new Response(JSON.stringify({ status: STATUS_OK }), {
-      status: STATUS_OK,
-    });
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
@@ -158,15 +143,13 @@ describe("API - /api/auth", () => {
 
   test("06 - should return error status when API returns non-200 status", async () => {
     const errorStatus = 401;
-    const mockResponse = new Response(JSON.stringify({ status: errorStatus }), {
-      status: errorStatus,
-    });
+    const mockResponse = createMockSimpleResponse(errorStatus);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer invalid-token",
+        authorization: `Bearer ${mockTokens.invalidToken}`,
       },
     });
 
@@ -182,7 +165,7 @@ describe("API - /api/auth", () => {
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer token",
+        authorization: `Bearer ${mockTokens.validToken}`,
       },
     });
 
@@ -194,16 +177,13 @@ describe("API - /api/auth", () => {
   });
 
   test("08 - should return proper content-type header", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({ success: true, data: {} }),
-      { status: STATUS_OK }
-    );
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer token",
+        authorization: `Bearer ${mockTokens.validToken}`,
       },
     });
 
@@ -213,16 +193,13 @@ describe("API - /api/auth", () => {
   });
 
   test("09 - should handle case-insensitive Bearer prefix", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({ success: true, data: {} }),
-      { status: STATUS_OK }
-    );
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "bearer lowercase-token",
+        authorization: `bearer ${mockTokens.lowercaseToken}`,
       },
     });
 
@@ -230,22 +207,19 @@ describe("API - /api/auth", () => {
 
     expect(mockFetchWithHeaderServer).toHaveBeenCalledWith(
       expect.objectContaining({
-        accessToken: "lowercase-token",
+        accessToken: mockTokens.lowercaseToken,
       })
     );
   });
 
   test("10 - should handle Authorization header with multiple spaces", async () => {
-    const mockResponse = new Response(
-      JSON.stringify({ success: true, data: {} }),
-      { status: STATUS_OK }
-    );
+    const mockResponse = createMockSimpleResponse(STATUS_OK);
 
     mockFetchWithHeaderServer.mockResolvedValue(mockResponse);
 
     const request = new NextRequest("http://localhost:3000/api/auth", {
       headers: {
-        authorization: "Bearer   spaced-token",
+        authorization: `Bearer   ${mockTokens.spacedToken}`,
       },
     });
 
@@ -253,7 +227,7 @@ describe("API - /api/auth", () => {
 
     expect(mockFetchWithHeaderServer).toHaveBeenCalledWith(
       expect.objectContaining({
-        accessToken: "spaced-token",
+        accessToken: mockTokens.spacedToken,
       })
     );
   });

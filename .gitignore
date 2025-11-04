@@ -46,3 +46,6 @@ next-env.d.ts
 
 # cursor
 .cursor
+
+# mocks
+__mocks__

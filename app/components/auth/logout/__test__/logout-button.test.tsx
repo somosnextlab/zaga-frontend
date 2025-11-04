@@ -5,27 +5,19 @@ import userEvent from "@testing-library/user-event";
 import { LogoutButton } from "../logout-button";
 import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
+import { mockPush } from "@/__mocks__/next-navigation";
 
 // Mock de Supabase client
-jest.mock("@/lib/supabase/client", () => ({
-  createClient: jest.fn(),
-}));
+jest.mock("@/lib/supabase/client", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/supabase-client");
+});
 
-// Mock de useRouter
-const mockPush = jest.fn();
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: jest.fn(),
-    prefetch: jest.fn(),
-    back: jest.fn(),
-    pathname: "/",
-    query: {},
-    asPath: "/",
-  }),
-  usePathname: () => "/",
-  useSearchParams: () => new URLSearchParams(),
-}));
+// Mock de next/navigation
+jest.mock("next/navigation", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("@/__mocks__/next-navigation");
+});
 
 describe("LogoutButton", () => {
   let mockSignOut: jest.Mock;
