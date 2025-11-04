@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState, FC } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import "./header.module.scss";
 import { Button } from "../../ui/Button/Button";
 import { ThemeSwitcher } from "../../auth/themeSwitcher/theme-switcher";
@@ -13,16 +14,21 @@ import { getDashboardRouteByRole } from "@/app/utils/roleUtils";
 import { useRouter } from "next/navigation";
 import type { HeaderProps } from "./header.types";
 import { LANDING_NAVIGATION_ITEMS } from "@/app/utils/constants/routes";
+import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
+import { LoginAuthResponse } from "@/app/types/login.types";
 
-/**
- * Componente Header que se adapta según el contexto de la aplicación
- * (landing page, rutas protegidas, páginas de autenticación)
- */
-export const Header: React.FC<HeaderProps> = ({ className }) => {
+export const Header: FC<HeaderProps> = ({ className }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { showLandingNavigation, showProtectedNavigation, mode, isAuthenticated } =
-    useHeaderMode();
-  const { role } = useUserContext();
+  const {
+    showLandingNavigation,
+    showProtectedNavigation,
+    mode,
+    isAuthenticated,
+  } = useHeaderMode();
+  const {
+    state: { role },
+    actions: { setRole },
+  } = useUserContext();
   const router = useRouter();
 
   const toggleMenu = () => {
@@ -39,6 +45,39 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
       router.push(dashboardRoute);
     }
   };
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      // Solo ejecutar si está autenticado pero no tiene rol
+      if (isAuthenticated && !role) {
+        try {
+          const supabase = createClient();
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+
+          if (session?.access_token) {
+            const { data, error } = await fetchWithHeader({
+              url: "/api/auth",
+              method: "GET",
+              accessToken: session.access_token,
+            });
+
+            if (!error && data) {
+              const authResponse = data as LoginAuthResponse;
+              const { role } = authResponse.data;
+              setRole(role);
+            }
+          }
+        } catch (error) {
+          // Silenciar errores, no es crítico
+          console.warn("Error al obtener rol:", error);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [isAuthenticated, role, setRole]);
 
   return (
     <header
@@ -87,11 +126,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
             <ThemeSwitcher />
             {/* Botón Ir al Dashboard - Solo mostrar si está autenticado y en landing page */}
             {isAuthenticated && mode === "landing" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleGoToDashboard}
-              >
+              <Button variant="outline" size="sm" onClick={handleGoToDashboard}>
                 Ir al Dashboard
               </Button>
             )}

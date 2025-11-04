@@ -1,35 +1,33 @@
-import type { UserContextState, UserContextAction } from "../UserContextContext.types";
-
-/**
- * Estado inicial del contexto de usuario
- */
-export const initialState: UserContextState = {
-  role: null,
-  loading: false,
-};
+import { produce } from "immer";
+import { initialState } from "../UserContextUtils";
+import {
+  type UserContextStateType,
+  type ActionType,
+  UserAction,
+} from "../UserContextContext.types";
 
 /**
  * Reducer para el contexto de usuario
  */
-export function userContextReducer(
-  state: UserContextState,
-  action: UserContextAction
-): UserContextState {
-  switch (action.type) {
-    case "SET_ROLE":
-      return {
-        ...state,
-        role: action.payload,
-      };
-    case "SET_LOADING":
-      return {
-        ...state,
-        loading: action.payload,
-      };
-    case "RESET":
-      return initialState;
-    default:
-      return state;
-  }
-}
+export const reducer = produce(
+  (state: UserContextStateType, action: ActionType): UserContextStateType => {
+    switch (action.type) {
+      case UserAction.SET_ROLE: {
+        state.role = action.payload;
+        return state;
+      }
 
+      case UserAction.SET_LOADING: {
+        state.loading = action.payload;
+        return state;
+      }
+
+      case UserAction.RESET: {
+        return (state = initialState);
+      }
+
+      default:
+        return state;
+    }
+  }
+);

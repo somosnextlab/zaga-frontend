@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 import "./styles/globals.css";
 import styles from "./styles/defaultPage.module.scss";
 import { Header } from "./components/landing/Header/Header";
-import { UserContextProvider } from "./context/UserContext/UserContextContext";
+import { UserProvider } from "./context/UserContext/UserContextContext";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -38,10 +38,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <UserContextProvider>
+          <UserProvider>
             <Header />
             <main className={styles.defaultPage}>{children}</main>
-          </UserContextProvider>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>

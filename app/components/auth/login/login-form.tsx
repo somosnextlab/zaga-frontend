@@ -30,7 +30,9 @@ export function LoginForm({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { setRole } = useUserContext();
+  const {
+    actions: { setRole },
+  } = useUserContext();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

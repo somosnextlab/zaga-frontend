@@ -1,9 +1,5 @@
+import { UserRoleEnum } from "../types/user.types";
 import { ROUTES } from "./constants/routes";
-
-/**
- * Roles disponibles en la aplicación
- */
-export type UserRole = "admin" | "usuario" | "cliente";
 
 /**
  * Mapea un rol de usuario a su ruta de dashboard correspondiente
@@ -14,10 +10,10 @@ export function getDashboardRouteByRole(role: string): string {
   const normalizedRole = role.toLowerCase().trim();
 
   switch (normalizedRole) {
-    case "admin":
+    case UserRoleEnum.ADMIN:
       return ROUTES.ADMIN_DASHBOARD;
-    case "usuario":
-    case "cliente":
+    case UserRoleEnum.USUARIO:
+    case UserRoleEnum.CLIENTE:
       return ROUTES.USER_DASHBOARD;
     default:
       // Si el rol no es reconocido, redirigir a la landing page por seguridad

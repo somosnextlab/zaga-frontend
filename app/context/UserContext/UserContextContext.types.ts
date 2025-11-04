@@ -1,39 +1,30 @@
-/**
- * Estado del contexto de usuario
- */
-export interface UserContextState {
-  /**
-   * Rol del usuario autenticado
-   */
+export enum UserAction {
+  SET_ROLE = "SET_ROLE",
+  SET_LOADING = "SET_LOADING",
+  RESET = "RESET",
+}
+
+export type UserContextStateType = {
   role: string | null;
-  /**
-   * Estado de carga para obtener el rol
-   */
   loading: boolean;
-}
+};
+
+export type UserContextActions = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: (payload?: any) => void;
+};
+
+export type ActionType = {
+  type: UserAction;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload?: any;
+};
 
 /**
- * Acciones del reducer de usuario
+ * Contexto de usuario
  */
-export type UserContextAction =
-  | { type: "SET_ROLE"; payload: string | null }
-  | { type: "SET_LOADING"; payload: boolean }
-  | { type: "RESET" };
 
-/**
- * Tipo del contexto de usuario
- */
-export interface UserContextType extends UserContextState {
-  /**
-   * Establece el rol del usuario
-   */
-  setRole: (role: string | null) => void;
-  /**
-   * Establece el estado de carga
-   */
-  setLoading: (loading: boolean) => void;
-  /**
-   * Resetea el estado del contexto
-   */
-  reset: () => void;
-}
+export type UserContextType = {
+  state: UserContextStateType;
+  actions: UserContextActions;
+};
