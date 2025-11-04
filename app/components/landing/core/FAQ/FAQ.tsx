@@ -3,7 +3,7 @@
 import React from "react";
 import { MessageCircle, Phone, Mail } from "lucide-react";
 import Link from "next/link";
-import "./FAQ.module.scss";
+import styles from "./FAQ.module.scss";
 import {
   Accordion,
   AccordionContent,
@@ -62,33 +62,41 @@ export const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="bg-white py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-section-title text-[hsl(var(--color-zaga-black))] mb-4">
+    <section id="faq" className={styles.faq}>
+      <div className={styles.faq__container}>
+        <div className={styles.faq__header}>
+          <h2 className={styles.faq__title}>
             Preguntas{" "}
-            <span className="text-[hsl(var(--color-zaga-green-gray))]">
-              frecuentes
-            </span>
+            <span className={styles.faq__titleHighlight}>frecuentes</span>
           </h2>
-          <p className="text-hero-subtitle text-[hsl(var(--color-zaga-silver))] max-w-2xl mx-auto">
+          <p className={styles.faq__subtitle}>
             Resolvemos las dudas más comunes sobre nuestros préstamos
             personales.
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <Accordion type="single" collapsible className="w-full space-y-4">
+        <div className={styles.faq__accordionContainer}>
+          <Accordion
+            type="single"
+            collapsible
+            className={styles.faq__accordion}
+          >
             {faqs.map((faq, index) => (
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="bg-white border border-[hsl(var(--color-border))] rounded-lg hover:border-[hsl(var(--color-zaga-green-gray))] transition-colors duration-200"
+                className={styles.faq__accordionItem}
               >
-                <AccordionTrigger className="text-[hsl(var(--color-zaga-black))] hover:text-[hsl(var(--color-zaga-green-gray))] px-6 py-4 text-left">
+                <AccordionTrigger className={styles.faq__accordionTrigger}>
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-[hsl(var(--color-zaga-silver))] px-6 pb-4 leading-relaxed">
+                <AccordionContent
+                  className={`${styles.faq__accordionContent} ${
+                    index === faqs.length - 1
+                      ? styles.faq__accordionContentLast
+                      : ""
+                  }`}
+                >
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -97,26 +105,24 @@ export const FAQ: React.FC = () => {
         </div>
 
         {/* Contact Card */}
-        <div className="mt-16">
-          <Card className="bg-gradient-to-r from-[hsl(var(--color-zaga-gray-50))] to-white border-[hsl(var(--color-zaga-green-gray))]/20">
-            <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[hsl(var(--color-zaga-green-gray))]/10 flex items-center justify-center">
-                <MessageCircle className="w-8 h-8 text-[hsl(var(--color-zaga-green-gray))]" />
+        <div className={styles.faq__contactContainer}>
+          <Card className={styles.faq__contactCard}>
+            <CardContent className={styles.faq__contactContent}>
+              <div className={styles.faq__contactIconWrapper}>
+                <MessageCircle className={styles.faq__contactIcon} />
               </div>
 
-              <h3 className="text-2xl font-bold text-[hsl(var(--color-zaga-black))] mb-4">
-                ¿Aún tienes dudas?
-              </h3>
+              <h3 className={styles.faq__contactTitle}>¿Aún tienes dudas?</h3>
 
-              <p className="text-body text-[hsl(var(--color-zaga-silver))] mb-8 max-w-2xl mx-auto">
+              <p className={styles.faq__contactDescription}>
                 Nuestro equipo de atención al cliente está disponible 24/7 para
                 resolver cualquier pregunta que tengas.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className={styles.faq__contactButtons}>
                 <Button
                   size="lg"
-                  className="cursor-pointer bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white group"
+                  className={styles.faq__contactButtonPrimary}
                   onClick={handleLlamarAhora}
                 >
                   <Phone className="w-4 h-4 mr-2" />
@@ -125,7 +131,7 @@ export const FAQ: React.FC = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-[hsl(var(--color-zaga-green-gray))] text-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-gray))] hover:text-white"
+                  className={styles.faq__contactButtonSecondary}
                   asChild
                 >
                   <Link href="mailto:soporte@zaga.com">

@@ -1,77 +1,73 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  Mail, 
-  Phone, 
-  MapPin 
-} from 'lucide-react';
-import './Footer.module.scss';
+import React from "react";
+import Link from "next/link";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import styles from "./footer.module.scss";
 
 const socialLinks = [
-  { icon: Facebook, href: '#', label: 'Facebook' },
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Facebook, href: "#", label: "Facebook" },
+  { icon: Twitter, href: "#", label: "Twitter" },
+  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Linkedin, href: "#", label: "LinkedIn" },
 ];
 
 const productLinks = [
-  { name: 'Préstamos Personales', href: '#' },
-  { name: 'Simulador', href: '#' },
-  { name: 'Tasas y Comisiones', href: '#' },
-  { name: 'Calculadora', href: '#' },
+  { name: "Préstamos Personales", href: "#" },
+  { name: "Simulador", href: "#" },
+  { name: "Tasas y Comisiones", href: "#" },
+  { name: "Calculadora", href: "#" },
 ];
 
 const companyLinks = [
-  { name: 'Nosotros', href: '#' },
-  { name: 'Carreras', href: '#' },
-  { name: 'Prensa', href: '#' },
-  { name: 'Blog', href: '#' },
+  { name: "Nosotros", href: "#" },
+  { name: "Carreras", href: "#" },
+  { name: "Prensa", href: "#" },
+  { name: "Blog", href: "#" },
 ];
 
 const legalLinks = [
-  { name: 'Términos y Condiciones', href: '#' },
-  { name: 'Política de Privacidad', href: '#' },
-  { name: 'Aviso Legal', href: '#' },
-  { name: 'Cookies', href: '#' },
+  { name: "Términos y Condiciones", href: "#" },
+  { name: "Política de Privacidad", href: "#" },
+  { name: "Aviso Legal", href: "#" },
+  { name: "Cookies", href: "#" },
 ];
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[hsl(var(--color-zaga-black))] text-white">
-      <div className="container mx-auto px-4 py-16">
+    <footer className={styles.footer}>
+      <div className={styles.footer__container}>
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className={styles.footer__main}>
           {/* Brand Column */}
-          <div className="space-y-6">
-          <div className="flex items-baseline space-x-2">
-              <span className="text-xl font-bold text-[hsl(var(--color-zaga-green-gray))]">
-                Zaga
-              </span>
-              <span className="opacity-70 text-sm font-normal text-[hsl(var(--color-zaga-white))]">
-                by NextLab
-              </span>
+          <div className={styles.footer__brand}>
+            <div className={styles.footer__brandLogo}>
+              <span className={styles.footer__brandName}>Zaga</span>
+              <span className={styles.footer__brandTagline}>by NextLab</span>
             </div>
-            <p className="text-body-sm text-gray-300 leading-relaxed">
+            <p className={styles.footer__brandDescription}>
               La forma más rápida y segura de obtener el préstamo personal que
               necesitas. Proceso 100% digital con las mejores tasas del mercado.
             </p>
-            <div className="flex space-x-4">
+            <div className={styles.footer__socialLinks}>
               {socialLinks.map((social, index) => {
                 const IconComponent = social.icon;
                 return (
                   <Link
                     key={index}
                     href={social.href}
-                    className="w-10 h-10 rounded-full bg-gray-800 hover:bg-[hsl(var(--color-zaga-green-gray))] flex items-center justify-center transition-colors duration-200"
+                    className={styles.footer__socialLink}
                     aria-label={social.label}
                   >
-                    <IconComponent className="w-5 h-5" />
+                    <IconComponent className={styles.footer__socialIcon} />
                   </Link>
                 );
               })}
@@ -79,15 +75,12 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Productos Column */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Productos</h3>
-            <ul className="space-y-3">
+          <div className={styles.footer__section}>
+            <h3 className={styles.footer__sectionTitle}>Productos</h3>
+            <ul className={styles.footer__sectionLinks}>
               {productLinks.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    href={link.href}
-                    className="text-body-sm text-gray-300 hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors duration-200"
-                  >
+                  <Link href={link.href} className={styles.footer__sectionLink}>
                     {link.name}
                   </Link>
                 </li>
@@ -96,15 +89,12 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Empresa Column */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Empresa</h3>
-            <ul className="space-y-3">
+          <div className={styles.footer__section}>
+            <h3 className={styles.footer__sectionTitle}>Empresa</h3>
+            <ul className={styles.footer__sectionLinks}>
               {companyLinks.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    href={link.href}
-                    className="text-body-sm text-gray-300 hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors duration-200"
-                  >
+                  <Link href={link.href} className={styles.footer__sectionLink}>
                     {link.name}
                   </Link>
                 </li>
@@ -113,24 +103,24 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Contacto Column */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Contacto</h3>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-[hsl(var(--color-zaga-green-gray))]" />
-                <span className="text-body-sm text-gray-300">
+          <div className={styles.footer__section}>
+            <h3 className={styles.footer__sectionTitle}>Contacto</h3>
+            <div className={styles.footer__contact}>
+              <div className={styles.footer__contactItem}>
+                <Mail className={styles.footer__contactIcon} />
+                <span className={styles.footer__contactText}>
                   soporte@zaga.com
                 </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-[hsl(var(--color-zaga-green-gray))]" />
-                <span className="text-body-sm text-gray-300">
+              <div className={styles.footer__contactItem}>
+                <Phone className={styles.footer__contactIcon} />
+                <span className={styles.footer__contactText}>
                   +54 9 351234567
                 </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-[hsl(var(--color-zaga-green-gray))]" />
-                <span className="text-body-sm text-gray-300">
+              <div className={styles.footer__contactItem}>
+                <MapPin className={styles.footer__contactIcon} />
+                <span className={styles.footer__contactText}>
                   Cordoba, Argentina
                 </span>
               </div>
@@ -139,17 +129,17 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-body-sm text-gray-400">
+        <div className={styles.footer__bottom}>
+          <div className={styles.footer__bottomContent}>
+            <div className={styles.footer__copyright}>
               © 2025 Zaga. Todos los derechos reservados.
             </div>
-            <div className="flex flex-wrap gap-6">
+            <div className={styles.footer__legalLinks}>
               {legalLinks.map((link, index) => (
                 <Link
                   key={index}
                   href={link.href}
-                  className="text-body-sm text-gray-400 hover:text-[hsl(var(--color-zaga-green-gray))] transition-colors duration-200"
+                  className={styles.footer__legalLink}
                 >
                   {link.name}
                 </Link>
