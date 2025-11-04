@@ -1,31 +1,29 @@
 /* Footer Styles */
 .footer {
-  background-color: #111827;
+  background-color: hsl(var(--color-zaga-black));
   color: white;
+  padding: 2rem ;
 }
 
 .footer__container {
   max-width: 80rem;
-  margin: 0 auto;
-  padding: 0 1rem;
+
+  @media (min-width: 640px) {
+    padding: 0 1.5rem;
+  }
 }
 
 .footer__main {
-  padding: 4rem 0;
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
-}
 
-@media (min-width: 768px) {
-  .footer__main {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
-@media (min-width: 1024px) {
-  .footer__main {
+  @media (min-width: 1024px) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
@@ -36,53 +34,53 @@
   gap: 1.5rem;
 }
 
-.footer__brand-logo {
+.footer__brandLogo {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
 }
 
-.footer__brand-name {
+.footer__brandName {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #22c55e;
+  color: hsl(var(--color-zaga-green-gray));
 }
 
-.footer__brand-tagline {
+.footer__brandTagline {
   opacity: 0.7;
   font-size: 0.875rem;
   font-weight: 400;
-  color: white;
+  color: hsl(var(--color-zaga-white));
 }
 
-.footer__brand-description {
+.footer__brandDescription {
   font-size: 0.875rem;
-  color: #d1d5db;
+  color: hsl(var(--color-zaga-silver));
   line-height: 1.6;
 }
 
-.footer__social-links {
+.footer__socialLinks {
   display: flex;
   gap: 1rem;
 }
 
-.footer__social-link {
+.footer__socialLink {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background-color: #374151;
+  background-color: hsl(var(--color-zaga-gray-800));
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   text-decoration: none;
+
+  &:hover {
+    background-color: hsl(var(--color-zaga-green-gray));
+  }
 }
 
-.footer__social-link:hover {
-  background-color: #22c55e;
-}
-
-.footer__social-icon {
+.footer__socialIcon {
   width: 1.25rem;
   height: 1.25rem;
 }
@@ -92,27 +90,30 @@
   flex-direction: column;
 }
 
-.footer__section-title {
+.footer__sectionTitle {
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
 }
 
-.footer__section-links {
+.footer__sectionLinks {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.footer__section-link {
+.footer__sectionLink {
   font-size: 0.875rem;
-  color: #d1d5db;
+  color: hsl(var(--color-zaga-silver));
   text-decoration: none;
   transition: color 0.2s ease;
-}
 
-.footer__section-link:hover {
-  color: #22c55e;
+  &:hover {
+    color: hsl(var(--color-zaga-green-gray));
+  }
 }
 
 .footer__contact {
@@ -121,38 +122,36 @@
   gap: 1rem;
 }
 
-.footer__contact-item {
+.footer__contactItem {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.footer__contact-icon {
+.footer__contactIcon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #22c55e;
+  color: hsl(var(--color-zaga-green-gray));
 }
 
-.footer__contact-text {
+.footer__contactText {
   font-size: 0.875rem;
-  color: #d1d5db;
+  color: hsl(var(--color-zaga-silver));
 }
 
 .footer__bottom {
-  border-top: 1px solid #374151;
+  border-top: 1px solid hsl(var(--color-zaga-gray-800));
   padding-top: 2rem;
 }
 
-.footer__bottom-content {
+.footer__bottomContent {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-}
 
-@media (min-width: 768px) {
-  .footer__bottom-content {
+  @media (min-width: 768px) {
     flex-direction: row;
     gap: 0;
   }
@@ -160,22 +159,22 @@
 
 .footer__copyright {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: hsl(var(--color-zaga-silver));
 }
 
-.footer__legal-links {
+.footer__legalLinks {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
 }
 
-.footer__legal-link {
+.footer__legalLink {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: hsl(var(--color-zaga-silver));
   text-decoration: none;
   transition: color 0.2s ease;
-}
 
-.footer__legal-link:hover {
-  color: #22c55e;
+  &:hover {
+    color: hsl(var(--color-zaga-green-gray));
+  }
 }
