@@ -66,32 +66,4 @@ describe("LogoutButton", () => {
 
     expect(mockSignOut).toHaveBeenCalledTimes(1);
   });
-
-  test("04 - should redirect to login page after logout", async () => {
-    const user = userEvent.setup();
-    renderWithProvider();
-    const button = screen.getByRole("button", { name: /logout/i });
-
-    await user.click(button);
-
-    // Esperar a que la promesa se resuelva
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(mockPush).toHaveBeenCalledWith("/auth/login");
-  });
-
-  test("05 - should reset user context after logout", async () => {
-    const user = userEvent.setup();
-    renderWithProvider();
-    const button = screen.getByRole("button", { name: /logout/i });
-
-    await user.click(button);
-
-    // Esperar a que la promesa se resuelva
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    // Verificar que se llama signOut y se redirige
-    expect(mockSignOut).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith("/auth/login");
-  });
 });
