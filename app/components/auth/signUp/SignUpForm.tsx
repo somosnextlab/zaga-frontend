@@ -16,34 +16,46 @@ import { Label } from "@/app/components/ui/Label/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { RegisterUserDataType } from "./signUp.types";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [registerUserData, setRegisterUserData] =
+    useState<RegisterUserDataType>({
+      email: "",
+      password: "",
+      repeatPassword: "",
+      error: null,
+    });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
-    setError(null);
+    setRegisterUserData({
+      email: "",
+      password: "",
+      repeatPassword: "",
+      error: null,
+    });
 
-    if (password !== repeatPassword) {
-      setError("Passwords do not match");
+    if (registerUserData.password !== registerUserData.repeatPassword) {
+      setRegisterUserData({
+        ...registerUserData,
+        error: "Passwords do not match",
+      });
       setIsLoading(false);
       return;
     }
 
     try {
       const { error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: registerUserData.email,
+        password: registerUserData.password,
         options: {
           emailRedirectTo: `${window.location.origin}/userDashboard`,
         },
@@ -51,7 +63,10 @@ export function SignUpForm({
       if (error) throw error;
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setRegisterUserData({
+        ...registerUserData,
+        error: error instanceof Error ? error.message : "An error occurred",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -74,8 +89,13 @@ export function SignUpForm({
                   type="email"
                   placeholder="ejemplo@gmail.com"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={registerUserData.email}
+                  onChange={(e) =>
+                    setRegisterUserData({
+                      ...registerUserData,
+                      email: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="grid gap-2">
@@ -85,8 +105,13 @@ export function SignUpForm({
                 <PasswordInput
                   id="password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={registerUserData.password}
+                  onChange={(e) =>
+                    setRegisterUserData({
+                      ...registerUserData,
+                      password: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="grid gap-2">
@@ -96,13 +121,20 @@ export function SignUpForm({
                 <PasswordInput
                   id="repeat-password"
                   required
-                  value={repeatPassword}
-                  onChange={(e) => setRepeatPassword(e.target.value)}
+                  value={registerUserData.repeatPassword}
+                  onChange={(e) =>
+                    setRegisterUserData({
+                      ...registerUserData,
+                      repeatPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {registerUserData.error && (
+                <p className="text-sm text-red-500">{registerUserData.error}</p>
+              )}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creando una cuenta..." : "Registrarse"}
+                {isLoading ? "Creando tu cuenta..." : "Registrarme"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

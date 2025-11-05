@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SignUpForm } from "../sign-up-form";
+import { SignUpForm } from "../SignUpForm";
 import { createClient } from "@/lib/supabase/client";
 import { mockPush } from "@/__mocks__/next-navigation";
 import { mockCredentials } from "@/__mocks__/test-data";
@@ -40,7 +40,7 @@ describe("SignUpForm", () => {
 
   test("01 - should render without crashing", () => {
     render(<SignUpForm />);
-    expect(screen.getByText(/registrate/i)).toBeInTheDocument();
+    expect(screen.getByText(/registrarme/i)).toBeInTheDocument();
   });
 
   test("02 - should render email input field", () => {
@@ -65,7 +65,7 @@ describe("SignUpForm", () => {
   test("05 - should render submit button", () => {
     render(<SignUpForm />);
     const submitButton = screen.getByRole("button", {
-      name: /registrarse/i,
+      name: /registrarme/i,
     });
     expect(submitButton).toBeInTheDocument();
   });
@@ -103,7 +103,7 @@ describe("SignUpForm", () => {
       "repeat-password"
     ) as HTMLInputElement;
     const submitButton = screen.getByRole("button", {
-      name: /registrarse/i,
+      name: /registrarme/i,
     });
 
     // Llenar el email también porque es requerido
@@ -130,7 +130,7 @@ describe("SignUpForm", () => {
       "repeat-password"
     ) as HTMLInputElement;
     const submitButton = screen.getByRole("button", {
-      name: /registrarse/i,
+      name: /registrarme/i,
     });
 
     await user.type(emailInput, mockCredentials.email);
@@ -162,7 +162,7 @@ describe("SignUpForm", () => {
       "repeat-password"
     ) as HTMLInputElement;
     const submitButton = screen.getByRole("button", {
-      name: /registrarse/i,
+      name: /registrarme/i,
     });
 
     await user.type(emailInput, mockCredentials.email);
@@ -192,7 +192,7 @@ describe("SignUpForm", () => {
       "repeat-password"
     ) as HTMLInputElement;
     const submitButton = screen.getByRole("button", {
-      name: /registrarse/i,
+      name: /registrarme/i,
     });
 
     await user.type(emailInput, mockCredentials.email);
@@ -223,7 +223,7 @@ describe("SignUpForm", () => {
       "repeat-password"
     ) as HTMLInputElement;
     const submitButton = screen.getByRole("button", {
-      name: /registrarse/i,
+      name: /registrarme/i,
     });
 
     await user.type(emailInput, mockCredentials.email);
@@ -233,7 +233,7 @@ describe("SignUpForm", () => {
 
     await waitFor(() => {
       expect(submitButton).toBeDisabled();
-      expect(screen.getByText(/creando una cuenta/i)).toBeInTheDocument();
+      expect(screen.getByText(/creando tu cuenta/i)).toBeInTheDocument();
     });
   });
 

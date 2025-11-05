@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Button } from "../../ui/Button/Button";
-import { ThemeSwitcher } from "../../auth/themeSwitcher/theme-switcher";
-import { AuthButton } from "../../auth/authButtons/auth-button";
+import { ThemeSwitcher } from "../../auth/themeSwitcher/ThemeSwitcher";
+import { AuthButton } from "../../auth/authButtons/AuthButton";
 import styles from "./header.module.scss";
 import { HeaderCTAsProps } from "./header.types";
 

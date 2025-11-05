@@ -20,15 +20,18 @@ import { Label } from "@/app/components/ui/Label/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LoginUserDataType } from "./login.types";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loginUserData, setLoginUserData] = useState<LoginUserDataType>({
+    email: "",
+    password: "",
+    error: null,
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const {
     actions: { setRole },
@@ -38,13 +41,17 @@ export function LoginForm({
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
-    setError(null);
+    setLoginUserData({
+      email: "",
+      password: "",
+      error: null,
+    });
 
     try {
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: loginUserData.email,
+          password: loginUserData.password,
         });
       if (authError) throw authError;
       const accessToken = authData.session.access_token;
@@ -73,7 +80,10 @@ export function LoginForm({
       const dashboardRoute = getDashboardRouteByRole(role);
       router.push(dashboardRoute);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setLoginUserData({
+        ...loginUserData,
+        error: error instanceof Error ? error.message : "An error occurred",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -98,8 +108,13 @@ export function LoginForm({
                   type="email"
                   placeholder="ejemplo@gmail.com"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={loginUserData.email}
+                  onChange={(e) =>
+                    setLoginUserData({
+                      ...loginUserData,
+                      email: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="grid gap-2">
@@ -115,11 +130,18 @@ export function LoginForm({
                 <PasswordInput
                   id="password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={loginUserData.password}
+                  onChange={(e) =>
+                    setLoginUserData({
+                      ...loginUserData,
+                      password: e.target.value,
+                    })
+                  }
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {loginUserData.error && (
+                <p className="text-sm text-red-500">{loginUserData.error}</p>
+              )}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "../../ui/Button/Button";
-import { LogoutButton } from "../logout/logout-button";
+import { LogoutButton } from "../logout/LogoutButton";
 import { useAuth } from "@/app/hooks/useAuth";
 
 /**

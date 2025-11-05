@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ThemeSwitcher } from "../theme-switcher";
+import { ThemeSwitcher } from "../ThemeSwitcher";
 import { useTheme } from "next-themes";
 
 // Mock de next-themes

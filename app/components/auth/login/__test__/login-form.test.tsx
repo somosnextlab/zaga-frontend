@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LoginForm } from "../login-form";
+import { LoginForm } from "../LoginForm";
 import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
@@ -34,6 +34,7 @@ jest.mock("next/navigation", () => {
 
 describe("LoginForm", () => {
   let mockSignInWithPassword: jest.Mock;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockSupabaseClient: any;
 
   beforeEach(() => {
@@ -209,7 +210,7 @@ describe("LoginForm", () => {
 
   test("11 - should display link to sign up", () => {
     renderWithProvider();
-    const signUpLink = screen.getByText(/regístrate/i);
+    const signUpLink = screen.getByText(/Regístrate/i);
     expect(signUpLink).toBeInTheDocument();
     expect(signUpLink.closest("a")).toHaveAttribute("href", "/auth/sign-up");
   });

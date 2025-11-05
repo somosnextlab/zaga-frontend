@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { UpdatePasswordForm } from "../update-password-form";
+import { UpdatePasswordForm } from "../UpdatePasswordForm";
 import { createClient } from "@/lib/supabase/client";
 import { mockPush } from "@/__mocks__/next-navigation";
 import { mockNewPassword } from "@/__mocks__/test-data";

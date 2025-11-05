@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ForgotPasswordForm } from "../forgot-password-form";
+import { ForgotPasswordForm } from "../ForgotPasswordForm";
 import { createClient } from "@/lib/supabase/client";
 import { mockCredentials } from "@/__mocks__/test-data";
 

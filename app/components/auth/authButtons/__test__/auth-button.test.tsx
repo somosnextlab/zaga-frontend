@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { AuthButton } from "../auth-button";
+import { AuthButton } from "../AuthButton";
 import { useAuth } from "@/app/hooks/useAuth";
 import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { mockSimpleUser } from "@/__mocks__/test-data";
@@ -12,7 +12,7 @@ jest.mock("@/app/hooks/useAuth", () => ({
 }));
 
 // Mock de LogoutButton
-jest.mock("@/app/components/auth/logout/logout-button", () => ({
+jest.mock("@/app/components/auth/logout/LogoutButton", () => ({
   LogoutButton: () => <button>Logout</button>,
 }));
 
