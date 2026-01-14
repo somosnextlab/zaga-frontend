@@ -18,9 +18,6 @@ export function AuthButton() {
         <Button size="sm" variant={"outline"} disabled>
           Iniciar sesión
         </Button>
-        <Button size="sm" variant={"default"} disabled>
-          Registrarme
-        </Button>
       </div>
     );
   }
@@ -34,9 +31,6 @@ export function AuthButton() {
     <div className="flex gap-2">
       <Button asChild size="sm" variant={"outline"}>
         <Link href="/auth/login">Iniciar sesión</Link>
-      </Button>
-      <Button asChild size="sm" variant={"default"}>
-        <Link href="/auth/sign-up">Registrarme</Link>
       </Button>
     </div>
   );

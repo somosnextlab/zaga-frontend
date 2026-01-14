@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { AuthButton } from "../AuthButton";
@@ -47,11 +46,11 @@ describe("AuthButton", () => {
     expect(screen.getByText(/iniciar sesión/i)).toBeInTheDocument();
   });
 
-  test("02 - should render login and signup buttons when user is not authenticated", () => {
+  test("02 - should render login button when user is not authenticated", () => {
     mockUseAuth.mockReturnValue({ user: null, loading: false });
     renderWithProvider();
     expect(screen.getByText(/iniciar sesión/i)).toBeInTheDocument();
-    expect(screen.getByText(/registrarme/i)).toBeInTheDocument();
+    expect(screen.queryByText(/registrarme/i)).not.toBeInTheDocument();
   });
 
   test("03 - should render disabled buttons when loading", () => {
@@ -75,13 +74,6 @@ describe("AuthButton", () => {
     renderWithProvider();
     const loginLink = screen.getByText(/iniciar sesión/i).closest("a");
     expect(loginLink).toHaveAttribute("href", "/auth/login");
-  });
-
-  test("06 - should render signup link with correct href", () => {
-    mockUseAuth.mockReturnValue({ user: null, loading: false });
-    renderWithProvider();
-    const signupLink = screen.getByText(/registrarme/i).closest("a");
-    expect(signupLink).toHaveAttribute("href", "/auth/sign-up");
   });
 });
 

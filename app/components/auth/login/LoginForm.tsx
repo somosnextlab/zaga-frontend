@@ -6,6 +6,7 @@ import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
 import { LoginAuthResponse } from "@/app/types/login.types";
 import { getDashboardRouteByRole } from "@/app/utils/roleUtils";
 import { useUserContext } from "@/app/context/UserContext/UserContextContext";
+import { UserRoleEnum } from "@/app/types/user.types";
 import { Button } from "@/app/components/ui/Button/Button";
 import {
   Card,
@@ -34,7 +35,7 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const {
-    actions: { setRole },
+    actions: { setRole, reset },
   } = useUserContext();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -74,16 +75,29 @@ export function LoginForm({
 
       const authResponse = data as LoginAuthResponse;
       const { role } = authResponse.data;
-      setRole(role);
+
+      const normalizedRole = role.toLowerCase().trim();
+      if (normalizedRole !== UserRoleEnum.ADMIN) {
+        // Seguridad: no dejar sesión activa si no es admin
+        await supabase.auth.signOut();
+        reset();
+        setLoginUserData((prev) => ({
+          ...prev,
+          error: "Acceso restringido: solo administradores.",
+        }));
+        return;
+      }
+
+      setRole(UserRoleEnum.ADMIN);
 
       // Redirigir al dashboard correspondiente según el rol
-      const dashboardRoute = getDashboardRouteByRole(role);
+      const dashboardRoute = getDashboardRouteByRole(UserRoleEnum.ADMIN);
       router.push(dashboardRoute);
     } catch (error: unknown) {
-      setLoginUserData({
-        ...loginUserData,
-        error: error instanceof Error ? error.message : "An error occurred",
-      });
+      setLoginUserData((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : "Ocurrió un error",
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -145,15 +159,6 @@ export function LoginForm({
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              No tienes una cuenta?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="text-zaga-green-gray underline underline-offset-4"
-              >
-                Regístrate
-              </Link>
             </div>
           </form>
         </CardContent>

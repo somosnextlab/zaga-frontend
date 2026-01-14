@@ -1,14 +1,9 @@
 "use client";
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import "./LoanSimulator.module.scss";
 import { Button } from "@/app/components/ui/Button/Button";
 import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Slider } from "@/app/components/ui/Slider/slider";
-import { useAuth } from "@/app/hooks/useAuth";
-import { useUserContext } from "@/app/context/UserContext/UserContextContext";
-import { ROUTES } from "@/app/utils/constants/routes";
-import { UserRoleEnum } from "@/app/types/user.types";
 
 function formatMXN(n: number) {
   return n.toLocaleString("es-MX", {
@@ -22,11 +17,6 @@ export function LoanSimulator() {
   const [monto, setMonto] = React.useState(25000);
   const [plazo, setPlazo] = React.useState(12);
   const [isLoading] = React.useState(false);
-  const router = useRouter();
-  const { user } = useAuth();
-  const {
-    state: { role },
-  } = useUserContext();
 
   // Tasa anual del 12% (1% mensual)
   const tasaAnual = 0.12;
@@ -41,21 +31,12 @@ export function LoanSimulator() {
 
   const totalPagar = pagoMensual * plazo;
 
-  const handleContinuar = async () => {
-    // Si hay sesión y el rol es usuario o cliente, redirigir a userDashboard
-    if (user && role) {
-      if (role === UserRoleEnum.USUARIO || role === UserRoleEnum.CLIENTE) {
-        router.push(ROUTES.USER_DASHBOARD);
-        return;
-      }
-      // Si es admin, no hacer nada
-      if (role === UserRoleEnum.ADMIN) {
-        return;
-      }
-    }
-    // Si no hay sesión, redirigir a login
-    router.push(ROUTES.LOGIN);
-  };
+  const handleContinuar = React.useCallback((): void => {
+    // TODO: Integrar con n8n enviando WhatsApp (próximo paso)
+    console.log(
+      "[TODO] CTA Landing - Continuar con solicitud: integrar con n8n vía WhatsApp"
+    );
+  }, []);
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-2xl border-0 bg-white">

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from "@testing-library/react";
 import { useHeaderMode } from "../useHeaderMode";
 import { usePathname } from "next/navigation";
@@ -51,20 +50,7 @@ describe("useHeaderMode", () => {
     expect(result.current.showProtectedNavigation).toBe(false);
   });
 
-  test("03 - should return protected mode for userDashboard", () => {
-    mockUsePathname.mockReturnValue("/userDashboard");
-    mockUseAuth.mockReturnValue({
-      user: { role: "authenticated" },
-    });
-
-    const { result } = renderHook(() => useHeaderMode());
-
-    expect(result.current.mode).toBe("protected");
-    expect(result.current.showLandingNavigation).toBe(false);
-    expect(result.current.showProtectedNavigation).toBe(true);
-  });
-
-  test("04 - should return protected mode for adminDashboard", () => {
+  test("03 - should return protected mode for adminDashboard", () => {
     mockUsePathname.mockReturnValue("/adminDashboard");
     mockUseAuth.mockReturnValue({
       user: { role: "authenticated" },
@@ -77,8 +63,8 @@ describe("useHeaderMode", () => {
     expect(result.current.showProtectedNavigation).toBe(true);
   });
 
-  test("05 - should return isAuthenticated true when user role is authenticated", () => {
-    mockUsePathname.mockReturnValue("/userDashboard");
+  test("04 - should return isAuthenticated true when user role is authenticated", () => {
+    mockUsePathname.mockReturnValue("/adminDashboard");
     mockUseAuth.mockReturnValue({
       user: { role: "authenticated" },
     });
@@ -88,7 +74,7 @@ describe("useHeaderMode", () => {
     expect(result.current.isAuthenticated).toBe(true);
   });
 
-  test("06 - should return isAuthenticated false when user is null", () => {
+  test("05 - should return isAuthenticated false when user is null", () => {
     mockUsePathname.mockReturnValue("/");
     mockUseAuth.mockReturnValue({ user: null });
 
@@ -97,7 +83,7 @@ describe("useHeaderMode", () => {
     expect(result.current.isAuthenticated).toBe(false);
   });
 
-  test("07 - should return isAuthenticated false when user role is not authenticated", () => {
+  test("06 - should return isAuthenticated false when user role is not authenticated", () => {
     mockUsePathname.mockReturnValue("/");
     mockUseAuth.mockReturnValue({
       user: { role: "guest" },
@@ -108,7 +94,7 @@ describe("useHeaderMode", () => {
     expect(result.current.isAuthenticated).toBe(false);
   });
 
-  test("08 - should not show landing navigation when authenticated on landing page", () => {
+  test("07 - should not show landing navigation when authenticated on landing page", () => {
     mockUsePathname.mockReturnValue("/");
     mockUseAuth.mockReturnValue({
       user: { role: "authenticated" },
@@ -119,8 +105,8 @@ describe("useHeaderMode", () => {
     expect(result.current.showLandingNavigation).toBe(false);
   });
 
-  test("09 - should not show protected navigation when not authenticated on protected page", () => {
-    mockUsePathname.mockReturnValue("/userDashboard");
+  test("08 - should not show protected navigation when not authenticated on protected page", () => {
+    mockUsePathname.mockReturnValue("/adminDashboard");
     mockUseAuth.mockReturnValue({ user: null });
 
     const { result } = renderHook(() => useHeaderMode());

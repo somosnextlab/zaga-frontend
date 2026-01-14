@@ -2,14 +2,11 @@ export const ROUTES = {
   // Públicas
   HOME: "/",
   LOGIN: "/auth/login",
-  REGISTER: "/auth/register",
-  VERIFY_EMAIL: "/auth/verify-email",
 
   /**
    * Rutas protegidas por grupo de rutas de Next.js
-   * Los grupos (admin) y (private) no afectan la URL final
+   * Los grupos (admin) no afectan la URL final
    */
-  USER_DASHBOARD: "/userDashboard",
   ADMIN_DASHBOARD: "/adminDashboard",
 
   // Auth
