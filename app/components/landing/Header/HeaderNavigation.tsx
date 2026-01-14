@@ -3,6 +3,7 @@ import { FC } from "react";
 import { LANDING_NAVIGATION_ITEMS } from "@/app/utils/constants/routes";
 import styles from "./header.module.scss";
 import { HeaderNavigationProps } from "./header.types";
+import { ThemeSwitcher } from "../../auth/themeSwitcher/ThemeSwitcher";
 
 /**
  * Componente de navegación del header
@@ -26,6 +27,7 @@ export const HeaderNavigation: FC<HeaderNavigationProps> = ({
           {item.label}
         </Link>
       ))}
+      <ThemeSwitcher />
     </nav>
   );
 };

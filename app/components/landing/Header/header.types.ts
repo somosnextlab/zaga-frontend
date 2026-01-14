@@ -6,9 +6,6 @@ export interface HeaderProps {
 }
 export interface HeaderCTAsProps {
   variant: "desktop" | "mobile";
-  showDashboardButton: boolean;
-  onDashboardClick?: () => void;
-  onDashboardClickAndClose?: () => void;
 }
 
 export interface HeaderNavigationProps {
@@ -19,9 +16,7 @@ export interface HeaderNavigationProps {
 export interface MobileMenuProps {
   isOpen: boolean;
   showLandingNavigation: boolean;
-  showDashboardButton: boolean;
   onClose: () => void;
-  onDashboardClick: () => void;
 }
 
 export interface MobileMenuButtonProps {

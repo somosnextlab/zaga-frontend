@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { HeaderNavigation } from "./HeaderNavigation";
-import { HeaderCTAs } from "./HeaderCTAs";
 import styles from "./header.module.scss";
 import { MobileMenuProps } from "./header.types";
 
@@ -10,16 +9,9 @@ import { MobileMenuProps } from "./header.types";
 export const MobileMenu: FC<MobileMenuProps> = ({
   isOpen,
   showLandingNavigation,
-  showDashboardButton,
   onClose,
-  onDashboardClick,
 }) => {
   if (!isOpen) return null;
-
-  const handleDashboardClick = () => {
-    onDashboardClick();
-    onClose();
-  };
 
   return (
     <div className={styles.mobileMenu}>
@@ -27,12 +19,6 @@ export const MobileMenu: FC<MobileMenuProps> = ({
         {showLandingNavigation && (
           <HeaderNavigation variant="mobile" onLinkClick={onClose} />
         )}
-
-        <HeaderCTAs
-          variant="mobile"
-          showDashboardButton={showDashboardButton}
-          onDashboardClickAndClose={handleDashboardClick}
-        />
       </div>
     </div>
   );
