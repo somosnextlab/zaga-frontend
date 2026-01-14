@@ -82,8 +82,8 @@ describe("Header", () => {
       isAuthenticated: false,
     });
     renderWithProvider();
-    // Verificar que se renderizan los botones de autenticación
-    const buttons = screen.getAllByRole("button");
-    expect(buttons.length).toBeGreaterThan(0);
+    // Ya no se renderizan CTAs de auth/dashboard en el header
+    expect(screen.queryByText(/iniciar sesión/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/ir al dashboard/i)).not.toBeInTheDocument();
   });
 });

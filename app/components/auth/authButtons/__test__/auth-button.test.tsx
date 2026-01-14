@@ -2,17 +2,16 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { AuthButton } from "../AuthButton";
 import { useAuth } from "@/app/hooks/useAuth";
-import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { mockSimpleUser } from "@/__mocks__/test-data";
+import { useUserContext } from "@/app/context/UserContext/UserContextContext";
 
 // Mock de useAuth
 jest.mock("@/app/hooks/useAuth", () => ({
   useAuth: jest.fn(),
 }));
 
-// Mock de LogoutButton
-jest.mock("@/app/components/auth/logout/LogoutButton", () => ({
-  LogoutButton: () => <button>Logout</button>,
+jest.mock("@/app/context/UserContext/UserContextContext", () => ({
+  useUserContext: jest.fn(),
 }));
 
 // Mock de next/navigation
@@ -23,57 +22,73 @@ jest.mock("next/navigation", () => {
 
 describe("AuthButton", () => {
   const mockUseAuth = useAuth as jest.Mock;
+  const mockUseUserContext = useUserContext as jest.Mock;
 
   beforeEach(() => {
     mockUseAuth.mockClear();
+    mockUseUserContext.mockReturnValue({
+      state: { role: null, loading: false },
+      actions: {},
+    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  const renderWithProvider = () => {
-    return render(
-      <UserProvider>
-        <AuthButton />
-      </UserProvider>
-    );
-  };
-
   test("01 - should render without crashing", () => {
     mockUseAuth.mockReturnValue({ user: null, loading: false });
-    renderWithProvider();
-    expect(screen.getByText(/iniciar sesión/i)).toBeInTheDocument();
+    render(<AuthButton />);
+    expect(screen.getByText(/admin/i)).toBeInTheDocument();
   });
 
-  test("02 - should render login button when user is not authenticated", () => {
+  test("02 - should render login link when user is not authenticated", () => {
     mockUseAuth.mockReturnValue({ user: null, loading: false });
-    renderWithProvider();
-    expect(screen.getByText(/iniciar sesión/i)).toBeInTheDocument();
-    expect(screen.queryByText(/registrarme/i)).not.toBeInTheDocument();
+    render(<AuthButton />);
+    expect(screen.getByText(/admin/i)).toBeInTheDocument();
   });
 
-  test("03 - should render disabled buttons when loading", () => {
+  test("03 - should not render when loading", () => {
     mockUseAuth.mockReturnValue({ user: null, loading: true });
-    renderWithProvider();
-    const buttons = screen.getAllByRole("button");
-    buttons.forEach((button) => {
-      expect(button).toBeDisabled();
-    });
+    render(<AuthButton />);
+    expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
   });
 
-  test("04 - should render user email and logout button when user is authenticated", () => {
+  test("04 - should render admin dashboard link when user is authenticated and is admin", () => {
     mockUseAuth.mockReturnValue({ user: mockSimpleUser, loading: false });
-    renderWithProvider();
-    expect(screen.getByText(new RegExp(`Hola, ${mockSimpleUser.email}!`, "i"))).toBeInTheDocument();
-    expect(screen.getByText(/logout/i)).toBeInTheDocument();
+    mockUseUserContext.mockReturnValue({
+      state: { role: "admin", loading: false },
+      actions: {},
+    });
+    render(<AuthButton />);
+    expect(screen.getByText(/admin/i)).toBeInTheDocument();
   });
 
   test("05 - should render login link with correct href", () => {
     mockUseAuth.mockReturnValue({ user: null, loading: false });
-    renderWithProvider();
-    const loginLink = screen.getByText(/iniciar sesión/i).closest("a");
+    render(<AuthButton />);
+    const loginLink = screen.getByText(/admin/i).closest("a");
     expect(loginLink).toHaveAttribute("href", "/auth/login");
   });
-});
 
+  test("06 - should render dashboard link with correct href for admin", () => {
+    mockUseAuth.mockReturnValue({ user: mockSimpleUser, loading: false });
+    mockUseUserContext.mockReturnValue({
+      state: { role: "admin", loading: false },
+      actions: {},
+    });
+    render(<AuthButton />);
+    const dashboardLink = screen.getByText(/admin/i).closest("a");
+    expect(dashboardLink).toHaveAttribute("href", "/adminDashboard");
+  });
+
+  test("07 - should not render when user is authenticated but not admin", () => {
+    mockUseAuth.mockReturnValue({ user: mockSimpleUser, loading: false });
+    mockUseUserContext.mockReturnValue({
+      state: { role: "usuario", loading: false },
+      actions: {},
+    });
+    render(<AuthButton />);
+    expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
+  });
+});

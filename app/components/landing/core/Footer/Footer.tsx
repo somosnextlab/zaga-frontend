@@ -3,21 +3,20 @@
 import React from "react";
 import Link from "next/link";
 import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
+  BriefcaseBusiness,
+  Camera,
+  Globe,
   Mail,
   Phone,
   MapPin,
 } from "lucide-react";
 import styles from "./Footer.module.scss";
+import { AuthButton } from "@/app/components/auth/authButtons/AuthButton";
 
 const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
+  { icon: Globe, href: "#", label: "Facebook" },
+  { icon: Camera, href: "#", label: "Instagram" },
+  { icon: BriefcaseBusiness, href: "#", label: "LinkedIn" },
 ];
 
 const productLinks = [
@@ -91,6 +90,7 @@ export const Footer: React.FC = () => {
           <div className={styles.footer__section}>
             <h3 className={styles.footer__sectionTitle}>Empresa</h3>
             <ul className={styles.footer__sectionLinks}>
+              <AuthButton asListItem className={styles.footer__sectionLink} />
               {companyLinks.map((link, index) => (
                 <li key={index}>
                   <Link href={link.href} className={styles.footer__sectionLink}>

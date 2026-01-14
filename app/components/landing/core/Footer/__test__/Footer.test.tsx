@@ -1,8 +1,19 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { Footer } from "../Footer";
+import { useAuth } from "@/app/hooks/useAuth";
+
+jest.mock("@/app/hooks/useAuth", () => ({
+  useAuth: jest.fn(),
+}));
 
 describe("Footer", () => {
+  const mockUseAuth = useAuth as jest.Mock;
+
+  beforeEach(() => {
+    mockUseAuth.mockReturnValue({ user: null, loading: false });
+  });
+
   test("01 - should render without crashing", () => {
     render(<Footer />);
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
@@ -40,4 +51,3 @@ describe("Footer", () => {
     expect(footer).toBeInTheDocument();
   });
 });
-
