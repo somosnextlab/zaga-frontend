@@ -3,7 +3,8 @@
 import { useState, FC, useMemo } from "react";
 import { useHeaderMode } from "@/app/hooks/useHeaderMode";
 import { useUserContext } from "@/app/context/UserContext/UserContextContext";
-import { getDashboardRouteByRole } from "@/app/utils/roleUtils";
+import { ROUTES } from "@/app/utils/constants/routes";
+import { UserRoleEnum } from "@/app/types/user.types";
 import { useRouter } from "next/navigation";
 import type { HeaderProps } from "./header.types";
 import { HeaderLogo } from "./HeaderLogo";
@@ -34,20 +35,17 @@ export const Header: FC<HeaderProps> = ({ className }) => {
   const closeMenu = () => setIsMenuOpen(false);
 
   const handleGoToDashboard = () => {
-    if (role) {
-      const dashboardRoute = getDashboardRouteByRole(role);
-      router.push(dashboardRoute);
-    }
+    if (role === UserRoleEnum.ADMIN) router.push(ROUTES.ADMIN_DASHBOARD);
   };
 
   // Calcular si se debe mostrar el botón de dashboard
   const showDashboardButtonDesktop = useMemo(
-    () => isAuthenticated && mode === "landing",
-    [isAuthenticated, mode]
+    () => isAuthenticated && mode === "landing" && role === UserRoleEnum.ADMIN,
+    [isAuthenticated, mode, role]
   );
 
   const showDashboardButtonMobile = useMemo(
-    () => isAuthenticated && mode === "landing" && !!role,
+    () => isAuthenticated && mode === "landing" && role === UserRoleEnum.ADMIN,
     [isAuthenticated, mode, role]
   );
 

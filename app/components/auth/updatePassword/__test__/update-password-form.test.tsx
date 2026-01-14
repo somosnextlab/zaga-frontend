@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { UpdatePasswordForm } from "../update-password-form";
+import { UpdatePasswordForm } from "../UpdatePasswordForm";
 import { createClient } from "@/lib/supabase/client";
 import { mockPush } from "@/__mocks__/next-navigation";
 import { mockNewPassword } from "@/__mocks__/test-data";
@@ -91,7 +91,7 @@ describe("UpdatePasswordForm", () => {
     });
   });
 
-  test("06 - should redirect to userDashboard on successful update", async () => {
+  test("06 - should redirect to adminDashboard on successful update", async () => {
     const user = userEvent.setup();
     mockUpdateUser.mockResolvedValue({ error: null });
 
@@ -107,7 +107,7 @@ describe("UpdatePasswordForm", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith("/userDashboard");
+      expect(mockPush).toHaveBeenCalledWith("/adminDashboard");
     });
   });
 

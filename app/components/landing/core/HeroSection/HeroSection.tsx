@@ -1,41 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, Clock, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
 import "./heroSection.module.scss";
 import { LoanSimulator } from "../LoanSimulator/LoanSimulator";
 import { Button } from "@/app/components/ui/Button/Button";
 import { Badge } from "@/app/components/ui/badge";
-import { useAuth } from "@/app/hooks/useAuth";
-import { useUserContext } from "@/app/context/UserContext/UserContextContext";
-import { ROUTES } from "@/app/utils/constants/routes";
-import { UserRoleEnum } from "@/app/types/user.types";
 
 export const HeroSection: React.FC = () => {
   const [isLoading] = useState(false);
-  const router = useRouter();
-  const { user } = useAuth();
-  const {
-    state: { role },
-  } = useUserContext();
 
-  const handleSolicitarAhora = async () => {
-    // Si hay sesión y el rol es usuario o cliente, redirigir a userDashboard
-    if (user && role) {
-      if (role === UserRoleEnum.USUARIO || role === UserRoleEnum.CLIENTE) {
-        router.push(ROUTES.USER_DASHBOARD);
-        return;
-      }
-      // Si es admin, no hacer nada
-      if (role === UserRoleEnum.ADMIN) {
-        return;
-      }
-    }
-    // Si no hay sesión, redirigir a login
-    router.push(ROUTES.LOGIN);
-  };
+  const handleSolicitarAhora = useCallback((): void => {
+    // TODO: Integrar con n8n enviando WhatsApp (próximo paso)
+    console.log(
+      "[TODO] CTA Landing - Solicitar ahora: integrar con n8n vía WhatsApp"
+    );
+  }, []);
+
   return (
     <section className="bg-gradient-to-br from-[hsl(var(--color-zaga-gray-50))] to-white py-8 md:py-12">
       <div className="container mx-auto px-4">

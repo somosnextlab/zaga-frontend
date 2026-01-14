@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LogoutButton } from "../logout-button";
+import { LogoutButton } from "../LogoutButton";
 import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
 import { mockPush } from "@/__mocks__/next-navigation";

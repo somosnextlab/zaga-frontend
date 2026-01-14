@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LoginForm } from "../login-form";
+import { LoginForm } from "../LoginForm";
 import { UserProvider } from "@/app/context/UserContext/UserContextContext";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithHeader } from "@/app/utils/apiCallUtils/apiUtils";
@@ -34,13 +34,17 @@ jest.mock("next/navigation", () => {
 
 describe("LoginForm", () => {
   let mockSignInWithPassword: jest.Mock;
+  let mockSignOut: jest.Mock;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockSupabaseClient: any;
 
   beforeEach(() => {
     mockSignInWithPassword = jest.fn();
+    mockSignOut = jest.fn();
     mockSupabaseClient = {
       auth: {
         signInWithPassword: mockSignInWithPassword,
+        signOut: mockSignOut,
       },
     };
     (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);
@@ -142,7 +146,37 @@ describe("LoginForm", () => {
     });
   });
 
-  test("08 - should display error message on authentication failure", async () => {
+  test("08 - should redirect to admin dashboard when role is admin", async () => {
+    const user = userEvent.setup();
+
+    mockSignInWithPassword.mockResolvedValue({
+      data: mockSession,
+      error: null,
+    });
+
+    (fetchWithHeader as jest.Mock).mockResolvedValue(
+      createMockFetchResponse({ ...mockUserData, role: "admin" })
+    );
+
+    renderWithProvider();
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = document.getElementById(
+      "password"
+    ) as HTMLInputElement;
+    const submitButton = screen.getByRole("button", {
+      name: /iniciar sesión/i,
+    });
+
+    await user.type(emailInput, mockCredentials.email);
+    await user.type(passwordInput, mockCredentials.password);
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledWith("/adminDashboard");
+    });
+  });
+
+  test("09 - should display error message on authentication failure", async () => {
     const user = userEvent.setup();
     const errorMessage = "Invalid credentials";
     mockSignInWithPassword.mockResolvedValue({
@@ -169,7 +203,7 @@ describe("LoginForm", () => {
     });
   });
 
-  test("09 - should disable submit button while loading", async () => {
+  test("10 - should disable submit button while loading", async () => {
     const user = userEvent.setup();
     mockSignInWithPassword.mockImplementation(
       () =>
@@ -197,7 +231,7 @@ describe("LoginForm", () => {
     });
   });
 
-  test("10 - should display link to forgot password", () => {
+  test("11 - should display link to forgot password", () => {
     renderWithProvider();
     const forgotPasswordLink = screen.getByText(/olvidaste tu contraseña/i);
     expect(forgotPasswordLink).toBeInTheDocument();
@@ -205,12 +239,5 @@ describe("LoginForm", () => {
       "href",
       "/auth/forgot-password"
     );
-  });
-
-  test("11 - should display link to sign up", () => {
-    renderWithProvider();
-    const signUpLink = screen.getByText(/regístrate/i);
-    expect(signUpLink).toBeInTheDocument();
-    expect(signUpLink.closest("a")).toHaveAttribute("href", "/auth/sign-up");
   });
 });

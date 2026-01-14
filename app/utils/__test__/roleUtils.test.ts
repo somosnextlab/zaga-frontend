@@ -18,24 +18,24 @@ describe("roleUtils", () => {
       expect(result).toBe(ROUTES.ADMIN_DASHBOARD);
     });
 
-    test("04 - should return user dashboard route for usuario role", () => {
+    test("04 - should return home route for usuario role", () => {
       const result = getDashboardRouteByRole("usuario");
-      expect(result).toBe(ROUTES.USER_DASHBOARD);
+      expect(result).toBe(ROUTES.HOME);
     });
 
-    test("05 - should return user dashboard route for Usuario role (case insensitive)", () => {
+    test("05 - should return home route for Usuario role (case insensitive)", () => {
       const result = getDashboardRouteByRole("USUARIO");
-      expect(result).toBe(ROUTES.USER_DASHBOARD);
+      expect(result).toBe(ROUTES.HOME);
     });
 
-    test("06 - should return user dashboard route for cliente role", () => {
+    test("06 - should return home route for cliente role", () => {
       const result = getDashboardRouteByRole("cliente");
-      expect(result).toBe(ROUTES.USER_DASHBOARD);
+      expect(result).toBe(ROUTES.HOME);
     });
 
-    test("07 - should return user dashboard route for Cliente role (case insensitive)", () => {
+    test("07 - should return home route for Cliente role (case insensitive)", () => {
       const result = getDashboardRouteByRole("CLIENTE");
-      expect(result).toBe(ROUTES.USER_DASHBOARD);
+      expect(result).toBe(ROUTES.HOME);
     });
 
     test("08 - should return home route for unknown role", () => {
