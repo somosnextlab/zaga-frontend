@@ -12,6 +12,7 @@ import {
 } from "@/app/components/ui/Card/card";
 import { PasswordInput } from "@/app/components/ui/InputPassword/password-input";
 import { Label } from "@/app/components/ui/Label/label";
+import { ROUTES } from "@/app/utils/constants/routes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -33,10 +34,10 @@ export function UpdatePasswordForm({
     try {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-      // Redirigir al dashboard del usuario tras actualizar la contraseña
-      router.push("/userDashboard");
+      // Redirigir al dashboard de administrador tras actualizar la contraseña
+      router.push(ROUTES.ADMIN_DASHBOARD);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Ocurrió un error");
     } finally {
       setIsLoading(false);
     }

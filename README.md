@@ -35,8 +35,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 app/
 ├── (admin)/          # Panel administrativo
-├── (private)/        # Panel de cliente
-├── auth/             # Login, registro
+├── auth/             # Login (admin)
 ├── api/              # API Routes
 ├── components/        # Componentes (auth, core, ui)
 ├── lib/              # Utilidades (auth, supabase, api)
@@ -47,7 +46,6 @@ app/
 
 Sistema de roles con Supabase:
 - **Admin**: `/adminDashboard`
-- **Cliente**: `/userDashboard`
 
 El proxy redirige automáticamente según el rol del usuario.
 

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { ROUTES } from "@/app/utils/constants/routes";
 
 export function LogoutButton() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     actions: { reset },
   } = useUserContext();

@@ -29,9 +29,7 @@ export function useHeaderMode(): HeaderConfig {
 
   const isAuthenticated = user?.role === "authenticated";
   const isAuthPage = pathname.startsWith("/auth");
-  const isProtectedPage =
-    pathname.startsWith("/userDashboard") ||
-    pathname.startsWith("/adminDashboard");
+  const isProtectedPage = pathname.startsWith("/adminDashboard");
 
   // Determinar el modo del header
   let mode: HeaderMode;
