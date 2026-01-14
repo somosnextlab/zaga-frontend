@@ -1,13 +1,6 @@
 import { requireAdmin } from "@/app/utils/authUtils.server";
-import dynamic from "next/dynamic";
-
-const LogoutButton = dynamic(
-  () =>
-    import("@/app/components/auth/logout/LogoutButton").then(
-      (mod) => mod.LogoutButton
-    ),
-  { ssr: false }
-);
+import type { ReactNode } from "react";
+import { LogoutButton } from "@/app/components/auth/logout/LogoutButton";
 
 /**
  * Layout específico para rutas de administrador
@@ -16,7 +9,7 @@ const LogoutButton = dynamic(
 export default async function AdminLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   // Verificar que el usuario tenga rol de admin
   // Si no tiene el rol correcto, redirige automáticamente
