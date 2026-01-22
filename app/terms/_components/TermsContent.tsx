@@ -1,0 +1,65 @@
+"use client";
+
+import * as React from "react";
+import styles from "./TermsContent.module.scss";
+
+export function TermsContent(): React.JSX.Element {
+  return (
+    <article className={styles.content}>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>1. Objeto y alcance</h2>
+        <p>
+          Estos Términos y Condiciones (en adelante, “TyC”) regulan el uso del
+          sitio web de ZAGA y el registro de tu aceptación como acto legal previo
+          para continuar con el proceso de onboarding iniciado por WhatsApp.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>2. Aceptación de los TyC</h2>
+        <p>
+          Al presionar el botón “Acepto los Términos y Condiciones”, declarás
+          haber leído y comprendido este documento y prestás tu consentimiento
+          para que ZAGA registre tu aceptación asociada al token provisto en el
+          enlace.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>3. Token y validez del enlace</h2>
+        <p>
+          El enlace incluye un token único. Si el token no está presente o es
+          inválido/expiró, no podremos registrar la aceptación. En ese caso,
+          deberás solicitar un nuevo enlace en el chat de WhatsApp de ZAGA.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>4. Registro de consentimiento</h2>
+        <p>
+          Al aceptar, se enviará una solicitud al backend de ZAGA para registrar
+          tu consentimiento. No se envían datos adicionales en el cuerpo de la
+          solicitud más allá del token.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>5. Canales de atención</h2>
+        <p>
+          El canal principal de onboarding y soporte es WhatsApp. Una vez
+          registrada la aceptación, podrás continuar el flujo por ese medio.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>6. Modificaciones</h2>
+        <p>
+          ZAGA puede actualizar estos TyC para reflejar cambios operativos o
+          normativos. La versión publicada en esta pantalla es la aplicable al
+          momento de tu aceptación.
+        </p>
+      </section>
+    </article>
+  );
+}
+

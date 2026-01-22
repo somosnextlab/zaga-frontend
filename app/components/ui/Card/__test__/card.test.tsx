@@ -63,7 +63,7 @@ describe("CardTitle", () => {
   test("03 - should accept custom className", () => {
     const customClass = "custom-title-class";
     render(<CardTitle className={customClass}>Title</CardTitle>);
-    const title = screen.getByText("Title").closest("div");
+    const title = screen.getByText("Title").closest("h3");
     expect(title).toHaveClass(customClass);
   });
 });
@@ -83,7 +83,7 @@ describe("CardDescription", () => {
   test("03 - should accept custom className", () => {
     const customClass = "custom-description-class";
     render(<CardDescription className={customClass}>Description</CardDescription>);
-    const desc = screen.getByText("Description").closest("div");
+    const desc = screen.getByText("Description").closest("p");
     expect(desc).toHaveClass(customClass);
   });
 });
