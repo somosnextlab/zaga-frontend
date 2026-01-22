@@ -34,7 +34,7 @@ const companyLinks = [
 ];
 
 const legalLinks = [
-  { name: "Términos y Condiciones", href: "#" },
+  { name: "Términos y Condiciones", href: "/terms" },
   { name: "Política de Privacidad", href: "#" },
   { name: "Aviso Legal", href: "#" },
 ];
