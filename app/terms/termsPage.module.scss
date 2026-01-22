@@ -1,0 +1,93 @@
+.page {
+  height: 100%;
+  overflow: hidden;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem; /* py-8 px-4 */
+
+  @media (min-width: 768px) {
+    padding: 2rem 1rem; /* md:py-12 */
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 56rem; /* max-w-4xl */
+  margin: 0 auto;
+
+  /* flex layout para scroll interno */
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+
+  background-color: hsl(var(--color-zaga-white) / 0.9);
+}
+
+.cardHeader {
+  border-bottom: 1px solid hsl(var(--color-border));
+}
+
+.cardTitle {
+  font-size: 1.5rem; /* text-2xl */
+  color: hsl(var(--color-zaga-black));
+}
+
+.cardDescription {
+  color: hsl(var(--color-zaga-silver));
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+  overflow-y: auto;
+  min-height: 0;
+  padding: 10px;
+}
+
+.cardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* gap-3 */
+  padding-top: 1rem; /* pt-4 */
+  border-top: 1px solid hsl(var(--color-border));
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.ctaButton {
+  width: 100%;
+
+  @media (min-width: 640px) {
+    width: auto;
+  }
+}
+
+.backLink {
+  color: hsl(var(--color-zaga-green-gray));
+  text-decoration: none;
+  font-size: 0.875rem; /* similar a text-sm */
+  font-weight: 500;
+  align-self: center; /* mobile: centrado */
+  text-align: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 640px) {
+    align-self: center; /* desktop: alineado verticalmente con el botón */
+  }
+}
+
