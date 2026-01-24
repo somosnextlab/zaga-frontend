@@ -36,12 +36,14 @@ export async function GET(request: Request) {
       headers: { "content-type": "application/json" },
     });
   } catch (error) {
-    return new NextResponse(
-      JSON.stringify({ message: "Server error", error }),
-      {
-        status: 500,
-        headers: { "content-type": "application/json" },
-      }
-    );
+    // Seguridad: no exponer detalles internos del error hacia el cliente.
+    if (process.env.NODE_ENV !== "test") {
+      console.error("GET /api/auth error:", error);
+    }
+
+    return new NextResponse(JSON.stringify({ message: "Server error" }), {
+      status: 500,
+      headers: { "content-type": "application/json" },
+    });
   }
 }
