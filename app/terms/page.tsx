@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/Card/card";
+import { WhatsAppCta } from "@/src/components/WhatsAppCta";
 import { TermsContent } from "./_components/TermsContent";
-import { ZAGA_WHATSAPP_URL } from "./utils/constants";
 import styles from "./termsPage.module.scss";
 
 export default function TermsPage(): React.JSX.Element {
@@ -36,7 +36,7 @@ export default function TermsPage(): React.JSX.Element {
               size="lg"
               className={styles.ctaButton}
             >
-              <a href={ZAGA_WHATSAPP_URL}>Iniciar solicitud por WhatsApp</a>
+              <WhatsAppCta label="Iniciar solicitud por WhatsApp" message="" />
             </Button>
 
             <Link href="/" className={styles.backLink}>

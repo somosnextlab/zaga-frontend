@@ -4,6 +4,7 @@ import "./LoanSimulator.module.scss";
 import { Button } from "@/app/components/ui/Button/Button";
 import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Slider } from "@/app/components/ui/Slider/slider";
+import { WhatsAppCta } from "@/src/components/WhatsAppCta";
 
 function formatMXN(n: number) {
   return n.toLocaleString("es-MX", {
@@ -16,7 +17,8 @@ function formatMXN(n: number) {
 export function LoanSimulator() {
   const [monto, setMonto] = React.useState(25000);
   const [plazo, setPlazo] = React.useState(12);
-  const [isLoading] = React.useState(false);
+  const isLoading = false;
+  const whatsappMessage = "Quiero solicitar mi prestamo";
 
   // Tasa anual del 12% (1% mensual)
   const tasaAnual = 0.12;
@@ -30,13 +32,6 @@ export function LoanSimulator() {
   }, [monto, plazo, tasaMensual]);
 
   const totalPagar = pagoMensual * plazo;
-
-  const handleContinuar = React.useCallback((): void => {
-    // TODO: Integrar con n8n enviando WhatsApp (próximo paso)
-    console.log(
-      "[TODO] CTA Landing - Continuar con solicitud: integrar con n8n vía WhatsApp"
-    );
-  }, []);
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-2xl border-0 bg-white">
@@ -136,12 +131,15 @@ export function LoanSimulator() {
 
         {/* Botón CTA */}
         <Button
-          onClick={handleContinuar}
+          asChild
           disabled={isLoading}
           className="cursor-pointer w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white"
           size="lg"
         >
-          {isLoading ? "Procesando..." : "Continuar con mi solicitud"}
+          <WhatsAppCta
+            label={isLoading ? "Procesando..." : "Continuar con mi solicitud"}
+            message={whatsappMessage}
+          />
         </Button>
 
         {/* Disclaimer */}
