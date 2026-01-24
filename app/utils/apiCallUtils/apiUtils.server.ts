@@ -80,12 +80,10 @@ export async function fetchWithHeaderServer(
     }
 
     // Retornar una Response de error
-    return new Response(
-      JSON.stringify({ message: "Server error", error: errorMessage }),
-      {
-        status: STATUS_SERVER_ERROR,
-        headers: { "content-type": "application/json" },
-      }
-    );
+    // Seguridad: evitar devolver detalles del error en la respuesta.
+    return new Response(JSON.stringify({ message: "Server error" }), {
+      status: STATUS_SERVER_ERROR,
+      headers: { "content-type": "application/json" },
+    });
   }
 }
