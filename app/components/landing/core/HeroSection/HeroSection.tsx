@@ -1,23 +1,17 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { CheckCircle, Clock, Users } from "lucide-react";
 import "./heroSection.module.scss";
 import { LoanSimulator } from "../LoanSimulator/LoanSimulator";
 import { Button } from "@/app/components/ui/Button/Button";
 import { Badge } from "@/app/components/ui/badge";
+import { WhatsAppCta } from "@/src/components/WhatsAppCta";
+
+const LANDING_WHATSAPP_MESSAGE = "Quiero solicitar mi prestamo";
 
 export const HeroSection: React.FC = () => {
-  const [isLoading] = useState(false);
-
-  const handleSolicitarAhora = useCallback((): void => {
-    // TODO: Integrar con n8n enviando WhatsApp (próximo paso)
-    console.log(
-      "[TODO] CTA Landing - Solicitar ahora: integrar con n8n vía WhatsApp"
-    );
-  }, []);
-
   return (
     <section className="bg-gradient-to-br from-[hsl(var(--color-zaga-gray-50))] to-white py-8 md:py-12">
       <div className="container mx-auto px-4">
@@ -50,26 +44,11 @@ export const HeroSection: React.FC = () => {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                variant={"default"}
-                onClick={handleSolicitarAhora}
-                disabled={isLoading}
-              >
-                Solicitar ahora
-                <svg
-                  className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+              <Button size="lg" variant="default" asChild>
+                <WhatsAppCta
+                  label="Solicitar prestamo"
+                  message={LANDING_WHATSAPP_MESSAGE}
+                />
               </Button>
               <Button variant={"outline"} size="lg" asChild>
                 <Link href="#beneficios">Conocer más</Link>

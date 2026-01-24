@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { FileText, CheckCircle2, Wallet, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import "./Process.module.scss";
 import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Button } from "@/app/components/ui/Button/Button";
+import { WhatsAppCta } from "@/src/components/WhatsAppCta";
 
 const steps = [
   {
@@ -32,14 +33,8 @@ const steps = [
 ];
 
 export const Process: React.FC = () => {
-  const [isLoading] = useState(false);
-
-  const handleSolicitarPrestamo = useCallback((): void => {
-    // TODO: Integrar con n8n enviando WhatsApp (próximo paso)
-    console.log(
-      "[TODO] CTA Landing - Solicitar préstamo: integrar con n8n vía WhatsApp"
-    );
-  }, []);
+  const isLoading = false;
+  const whatsappMessage = "Quiero solicitar mi prestamo";
 
   return (
     <section
@@ -153,13 +148,16 @@ export const Process: React.FC = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
+                  asChild
                   size="lg"
                   variant="secondary"
                   className="bg-white text-[hsl(var(--color-zaga-green-gray))] hover:bg-gray-100"
-                  onClick={handleSolicitarPrestamo}
                   disabled={isLoading}
                 >
-                  {isLoading ? "Procesando..." : "Solicitar préstamo ahora"}
+                  <WhatsAppCta
+                    label={isLoading ? "Procesando..." : "Solicitar prestamo ahora"}
+                    message={whatsappMessage}
+                  />
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link href="#faq">Ver preguntas frecuentes</Link>

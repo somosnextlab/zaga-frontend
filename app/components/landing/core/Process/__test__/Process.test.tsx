@@ -23,11 +23,8 @@ describe("Process", () => {
 
   test("04 - should render call to action button", () => {
     render(<Process />);
-    const buttons = screen.getAllByRole("button");
-    const solicitarButton = buttons.find((button) =>
-      button.textContent?.toLowerCase().includes("solicitar")
-    );
-    expect(solicitarButton).toBeDefined();
+    const cta = screen.getByRole("link", { name: /solicitar prestamo ahora/i });
+    expect(cta).toBeInTheDocument();
   });
 });
 

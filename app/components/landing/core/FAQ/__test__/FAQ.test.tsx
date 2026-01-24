@@ -25,15 +25,21 @@ describe("FAQ", () => {
 
   test("04 - should render contact section", () => {
     render(<FAQ />);
-    // Verificar que existe la sección de contacto
-    expect(screen.getByText(/¿cuáles son los requisitos/i)).toBeInTheDocument();
+    // Verificar que el componente sigue renderizando el contenido principal (FAQ)
+    expect(
+      screen.getByText(/¿cuáles son los requisitos para solicitar un préstamo\?/i)
+    ).toBeInTheDocument();
   });
 
   test("05 - should render contact buttons", () => {
     render(<FAQ />);
-    // Verificar que existen los botones de contacto (pueden tener diferentes textos)
-    const buttons = screen.getAllByRole("button");
-    expect(buttons.length).toBeGreaterThan(0);
+    // Ya no mostramos soporte por llamada/email en el FAQ.
+    expect(
+      screen.queryByRole("button", { name: /llamar ahora/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /enviar email/i })
+    ).not.toBeInTheDocument();
   });
 });
 

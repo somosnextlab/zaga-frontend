@@ -22,12 +22,8 @@ describe("HeroSection", () => {
 
   test("03 - should render call to action button", () => {
     render(<HeroSection />);
-    // Buscar botón de solicitar
-    const buttons = screen.getAllByRole("button");
-    const solicitarButton = buttons.find((button) =>
-      button.textContent?.toLowerCase().includes("solicitar")
-    );
-    expect(solicitarButton).toBeDefined();
+    const cta = screen.getByRole("link", { name: /solicitar prestamo/i });
+    expect(cta).toBeInTheDocument();
   });
 });
 

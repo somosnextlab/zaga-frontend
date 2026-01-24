@@ -1,11 +1,12 @@
-/**
- * Placeholder (MVP): Reemplazar por el número oficial (solo dígitos + código de país).
- * Si existe `NEXT_PUBLIC_ZAGA_WHATSAPP_NUMBER`, se usa ese valor.
- */
-export const ZAGA_WHATSAPP_NUMBER: string =
-  process.env.NEXT_PUBLIC_ZAGA_WHATSAPP_NUMBER ?? "<NUMERO_OFICIAL_ZAGA>";
+import { buildWhatsAppLink, ZAGA_WHATSAPP_NUMBER } from "@/lib/whatsapp";
 
-export const ZAGA_WHATSAPP_URL: string = `https://wa.me/${ZAGA_WHATSAPP_NUMBER}`;
+/**
+ * WhatsApp oficial de ZAGA.
+ * - El número vive en `lib/whatsapp.ts` (single source of truth)
+ * - Se mantiene este export para compatibilidad local del módulo `/terms`
+ */
+export { ZAGA_WHATSAPP_NUMBER };
+export const ZAGA_WHATSAPP_URL: string = buildWhatsAppLink("");
 
 
 export const CONSENTS_ACCEPT_ENDPOINT = "https://api.zaga.com.ar/consents/accept" as const;

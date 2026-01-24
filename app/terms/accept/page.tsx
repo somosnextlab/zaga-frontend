@@ -11,11 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/Card/card";
+import { WhatsAppCta } from "@/src/components/WhatsAppCta";
 import { TermsContent } from "../_components/TermsContent";
 import styles from "./termsAcceptPage.module.scss";
 import { acceptConsent, getTokenFromSearchParams } from "../utils/functions";
 import type { SubmissionStatus } from "../types/terms.types";
-import { CONSENTS_ACCEPT_ENDPOINT, MOCK_ACCEPT_TOKEN, ZAGA_WHATSAPP_URL } from "../utils/constants";
+import { CONSENTS_ACCEPT_ENDPOINT, MOCK_ACCEPT_TOKEN } from "../utils/constants";
 
 
 export default function TermsAcceptPage(): React.JSX.Element {
@@ -118,7 +119,7 @@ export default function TermsAcceptPage(): React.JSX.Element {
             </CardContent>
             <CardFooter className={`${styles.footerRow} ${styles.cardFooter}`}>
               <Button asChild size="lg" className={styles.fullWidthButton}>
-                <a href={ZAGA_WHATSAPP_URL}>Continuar en WhatsApp</a>
+                <WhatsAppCta label="Continuar en WhatsApp" message="" />
               </Button>
             </CardFooter>
           </Card>

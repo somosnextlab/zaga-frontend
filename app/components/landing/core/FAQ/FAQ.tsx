@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import { MessageCircle, Phone, Mail } from "lucide-react";
-import Link from "next/link";
 import styles from "./FAQ.module.scss";
 import {
   Accordion,
@@ -10,8 +8,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/app/components/ui/accordion";
-import { Button } from "@/app/components/ui/Button/Button";
-import { Card, CardContent } from "@/app/components/ui/Card/card";
 
 const faqs = [
   {
@@ -57,10 +53,6 @@ const faqs = [
 ];
 
 export const FAQ: React.FC = () => {
-  const handleLlamarAhora = () => {
-    console.log("Llamar ahora");
-  };
-
   return (
     <section id="faq" className={styles.faq}>
       <div className={styles.faq__container}>
@@ -102,46 +94,6 @@ export const FAQ: React.FC = () => {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
-
-        {/* Contact Card */}
-        <div className={styles.faq__contactContainer}>
-          <Card className={styles.faq__contactCard}>
-            <CardContent className={styles.faq__contactContent}>
-              <div className={styles.faq__contactIconWrapper}>
-                <MessageCircle className={styles.faq__contactIcon} />
-              </div>
-
-              <h3 className={styles.faq__contactTitle}>¿Aún tienes dudas?</h3>
-
-              <p className={styles.faq__contactDescription}>
-                Nuestro equipo de atención al cliente está disponible 24/7 para
-                resolver cualquier pregunta que tengas.
-              </p>
-
-              <div className={styles.faq__contactButtons}>
-                <Button
-                  size="lg"
-                  className={styles.faq__contactButtonPrimary}
-                  onClick={handleLlamarAhora}
-                >
-                  <Phone className="w-4 h-4 mr-2" />
-                  Llamar ahora
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className={styles.faq__contactButtonSecondary}
-                  asChild
-                >
-                  <Link href="mailto:soporte@zaga.com">
-                    <Mail className="w-4 h-4 mr-2" />
-                    Enviar email
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </section>
