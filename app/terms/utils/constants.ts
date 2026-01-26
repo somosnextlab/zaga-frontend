@@ -1,4 +1,5 @@
 import { buildWhatsAppLink, ZAGA_WHATSAPP_NUMBER } from "@/lib/whatsapp";
+import { buildBackendUrl } from "./backend";
 
 /**
  * WhatsApp oficial de ZAGA.
@@ -9,7 +10,7 @@ export { ZAGA_WHATSAPP_NUMBER };
 export const ZAGA_WHATSAPP_URL: string = buildWhatsAppLink("");
 
 
-export const CONSENTS_ACCEPT_ENDPOINT = "https://api.zaga.com.ar/consents/accept" as const;
+export const CONSENTS_ACCEPT_ENDPOINT: string = buildBackendUrl("/consents/accept");
 
 /**
  * Mock token (solo desarrollo): permite previsualizar el estado "con token"

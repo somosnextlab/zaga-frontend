@@ -6,10 +6,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TermsAcceptPage from "../accept/page";
-import {
-  CONSENTS_ACCEPT_ENDPOINT,
-  ZAGA_WHATSAPP_URL,
-} from "../utils/constants";
+import { CONSENTS_ACCEPT_ENDPOINT, ZAGA_WHATSAPP_URL } from "../utils/constants";
 import { useSearchParams } from "next/navigation";
 
 jest.mock("next/navigation", () => {
@@ -116,6 +113,9 @@ describe("/terms/accept (aceptación con token)", () => {
       RequestInit
     ];
 
+    const backendBase = (process.env.NEXT_PUBLIC_BACKEND_URL ?? "").replace(/\/+$/, "");
+    expect(backendBase.length).toBeGreaterThan(0);
+    expect(url).toBe(`${backendBase}/consents/accept`);
     expect(url).toBe(CONSENTS_ACCEPT_ENDPOINT);
     expect(options.method).toBe("POST");
     expect(options.headers).toEqual(
