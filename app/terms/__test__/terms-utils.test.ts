@@ -3,6 +3,7 @@ import {
   getTokenFromSearchParams,
   tryGetErrorMessage,
 } from "../utils/functions";
+import { buildBackendUrl, getBackendBaseUrl } from "../utils/backend";
 
 type MockResponseInit = {
   ok: boolean;
@@ -35,6 +36,10 @@ function createMockResponse(init: MockResponseInit): Response {
 }
 
 describe("terms utils", () => {
+  beforeEach(() => {
+    delete process.env.NEXT_PUBLIC_BACKEND_URL;
+  });
+
   test("getTokenFromSearchParams debería trimear el token", () => {
     const params = new URLSearchParams("token=%20%20abc%20%20");
     const token = getTokenFromSearchParams(params as unknown as never);
@@ -63,6 +68,21 @@ describe("terms utils", () => {
 
     await expect(acceptConsent("https://api.example.com", "abc")).rejects.toThrow(
       /no pudimos registrar tu aceptación/i
+    );
+  });
+
+  test("getBackendBaseUrl debería trimear y remover trailing slash", () => {
+    process.env.NEXT_PUBLIC_BACKEND_URL = "  https://backend.example.com/  ";
+    expect(getBackendBaseUrl()).toBe("https://backend.example.com");
+  });
+
+  test("buildBackendUrl debería construir sin doble slash", () => {
+    process.env.NEXT_PUBLIC_BACKEND_URL = "https://backend.example.com/";
+    expect(buildBackendUrl("/consents/accept")).toBe(
+      "https://backend.example.com/consents/accept",
+    );
+    expect(buildBackendUrl("consents/accept")).toBe(
+      "https://backend.example.com/consents/accept",
     );
   });
 });

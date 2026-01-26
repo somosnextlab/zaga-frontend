@@ -3,6 +3,10 @@
 import "@testing-library/jest-dom";
 import React from "react";
 
+// Default para tests: evita hardcode y permite que los módulos construyan URLs desde env.
+// Se puede sobreescribir en tests puntuales si hace falta.
+process.env.NEXT_PUBLIC_BACKEND_URL ??= "https://backend.example.com";
+
 // Declarar tipos globales de Jest para que TypeScript reconozca jest en este archivo
 declare const jest: {
   mock: (module: string, factory: () => unknown) => void;
