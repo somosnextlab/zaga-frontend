@@ -11,6 +11,6 @@ export interface LoanSimulatorProps {
  */
 export interface SimulatorParams {
   monto: number;
-  plazo: number;
-  pagoMensual: number;
+  semanas: number;
+  cuotaSemanalSinInteres: number;
 }

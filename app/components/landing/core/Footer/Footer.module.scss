@@ -6,7 +6,6 @@
 }
 
 .footer__container {
-  max-width: 80rem;
 
   @media (min-width: 640px) {
     padding: 0 1.5rem;
@@ -17,7 +16,7 @@
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -140,11 +139,11 @@
 }
 
 .footer__bottom {
-  border-top: 1px solid hsl(var(--color-zaga-gray-800));
-  padding-top: 2rem;
+  //border-top: 1px solid hsl(var(--color-zaga-gray-800));
 }
 
 .footer__bottomContent {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

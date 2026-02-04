@@ -15,7 +15,7 @@ describe("Process", () => {
 
   test("03 - should render process steps", () => {
     render(<Process />);
-    const steps = screen.getAllByText(/completa tu solicitud/i);
+    const steps = screen.getAllByText(/inicia tu solicitud via WhatsApp/i);
     expect(steps.length).toBeGreaterThan(0);
     expect(screen.getAllByText(/recibe aprobación/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/recibe tu dinero/i).length).toBeGreaterThan(0);

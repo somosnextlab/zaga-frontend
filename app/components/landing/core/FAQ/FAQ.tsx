@@ -13,22 +13,22 @@ const faqs = [
   {
     question: "¿Cuáles son los requisitos para solicitar un préstamo?",
     answer:
-      "Necesitas ser mayor de 18 años, tener un ingreso comprobable, identificación oficial vigente y comprobante de domicilio. El proceso es 100% digital y no requiere aval.",
+      "Necesitas ser mayor de 18 años, tener un ingreso comprobable, identificación oficial vigente y recidir en la provincia de Cordoba, Argentina. El proceso es 100% digital y no requiere aval.",
   },
   {
     question: "¿Cuánto tiempo tarda la aprobación?",
     answer:
-      "La mayoría de las solicitudes son aprobadas en menos de 10 minutos. En casos excepcionales, el proceso puede tomar hasta 24 horas.",
+      "La mayoría de las solicitudes son aprobadas en minutos. En casos excepcionales, el proceso puede tomar hasta 24 horas.",
   },
   {
     question: "¿Cuál es el monto máximo que puedo solicitar?",
     answer:
-      "Puedes solicitar desde $1,000 hasta $50,000 pesos mexicanos, dependiendo de tu perfil crediticio y capacidad de pago.",
+      "Puedes solicitar desde $100.000 hasta $500,000 pesos Argentinos, dependiendo de tu perfil crediticio y capacidad de pago.",
   },
   {
     question: "¿Qué tasa de interés manejan?",
     answer:
-      "Nuestras tasas van del 12% al 24% anual, dependiendo del perfil del cliente. Siempre mostramos la tasa exacta antes de que firmes el contrato.",
+      "Nuestras tasas van del .... al .... anual, dependiendo del perfil del cliente. Siempre mostramos la tasa exacta antes de que firmes el contrato.",
   },
   {
     question: "¿Puedo pagar anticipadamente sin penalización?",
@@ -43,7 +43,7 @@ const faqs = [
   {
     question: "¿Qué pasa si no puedo pagar a tiempo?",
     answer:
-      "Te contactamos para encontrar una solución. Ofrecemos opciones de reestructuración y planes de pago flexibles para ayudarte.",
+      "Puedes contactarnos via whatsApp o email para encontrar una solución. Ofrecemos opciones de reestructuración y planes de pago flexibles para ayudarte.",
   },
   {
     question: "¿Mis datos están seguros?",

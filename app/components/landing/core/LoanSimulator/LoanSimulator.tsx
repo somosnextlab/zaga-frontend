@@ -1,129 +1,129 @@
 "use client";
 import * as React from "react";
-import "./LoanSimulator.module.scss";
 import { Button } from "@/app/components/ui/Button/Button";
 import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Slider } from "@/app/components/ui/Slider/slider";
 import { WhatsAppCta } from "@/src/components/WhatsAppCta";
+import styles from "./loanSimulator.module.scss";
 
-function formatMXN(n: number) {
-  return n.toLocaleString("es-MX", {
+function formatARS(n: number) {
+  return n.toLocaleString("es-AR", {
     style: "currency",
-    currency: "MXN",
+    currency: "ARS",
     maximumFractionDigits: 0,
   });
 }
 
 export function LoanSimulator() {
-  const [monto, setMonto] = React.useState(25000);
-  const [plazo, setPlazo] = React.useState(12);
+  const [monto, setMonto] = React.useState<number>(250_000);
+  const [semanas, setSemanas] = React.useState<number>(12);
   const isLoading = false;
-  const whatsappMessage = "Quiero solicitar mi prestamo";
 
-  // Tasa anual del 12% (1% mensual)
-  const tasaAnual = 0.12;
-  const tasaMensual = tasaAnual / 12;
+  const whatsappMessage = React.useMemo(() => {
+    return `Hola! Quiero solicitar un préstamo de ${formatARS(
+      monto
+    )} y devolverlo en ${semanas} semanas. ¿Qué tasa y comisiones aplicarían en mi caso?`;
+  }, [monto, semanas]);
 
-  // Cálculo de pago mensual usando la fórmula PMT
-  const pagoMensual = React.useMemo(() => {
-    if (plazo === 0) return 0;
-    const factor = Math.pow(1 + tasaMensual, plazo);
-    return (monto * tasaMensual * factor) / (factor - 1);
-  }, [monto, plazo, tasaMensual]);
-
-  const totalPagar = pagoMensual * plazo;
+  const cuotaSemanalSinInteres = React.useMemo(() => {
+    if (semanas <= 0) return 0;
+    return monto / semanas;
+  }, [monto, semanas]);
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-2xl border-0 bg-white">
-      <CardContent className="p-8 space-y-8">
+    <Card className={styles.loanSimulator}>
+      <CardContent className={styles.loanSimulator__content}>
         {/* Header */}
-        <div className="text-center">
-          <h3 className="text-card-title text-[hsl(var(--color-zaga-black))] mb-2">
+        <div className={styles.loanSimulator__header}>
+          <h3 className={styles.loanSimulator__title}>
             Simulador de Préstamos
           </h3>
-          <p className="text-body-sm text-[hsl(var(--color-zaga-silver))]">
-            Calcula tu pago mensual en segundos
+          <p className={styles.loanSimulator__subtitle}>
+            Estimá tu cuota semanal en segundos
           </p>
         </div>
 
         {/* Slider de Monto */}
-        <div className="space-y-4">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-[hsl(var(--color-zaga-black))] mb-2">
-              {formatMXN(monto)}
-            </div>
-            <p className="text-body-sm text-[hsl(var(--color-zaga-silver))]">
-              Monto del préstamo
+        <div className={styles.loanSimulator__section}>
+          <div className={styles.loanSimulator__sectionHeader}>
+            <p className={styles.loanSimulator__amountValue}>
+              {formatARS(monto)}
+            </p>
+            <p className={styles.loanSimulator__label}>
+              Monto a solicitar
             </p>
           </div>
-          <div className="px-4">
+          <div className={styles.loanSimulator__sliderWrap}>
             <Slider
               value={[monto]}
-              onValueChange={(v) => setMonto(v[0])}
-              min={1000}
-              max={50000}
-              step={1000}
-              className="[&_[data-slot=slider-track]]:bg-[hsl(var(--color-zaga-silver))]/20 [&_[data-slot=slider-track]]:h-2 [&_[data-slot=slider-range]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
+              onValueChange={(v) => setMonto(v[0] ?? monto)}
+              min={100000}
+              max={500000}
+              step={10000}
+              className={styles.loanSimulator__slider}
             />
           </div>
-          <div className="flex justify-between text-caption text-[hsl(var(--color-zaga-silver))] px-4">
-            <span>{formatMXN(1000)}</span>
-            <span>{formatMXN(50000)}</span>
+          <div className={styles.loanSimulator__minMax}>
+            <span>{formatARS(100000)}</span>
+            <span>{formatARS(500000)}</span>
           </div>
         </div>
 
         {/* Slider de Plazo */}
-        <div className="space-y-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-[hsl(var(--color-zaga-black))] mb-1">
-              {plazo} meses
-            </div>
-            <p className="text-body-sm text-[hsl(var(--color-zaga-silver))]">
-              Plazo del préstamo
+        <div className={styles.loanSimulator__section}>
+          <div className={styles.loanSimulator__sectionHeader}>
+            <p className={styles.loanSimulator__termValue}>
+              {semanas} semanas
+            </p>
+            <p className={styles.loanSimulator__label}>
+              Plazo de devolución (semanal)
             </p>
           </div>
-          <div className="px-4">
+          <div className={styles.loanSimulator__sliderWrap}>
             <Slider
-              value={[plazo]}
-              onValueChange={(v) => setPlazo(v[0])}
-              min={3}
-              max={36}
+              value={[semanas]}
+              onValueChange={(v) => setSemanas(v[0] ?? semanas)}
+              min={4}
+              max={24}
               step={1}
-              className="[&_[data-slot=slider-track]]:bg-[hsl(var(--color-zaga-silver))]/20 [&_[data-slot=slider-track]]:h-2 [&_[data-slot=slider-range]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:bg-[hsl(var(--color-zaga-green-gray))] [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&_[role=slider]]:shadow-lg [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
+              className={styles.loanSimulator__slider}
             />
           </div>
-          <div className="flex justify-between text-caption text-[hsl(var(--color-zaga-silver))] px-4">
-            <span>3 meses</span>
-            <span>36 meses</span>
+          <div className={styles.loanSimulator__minMax}>
+            <span>4 semanas</span>
+            <span>24 semanas</span>
           </div>
+          <p className={styles.loanSimulator__helper}>
+            ¿Necesitás otro plazo? Se acuerda con un asesor por WhatsApp.
+          </p>
         </div>
 
         {/* Resultados */}
-        <div className="bg-gradient-to-r from-[hsl(var(--color-zaga-green-gray))]/10 to-[hsl(var(--color-zaga-green-gray))]/5 rounded-lg p-6 space-y-4">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-[hsl(var(--color-zaga-green-gray))] mb-2">
-              {formatMXN(pagoMensual)}
-            </div>
-            <p className="text-body-sm text-[hsl(var(--color-zaga-silver))]">
-              Pago mensual estimado
+        <div className={styles.loanSimulator__results}>
+          <div className={styles.loanSimulator__resultHeader}>
+            <p className={styles.loanSimulator__resultValue}>
+              {formatARS(cuotaSemanalSinInteres)}
+            </p>
+            <p className={styles.loanSimulator__resultLabel}>
+              Cuota semanal estimada (sin intereses)
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-center">
+          <div className={styles.loanSimulator__resultGrid}>
             <div>
-              <p className="text-caption text-[hsl(var(--color-zaga-silver))]">
-                Tasa anual
+              <p className={styles.loanSimulator__resultItemLabel}>
+                Frecuencia
               </p>
-              <p className="text-body font-semibold text-[hsl(var(--color-zaga-black))]">
-                {tasaAnual * 100}%
+              <p className={styles.loanSimulator__resultItemValue}>
+                Semanal
               </p>
             </div>
             <div>
-              <p className="text-caption text-[hsl(var(--color-zaga-silver))]">
-                Total a pagar
+              <p className={styles.loanSimulator__resultItemLabel}>
+                Total estimado (sin intereses)
               </p>
-              <p className="text-body font-semibold text-[hsl(var(--color-zaga-black))]">
-                {formatMXN(totalPagar)}
+              <p className={styles.loanSimulator__resultItemValue}>
+                {formatARS(monto)}
               </p>
             </div>
           </div>
@@ -133,7 +133,7 @@ export function LoanSimulator() {
         <Button
           asChild
           disabled={isLoading}
-          className="cursor-pointer w-full bg-[hsl(var(--color-zaga-green-gray))] hover:bg-[hsl(var(--color-zaga-green-hover))] text-white"
+          className={styles.loanSimulator__cta}
           size="lg"
         >
           <WhatsAppCta
@@ -143,8 +143,9 @@ export function LoanSimulator() {
         </Button>
 
         {/* Disclaimer */}
-        <p className="text-caption text-[hsl(var(--color-zaga-silver))] text-center leading-relaxed">
-          * Valores estimados. Sujeto a evaluación crediticia.
+        <p className={styles.loanSimulator__disclaimer}>
+          * Estimación sin considerar intereses ni comisiones. La tasa, comisiones
+          y condiciones finales se confirman por WhatsApp antes de contratar.
         </p>
       </CardContent>
     </Card>

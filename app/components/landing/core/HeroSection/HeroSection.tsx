@@ -42,6 +42,10 @@ export const HeroSection: React.FC = () => {
               100% digital, transparente y con las mejores tasas del mercado.
             </p>
 
+            <span className=" text-body-sm text-[hsl(var(--color-zaga-green-gray))] max-w-lg">
+              Zaga opera unicamente con personas mayores de 18 años y residentes en la provincia de Cordoba, Argentina.
+            </span>
+
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" variant="default" asChild>
