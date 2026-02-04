@@ -23,14 +23,10 @@ const productLinks = [
   { name: "Préstamos Personales", href: "#" },
   { name: "Simulador", href: "#" },
   { name: "Tasas y Comisiones", href: "#" },
-  { name: "Calculadora", href: "#" },
 ];
 
 const companyLinks = [
   { name: "Nosotros", href: "#" },
-  { name: "Carreras", href: "#" },
-  { name: "Prensa", href: "#" },
-  { name: "Blog", href: "#" },
 ];
 
 const legalLinks = [
@@ -108,13 +104,13 @@ export const Footer: React.FC = () => {
               <div className={styles.footer__contactItem}>
                 <Mail className={styles.footer__contactIcon} />
                 <span className={styles.footer__contactText}>
-                  soporte@zaga.com
+                somosnextlab@gmail.com
                 </span>
               </div>
               <div className={styles.footer__contactItem}>
                 <Phone className={styles.footer__contactIcon} />
                 <span className={styles.footer__contactText}>
-                  +54 9 351234567
+                  +54 9 351 123456
                 </span>
               </div>
               <div className={styles.footer__contactItem}>

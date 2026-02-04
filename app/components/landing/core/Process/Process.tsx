@@ -12,14 +12,14 @@ const steps = [
   {
     number: "01",
     icon: FileText,
-    title: "Completa tu solicitud",
+    title: "Inicia tu solicitud via WhatsApp",
     description:
-      "Llena el formulario en línea con tus datos personales y financieros. Es rápido y seguro.",
+      "Te solicitaremos algunos datos personales y financieros, para evaluar tu solicitud. Es rápido y seguro.",
   },
   {
     number: "02",
     icon: CheckCircle2,
-    title: "Recibe aprobación",
+    title: "Recibe aprobación en minutos",
     description:
       "Nuestro sistema evalúa tu solicitud y te notifica la decisión en minutos.",
   },

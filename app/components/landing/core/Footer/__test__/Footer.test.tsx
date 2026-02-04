@@ -35,7 +35,6 @@ describe("Footer", () => {
   test("04 - should render company links", () => {
     render(<Footer />);
     expect(screen.getByText(/nosotros/i)).toBeInTheDocument();
-    expect(screen.getByText(/carreras/i)).toBeInTheDocument();
   });
 
   test("05 - should render legal links", () => {
