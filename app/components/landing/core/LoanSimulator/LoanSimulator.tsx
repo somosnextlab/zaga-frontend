@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Slider } from "@/app/components/ui/Slider/slider";
 import { WhatsAppCta } from "@/src/components/WhatsAppCta";
 import styles from "./loanSimulator.module.scss";
+import { WHATSAPP_MESSAGE } from "@/app/mocks/messageMocks";
 
 function formatARS(n: number) {
   return n.toLocaleString("es-AR", {
@@ -18,12 +19,6 @@ export function LoanSimulator() {
   const [monto, setMonto] = React.useState<number>(250_000);
   const [semanas, setSemanas] = React.useState<number>(12);
   const isLoading = false;
-
-  const whatsappMessage = React.useMemo(() => {
-    return `Hola! Quiero solicitar un préstamo de ${formatARS(
-      monto
-    )} y devolverlo en ${semanas} semanas. ¿Qué tasa y comisiones aplicarían en mi caso?`;
-  }, [monto, semanas]);
 
   const cuotaSemanalSinInteres = React.useMemo(() => {
     if (semanas <= 0) return 0;
@@ -138,7 +133,7 @@ export function LoanSimulator() {
         >
           <WhatsAppCta
             label={isLoading ? "Procesando..." : "Continuar con mi solicitud"}
-            message={whatsappMessage}
+            message={WHATSAPP_MESSAGE}
           />
         </Button>
 

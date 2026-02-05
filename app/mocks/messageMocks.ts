@@ -1,0 +1,1 @@
+export const WHATSAPP_MESSAGE = "Hola, quiero solicitar mi prestamo";

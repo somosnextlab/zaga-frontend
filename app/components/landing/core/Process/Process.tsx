@@ -7,6 +7,7 @@ import "./Process.module.scss";
 import { Card, CardContent } from "@/app/components/ui/Card/card";
 import { Button } from "@/app/components/ui/Button/Button";
 import { WhatsAppCta } from "@/src/components/WhatsAppCta";
+import { WHATSAPP_MESSAGE } from "@/app/mocks/messageMocks";
 
 const steps = [
   {
@@ -34,7 +35,6 @@ const steps = [
 
 export const Process: React.FC = () => {
   const isLoading = false;
-  const whatsappMessage = "Quiero solicitar mi prestamo";
 
   return (
     <section
@@ -156,7 +156,7 @@ export const Process: React.FC = () => {
                 >
                   <WhatsAppCta
                     label={isLoading ? "Procesando..." : "Solicitar prestamo ahora"}
-                    message={whatsappMessage}
+                    message={WHATSAPP_MESSAGE}
                   />
                 </Button>
                 <Button variant="ghost" asChild>
