@@ -8,8 +8,7 @@ import { LoanSimulator } from "../LoanSimulator/LoanSimulator";
 import { Button } from "@/app/components/ui/Button/Button";
 import { Badge } from "@/app/components/ui/badge";
 import { WhatsAppCta } from "@/src/components/WhatsAppCta";
-
-const LANDING_WHATSAPP_MESSAGE = "Quiero solicitar mi prestamo";
+import { WHATSAPP_MESSAGE } from "@/app/mocks/messageMocks";
 
 export const HeroSection: React.FC = () => {
   return (
@@ -51,7 +50,7 @@ export const HeroSection: React.FC = () => {
               <Button size="lg" variant="default" asChild>
                 <WhatsAppCta
                   label="Solicitar prestamo"
-                  message={LANDING_WHATSAPP_MESSAGE}
+                  message={WHATSAPP_MESSAGE}
                 />
               </Button>
               <Button variant={"outline"} size="lg" asChild>
