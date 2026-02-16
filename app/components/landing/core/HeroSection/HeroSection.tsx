@@ -42,7 +42,7 @@ export const HeroSection: React.FC = () => {
             </p>
 
             <span className=" text-body-sm text-[hsl(var(--color-zaga-green-gray))] max-w-lg">
-              Zaga opera unicamente con personas mayores de 18 años y residentes en la provincia de Cordoba, Argentina.
+              Zaga opera unicamente con personas <span className="font-bold">mayores de 18 años</span> y por el momento solo residentes en la provincia de <span className="font-bold">Cordoba, Argentina</span>.
             </span>
 
             {/* CTAs */}
@@ -64,7 +64,7 @@ export const HeroSection: React.FC = () => {
                 <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
                   <Users className="w-5 h-5 text-[hsl(var(--color-zaga-green-gray))]" />
                   <span className="text-2xl font-bold text-[hsl(var(--color-zaga-black))]">
-                    +50,000
+                    +5,000
                   </span>
                 </div>
                 <p className="text-body-sm text-[hsl(var(--color-zaga-silver))]">

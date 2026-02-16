@@ -104,13 +104,13 @@ export const Footer: React.FC = () => {
               <div className={styles.footer__contactItem}>
                 <Mail className={styles.footer__contactIcon} />
                 <span className={styles.footer__contactText}>
-                somosnextlab@gmail.com
+                  soporte@zaga.com.ar
                 </span>
               </div>
               <div className={styles.footer__contactItem}>
                 <Phone className={styles.footer__contactIcon} />
                 <span className={styles.footer__contactText}>
-                  +54 9 351 123456
+                  +54 9 3513 53-2986
                 </span>
               </div>
               <div className={styles.footer__contactItem}>
@@ -127,7 +127,7 @@ export const Footer: React.FC = () => {
         <div className={styles.footer__bottom}>
           <div className={styles.footer__bottomContent}>
             <div className={styles.footer__copyright}>
-              © 2025 Zaga. Todos los derechos reservados.
+              © 2026 Zaga. Todos los derechos reservados.
             </div>
             <div className={styles.footer__legalLinks}>
               {legalLinks.map((link, index) => (
