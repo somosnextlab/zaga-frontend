@@ -5,28 +5,28 @@
 /* Variables CSS personalizadas - Sistema completo shadcn/ui */
 :root {
   /* Colores base */
-  --color-background: 0 0% 100%;
-  --color-foreground: 222.2 84% 4.9%;
+  --color-background: 216 33.3% 97.1%; /* #F5F7FA */
+  --color-foreground: 215 13.8% 34.1%; /* #4B5563 */
   --color-card: 0 0% 100%;
-  --color-card-foreground: 222.2 84% 4.9%;
+  --color-card-foreground: 215 13.8% 34.1%; /* #4B5563 */
   --color-popover: 0 0% 100%;
-  --color-popover-foreground: 222.2 84% 4.9%;
+  --color-popover-foreground: 215 13.8% 34.1%; /* #4B5563 */
 
-  /* Zaga Verde Principal - Color primario */
-  --color-primary: 120 15% 48%; /* #7A9B7E */
+  /* Zaga Green - Color primario */
+  --color-primary: 154.7 100% 36.3%; /* #00B96B */
   --color-primary-foreground: 0 0% 100%;
 
-  /* Zaga Verde Hover */
-  --color-primary-hover: 120 15% 42%; /* #6A8B6E */
+  /* Zaga Green Hover */
+  --color-primary-hover: 154.7 100% 32%; /* darker #00B96B */
 
-  /* Zaga Green - Color secundario */
-  --color-secondary: 210 40% 96%;
-  --color-secondary-foreground: 222.2 84% 4.9%;
+  /* Superficies secundarias */
+  --color-secondary: 216 33.3% 97.1%; /* #F5F7FA */
+  --color-secondary-foreground: 215 13.8% 34.1%; /* #4B5563 */
 
   /* Estados y variantes */
-  --color-muted: 210 40% 96%;
+  --color-muted: 216 33.3% 97.1%; /* #F5F7FA */
   --color-muted-foreground: 215.4 16.3% 46.9%;
-  --color-accent: 120 15% 48%;
+  --color-accent: 154.7 100% 36.3%; /* #00B96B */
   --color-accent-foreground: 0 0% 100%;
 
   /* Estados destructivos */
@@ -36,10 +36,10 @@
   /* Bordes y superficies */
   --color-border: 214.3 31.8% 91.4%;
   --color-input: 214.3 31.8% 91.4%;
-  --color-ring: 120 15% 48%;
+  --color-ring: 154.7 100% 36.3%; /* #00B96B */
 
   /* Estados de éxito (Zaga Green) */
-  --color-success: 120 15% 48%;
+  --color-success: 154.7 100% 36.3%; /* #00B96B */
   --color-success-foreground: 0 0% 100%;
 
   /* Estados de advertencia */
@@ -51,14 +51,14 @@
   --color-info-foreground: 204 100% 97%;
 
   /* Colores específicos para Zaga Landing */
-  --color-zaga-green-gray: 120 15% 48%; /* #7A9B7E - Verde grisáceo principal */
-  --color-zaga-green-hover: 120 15% 42%; /* #6A8B6E - Verde hover */
-  --color-zaga-silver: 210 15% 70%; /* Gris plata para subtítulos */
-  --color-zaga-black: 0 0% 9%; /* gray-900 para títulos */
-  --color-zaga-text: 0 0% 9%; /* gray-900 para texto general */
+  --color-zaga-green-gray: 154.7 100% 36.3%; /* #00B96B */
+  --color-zaga-green-hover: 154.7 100% 32%; /* darker #00B96B */
+  --color-zaga-silver: 215 13.8% 34.1%; /* #4B5563 */
+  --color-zaga-black: 215 68.6% 13.7%; /* #0B1F3B */
+  --color-zaga-text: 215 13.8% 34.1%; /* #4B5563 */
   --color-zaga-white: 0 0% 100%; /* white */
-  --color-zaga-gray-50: 210 40% 98%; /* gray-50 */
-  --color-zaga-gray-100: 210 40% 96%; /* gray-100 */
+  --color-zaga-gray-50: 216 33.3% 97.1%; /* #F5F7FA */
+  --color-zaga-gray-100: 0 0% 100%; /* #FFFFFF */
 
   /* Radius */
   --radius: 0.5rem;
