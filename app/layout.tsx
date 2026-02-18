@@ -5,6 +5,7 @@ import "./styles/globals.css";
 import styles from "./styles/defaultPage.module.scss";
 import { Header } from "./components/landing/Header/Header";
 import { UserProvider } from "./context/UserContext/UserContextContext";
+import favicon from "@/app/assets/Logo_Zaga-primary.png";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -17,6 +18,14 @@ export const metadata: Metadata = {
   title: "Zaga — Préstamos personales rápidos y seguros",
   description:
     "Obtén el préstamo personal que necesitas en minutos. Proceso 100% digital, transparente y con las mejores tasas del mercado.",
+  icons: {
+    icon: [
+      {
+        url: favicon.src,
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 const inter = Inter({
