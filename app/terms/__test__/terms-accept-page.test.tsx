@@ -6,8 +6,10 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TermsAcceptPage from "../accept/page";
-import { CONSENTS_ACCEPT_ENDPOINT, ZAGA_WHATSAPP_URL } from "../utils/constants";
+import { CONSENTS_ACCEPT_ENDPOINT } from "../utils/constants";
 import { useSearchParams } from "next/navigation";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { WHATSAPP_MESSAGE_ACCEPT } from "@/app/mocks/messageMocks";
 
 jest.mock("next/navigation", () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -170,7 +172,10 @@ describe("/terms/accept (aceptación con token)", () => {
     const whatsappLink = screen.getByRole("link", {
       name: /continuar en whatsapp/i,
     });
-    expect(whatsappLink).toHaveAttribute("href", ZAGA_WHATSAPP_URL);
+    expect(whatsappLink).toHaveAttribute(
+      "href",
+      buildWhatsAppLink(WHATSAPP_MESSAGE_ACCEPT),
+    );
   });
 });
 

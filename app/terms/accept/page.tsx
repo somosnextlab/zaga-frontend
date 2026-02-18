@@ -17,6 +17,7 @@ import styles from "./termsAcceptPage.module.scss";
 import { acceptConsent, getTokenFromSearchParams } from "../utils/functions";
 import type { SubmissionStatus } from "../types/terms.types";
 import { CONSENTS_ACCEPT_ENDPOINT, MOCK_ACCEPT_TOKEN } from "../utils/constants";
+import { WHATSAPP_MESSAGE_ACCEPT } from "@/app/mocks/messageMocks";
 
 
 export default function TermsAcceptPage(): React.JSX.Element {
@@ -119,7 +120,7 @@ export default function TermsAcceptPage(): React.JSX.Element {
             </CardContent>
             <CardFooter className={`${styles.footerRow} ${styles.cardFooter}`}>
               <Button asChild size="lg" className={styles.fullWidthButton}>
-                <WhatsAppCta label="Continuar en WhatsApp" message="" />
+                <WhatsAppCta label="Continuar en WhatsApp" message={WHATSAPP_MESSAGE_ACCEPT} />
               </Button>
             </CardFooter>
           </Card>
