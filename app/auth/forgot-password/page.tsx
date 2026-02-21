@@ -1,10 +1,10 @@
-import { ForgotPasswordForm } from "@/app/components/auth/forgotPassword/ForgotPasswordForm";
+import { AuthMaintenanceNotice } from "@/app/components/auth/AuthMaintenanceNotice";
 
 export default function Page() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <ForgotPasswordForm />
+        <AuthMaintenanceNotice />
       </div>
     </div>
   );

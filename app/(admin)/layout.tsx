@@ -1,6 +1,5 @@
-import { requireAdmin } from "@/app/utils/authUtils.server";
 import type { ReactNode } from "react";
-import { LogoutButton } from "@/app/components/auth/logout/LogoutButton";
+import { AuthMaintenanceNotice } from "@/app/components/auth/AuthMaintenanceNotice";
 
 /**
  * Layout específico para rutas de administrador
@@ -11,18 +10,18 @@ export default async function AdminLayout({
 }: {
   children: ReactNode;
 }) {
-  // Verificar que el usuario tenga rol de admin
-  // Si no tiene el rol correcto, redirige automáticamente
-  await requireAdmin();
+  void children;
 
   return (
     <main className="min-h-screen flex flex-col">
-      <div className="w-full border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-        <div className="mx-auto flex max-w-7xl items-center justify-end px-4 py-3 sm:px-6 lg:px-8">
-          <LogoutButton />
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <AuthMaintenanceNotice
+            title="Panel administrativo en mantenimiento"
+            description="El panel de administración está temporalmente deshabilitado mientras migramos el sistema de autenticación."
+          />
         </div>
       </div>
-      <div className="flex-1 w-full flex flex-col">{children}</div>
     </main>
   );
 }

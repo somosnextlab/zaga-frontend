@@ -1,4 +1,4 @@
-import { LoginForm } from "@/app/components/auth/login/LoginForm";
+import { AuthMaintenanceNotice } from "@/app/components/auth/AuthMaintenanceNotice";
 
 export default async function Page({
   searchParams,
@@ -16,7 +16,7 @@ export default async function Page({
             {message}
           </div>
         )}
-        <LoginForm />
+        <AuthMaintenanceNotice />
       </div>
     </div>
   );

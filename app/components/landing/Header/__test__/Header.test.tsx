@@ -15,18 +15,6 @@ jest.mock("next/navigation", () => {
   return require("@/__mocks__/next-navigation");
 });
 
-// Mock de Supabase client
-jest.mock("@/lib/supabase/client", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  return require("@/__mocks__/supabase-client");
-});
-
-// Mock de API utils
-jest.mock("@/app/utils/apiCallUtils/apiUtils", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  return require("@/__mocks__/api-utils");
-});
-
 describe("Header", () => {
   const mockUseHeaderMode = useHeaderMode as jest.Mock;
 

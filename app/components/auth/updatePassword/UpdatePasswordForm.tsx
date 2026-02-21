@@ -1,76 +1,18 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/app/components/ui/Button/Button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/app/components/ui/Card/card";
-import { PasswordInput } from "@/app/components/ui/InputPassword/password-input";
-import { Label } from "@/app/components/ui/Label/label";
-import { ROUTES } from "@/app/utils/constants/routes";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { AuthMaintenanceNotice } from "@/app/components/auth/AuthMaintenanceNotice";
 
 export function UpdatePasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
-      // Redirigir al dashboard de administrador tras actualizar la contraseña
-      router.push(ROUTES.ADMIN_DASHBOARD);
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Ocurrió un error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Restablecer tu contraseña</CardTitle>
-          <CardDescription>Ingresa tu nueva contraseña abajo.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleForgotPassword}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="password">Nueva contraseña</Label>
-                <PasswordInput
-                  id="password"
-                  placeholder="Nueva contraseña"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Guardando..." : "Guardar nueva contraseña"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <AuthMaintenanceNotice
+        title="Actualización de contraseña en mantenimiento"
+        description="La actualización de contraseña está temporalmente deshabilitada mientras migramos la autenticación."
+      />
     </div>
   );
 }
