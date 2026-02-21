@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/server";
 import { STATUS_SERVER_ERROR } from "../constants/statusResponse";
 import { FetchParameters } from "./apiUtils.types";
 
@@ -21,26 +20,10 @@ export async function fetchWithHeaderServer(
     ...headers,
   };
 
-  // Obtener token de Supabase si no se proporciona uno
-  let token = accessToken;
-  if (!token) {
-    try {
-      const supabase = await createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        token = session.access_token;
-      }
-    } catch (error) {
-      if (process.env.NODE_ENV !== "test") {
-        console.error("Error al obtener sesión de Supabase:", error);
-      }
-    }
-  }
-
-  if (token) {
-    requestHeaders.Authorization = `Bearer ${token}`;
+  // Autenticación deshabilitada: no se obtiene token del servidor automáticamente.
+  // Si se pasa `accessToken`, se usa; si no, se hace la request sin Authorization.
+  if (accessToken) {
+    requestHeaders.Authorization = `Bearer ${accessToken}`;
   }
 
   // Preparar el body según su tipo

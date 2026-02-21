@@ -57,10 +57,12 @@ export default async function TermsAcceptPage({
     return <TermsAcceptClient token={null} consent={null} />;
   }
 
+  let consent: ConsentByTokenResponse | null = null;
   try {
-    const consent = await fetchConsentByToken(token.trim());
-    return <TermsAcceptClient token={token.trim()} consent={consent} />;
+    consent = await fetchConsentByToken(token.trim());
   } catch {
-    return <TermsAcceptClient token={token.trim()} consent={null} />;
+    consent = null;
   }
+
+  return <TermsAcceptClient token={token.trim()} consent={consent} />;
 }

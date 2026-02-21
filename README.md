@@ -1,6 +1,6 @@
 # 🏦 Zaga Frontend
 
-Plataforma de préstamos personales con Next.js 15, Supabase Auth y shadcn/ui.
+Plataforma de préstamos personales con Next.js (App Router) y shadcn/ui.
 
 ## 🚀 Inicio Rápido
 
@@ -13,8 +13,7 @@ npm test              # Ejecutar tests
 
 ## 🛠️ Stack Tecnológico
 
-- **Framework:** Next.js 15 (App Router)
-- **Autenticación:** Supabase Auth
+- **Framework:** Next.js 16 (App Router)
 - **UI:** shadcn/ui + Tailwind CSS
 - **Estilos:** SCSS
 - **Testing:** Jest + React Testing Library
@@ -24,10 +23,9 @@ npm test              # Ejecutar tests
 ### Variables de Entorno
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_supabase_anon_key
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_TERMS_ACCEPT_MOCK_TOKEN=
 ```
 
 ### Estructura del Proyecto
@@ -35,19 +33,19 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 app/
 ├── (admin)/          # Panel administrativo
-├── auth/             # Login (admin)
+├── auth/             # Rutas de autenticación (actualmente en mantenimiento)
 ├── api/              # API Routes
 ├── components/        # Componentes (auth, core, ui)
-├── lib/              # Utilidades (auth, supabase, api)
+├── terms/            # Términos y aceptación por token
 └── page.tsx          # Landing page
 ```
 
 ## 🔐 Autenticación
 
-Sistema de roles con Supabase:
-- **Admin**: `/adminDashboard`
+El flujo de autenticación/admin **está temporalmente en mantenimiento** mientras se migra la solución de auth.
 
-El proxy redirige automáticamente según el rol del usuario.
+- **Rutas afectadas:** `/auth/*`, `/adminDashboard` (muestran aviso de mantenimiento).
+- **API afectada:** `/api/auth` responde `503` (mantenimiento).
 
 ## 🏗️ Arquitectura
 
@@ -68,13 +66,7 @@ ComponentName/
 
 ## 🔌 API
 
-Wrapper API con JWT automático:
-```typescript
-import { apiGet, parseApiResponse } from '@/utils/api';
-
-const response = await apiGet('/prestamos');
-const data = await parseApiResponse<PrestamosResponse>(response);
-```
+Helpers de fetch (cliente/servidor) en `app/utils/apiCallUtils/`.
 
 ## 📦 Scripts
 
@@ -82,7 +74,8 @@ const data = await parseApiResponse<PrestamosResponse>(response);
 - `build` - Build de producción
 - `start` - Servidor de producción
 - `lint` - ESLint
-- `test` - Tests en watch
+- `test` - Tests (Jest)
+- `test:watch` - Tests en watch
 - `test:coverage` - Tests con coverage
 
 ## 🚀 Deployment
