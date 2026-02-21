@@ -22,3 +22,6 @@ export const MOCK_ACCEPT_TOKEN: string =
   process.env.NODE_ENV === "development"
     ? (process.env.NEXT_PUBLIC_TERMS_ACCEPT_MOCK_TOKEN ?? "").trim()
     : "";
+
+export const CONSENTS_GET_BY_TOKEN_ENDPOINT = (token: string): string =>
+  buildBackendUrl(`/consents/${token}`);
