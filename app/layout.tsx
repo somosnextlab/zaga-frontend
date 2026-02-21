@@ -11,8 +11,6 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl), // revisar esto
   title: "Zaga — Préstamos personales rápidos y seguros",
