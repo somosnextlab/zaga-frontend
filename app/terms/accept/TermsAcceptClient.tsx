@@ -31,18 +31,16 @@ type ConsentByTokenResponse = {
 export default function TermsAcceptClient({
   token,
   consent,
-  serverError,
 }: {
   token: string | null;
   consent: ConsentByTokenResponse | null;
-  serverError: string | null;
 }): React.JSX.Element {
   const [status, setStatus] = React.useState<SubmissionStatus>("idle");
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(serverError);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const showSuccess = status === "success";
   const showInvalidNoToken = !token;
-  const showServerError = Boolean(token) && !consent && Boolean(errorMessage);
+  const showInvalidToken = Boolean(token) && !consent;
 
   const showAlreadyAccepted =
     Boolean(consent) && consent?.is_valid === false && consent?.status === "ACCEPTED";
@@ -141,7 +139,7 @@ export default function TermsAcceptClient({
               </Button>
             </CardFooter>
           </Card>
-        ) : showInvalidOrExpired || showServerError ? (
+        ) : showInvalidOrExpired || showInvalidToken ? (
           <Card className={`${styles.card} ${styles.cardNarrow}`}>
             <CardHeader className={styles.cardHeader}>
               <CardTitle className={styles.title}>Token inválido o vencido</CardTitle>
@@ -153,7 +151,6 @@ export default function TermsAcceptClient({
               <p className={styles.bodyText}>
                 Volvé al chat de WhatsApp de ZAGA y solicitá un nuevo link para continuar.
               </p>
-              {errorMessage ? <p className={styles.bodyText}>{errorMessage}</p> : null}
             </CardContent>
           </Card>
         ) : (

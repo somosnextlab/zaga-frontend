@@ -54,15 +54,13 @@ export default async function TermsAcceptPage({
   const { token } = await searchParams;
 
   if (!token || token.trim().length === 0) {
-    return <TermsAcceptClient token={null} consent={null} serverError={null} />;
+    return <TermsAcceptClient token={null} consent={null} />;
   }
 
   try {
     const consent = await fetchConsentByToken(token.trim());
-    return <TermsAcceptClient token={token.trim()} consent={consent} serverError={null} />;
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Token inválido o vencido.";
-    return <TermsAcceptClient token={token.trim()} consent={null} serverError={message} />;
+    return <TermsAcceptClient token={token.trim()} consent={consent} />;
+  } catch {
+    return <TermsAcceptClient token={token.trim()} consent={null} />;
   }
 }
