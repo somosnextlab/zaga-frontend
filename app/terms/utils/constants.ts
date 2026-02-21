@@ -24,4 +24,4 @@ export const MOCK_ACCEPT_TOKEN: string =
     : "";
 
 export const CONSENTS_GET_BY_TOKEN_ENDPOINT = (token: string): string =>
-  buildBackendUrl(`/consents/${token}`);
+  buildBackendUrl(`/consents/token/${token}`);
